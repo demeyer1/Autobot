@@ -1,0 +1,17 @@
+.DS_Store
+.autoassist-runtime/
+.install-state/
+.release/
+*.zip
+*.log
+*.tmp
+*.swp
+config/profile.conf
+00_CONTEXT/PRIVATE/
+00_CONTEXT/WORK/
+00_CONTEXT/FAMILY_FRIENDS/
+00_CONTEXT/SHARED/
+state/objectives/
+state/heartbeats/
+state/events/
+
