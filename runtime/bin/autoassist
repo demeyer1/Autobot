@@ -1,0 +1,273 @@
+#!/bin/zsh
+
+set -eu
+
+SCRIPT_DIR="${0:A:h}"
+AUTOASSIST_ROOT="${SCRIPT_DIR:h:h}"
+source "$AUTOASSIST_ROOT/runtime/lib/common.sh"
+ACCOUNT_HOME="${AUTOASSIST_ACCOUNT_HOME:-${HOME}}"
+
+STAGES=(research_complete draft_complete destination_updated save_confirmed rendered_readback_verified)
+STATE_ROOT="$AUTOASSIST_ROOT/state"
+OBJECTIVES_ROOT="$STATE_ROOT/objectives"
+
+usage() {
+  /bin/cat <<'EOF'
+Usage: autoassist <command> [arguments]
+
+Commands:
+  doctor [--quiet]                         Check the local installation.
+  initialize-zones                         Create owner-only privacy zones.
+  objective-create <id> <title>            Create a durable objective.
+  checkpoint <id> <stage> <file> <actor>   Report one evidence-bound stage.
+  validate-stage <id> <stage> <validator>  Independently validate a stage.
+  objective-status [id]                    Show one or all objective states.
+  supervisor-tick                          Record liveness and flag stalls.
+  privacy-scan                             Scan a clean, unconfigured release tree.
+  version                                  Print the installed version.
+EOF
+}
+
+privacy_scan() {
+  if [[ -f "$AUTOASSIST_ROOT/.install-state/managed-by-autoassist" ]]; then
+    autoassist_fail "privacy-scan is a release-candidate check and will not inspect a configured workspace"
+  fi
+  "$AUTOASSIST_ROOT/scripts/privacy-scan.sh" "$AUTOASSIST_ROOT"
+}
+
+ensure_state() {
+  /bin/mkdir -p "$OBJECTIVES_ROOT" "$STATE_ROOT/heartbeats" "$STATE_ROOT/events" "$STATE_ROOT/logs"
+  /bin/chmod 700 "$STATE_ROOT" "$OBJECTIVES_ROOT" "$STATE_ROOT/heartbeats" "$STATE_ROOT/events" "$STATE_ROOT/logs"
+}
+
+initialize_zones() {
+  local zone
+  local zone_content
+  for zone in PRIVATE FAMILY_FRIENDS WORK SHARED; do
+    /bin/mkdir -p "$AUTOASSIST_ROOT/00_CONTEXT/$zone"
+    /bin/chmod 700 "$AUTOASSIST_ROOT/00_CONTEXT/$zone"
+    if [[ ! -f "$AUTOASSIST_ROOT/00_CONTEXT/$zone/INDEX.md" ]]; then
+      zone_content="$(/usr/bin/printf '# %s index\n\nNo records yet.' "$zone")"
+      autoassist_atomic_write "$AUTOASSIST_ROOT/00_CONTEXT/$zone/INDEX.md" "$zone_content"
+    fi
+  done
+}
+
+doctor() {
+  local quiet=0
+  local failures=0
+  local check
+  if [[ "${1:-}" == "--quiet" ]]; then quiet=1; fi
+
+  check() {
+    local label="$1"
+    local result="$2"
+    if [[ "$result" == "pass" ]]; then
+      if [[ "$quiet" -eq 0 ]]; then /bin/echo "PASS  $label"; fi
+    else
+      /bin/echo "FAIL  $label" >&2
+      failures=$((failures + 1))
+    fi
+  }
+
+  [[ "$(/usr/bin/uname -s)" == "Darwin" ]] && check "macOS host" pass || check "macOS host" fail
+  [[ -f "$AUTOASSIST_ROOT/AGENTS.md" ]] && check "operating contract" pass || check "operating contract" fail
+  [[ -f "$AUTOASSIST_ROOT/PROJECTS.md" ]] && check "command center" pass || check "command center" fail
+  [[ -f "$AUTOASSIST_ROOT/skills/first-time/SKILL.md" ]] && check "first-time source skill" pass || check "first-time source skill" fail
+  [[ -x "$AUTOASSIST_ROOT/runtime/bin/autoassist" ]] && check "runtime executable" pass || check "runtime executable" fail
+  [[ -d "/Applications/ChatGPT.app" || -d "$ACCOUNT_HOME/Applications/ChatGPT.app" ]] && check "ChatGPT desktop app" pass || check "ChatGPT desktop app" fail
+  [[ -d "$STATE_ROOT" ]] && check "runtime state" pass || check "runtime state" fail
+  [[ -d "$AUTOASSIST_ROOT/00_CONTEXT/PRIVATE" ]] && check "privacy zones" pass || check "privacy zones" fail
+
+  local installed_skill="$ACCOUNT_HOME/.codex/skills/first-time/SKILL.md"
+  [[ -f "$installed_skill" ]] && check "installed first-time skill" pass || check "installed first-time skill" fail
+
+  local plist="$ACCOUNT_HOME/Library/LaunchAgents/io.autoassist.supervisor.plist"
+  if [[ -f "$plist" ]]; then
+    /usr/bin/plutil -lint "$plist" >/dev/null 2>&1 && check "supervisor LaunchAgent definition" pass || check "supervisor LaunchAgent definition" fail
+  else
+    check "supervisor LaunchAgent definition" fail
+  fi
+
+  if [[ "$failures" -gt 0 ]]; then
+    return 1
+  fi
+  if [[ "$quiet" -eq 0 ]]; then /bin/echo "AutoAssist doctor passed."; fi
+}
+
+objective_create() {
+  local objective_id="$1"
+  local title="$2"
+  autoassist_validate_id "$objective_id"
+  if [[ -z "$title" ]]; then autoassist_fail "objective title is required"; fi
+  ensure_state
+  local objective_dir="$OBJECTIVES_ROOT/$objective_id"
+  if [[ -e "$objective_dir" ]]; then autoassist_fail "objective already exists: $objective_id"; fi
+  /bin/mkdir -p "$objective_dir/stages" "$objective_dir/evidence"
+  /bin/chmod 700 "$objective_dir" "$objective_dir/stages" "$objective_dir/evidence"
+  autoassist_atomic_write "$objective_dir/title" "$title"
+  autoassist_atomic_write "$objective_dir/state" "active"
+  autoassist_atomic_write "$objective_dir/created_at" "$(autoassist_now_iso)"
+  autoassist_atomic_write "$objective_dir/updated_at" "$(autoassist_now_iso)"
+  autoassist_atomic_write "$objective_dir/last_progress_epoch" "$(autoassist_now_epoch)"
+  local stage
+  for stage in "${STAGES[@]}"; do
+    /bin/mkdir -p "$objective_dir/stages/$stage"
+    autoassist_atomic_write "$objective_dir/stages/$stage/state" "pending"
+  done
+  /bin/echo "Created objective $objective_id"
+}
+
+checkpoint() {
+  local objective_id="$1"
+  local stage="$2"
+  local source_file="$3"
+  local producer="$4"
+  autoassist_validate_id "$objective_id"
+  autoassist_stage_number "$stage" >/dev/null || autoassist_fail "unknown stage: $stage"
+  autoassist_validate_actor "$producer"
+  if [[ ! -f "$source_file" || -L "$source_file" ]]; then autoassist_fail "evidence must be a regular non-symlink file"; fi
+  local size
+  size="$(/usr/bin/stat -f '%z' "$source_file")"
+  if [[ "$size" -gt 26214400 ]]; then autoassist_fail "evidence file exceeds 25 MiB"; fi
+
+  local objective_dir="$OBJECTIVES_ROOT/$objective_id"
+  if [[ ! -d "$objective_dir" ]]; then autoassist_fail "unknown objective: $objective_id"; fi
+  local lock_path="$objective_dir/.lock"
+  (
+  autoassist_acquire_lock "$lock_path"
+  trap 'autoassist_release_held_lock' EXIT ZERR
+  trap 'autoassist_release_held_lock; exit 130' INT
+  trap 'autoassist_release_held_lock; exit 143' TERM
+
+  local stage_state
+  stage_state="$(<"$objective_dir/stages/$stage/state")"
+  if [[ "$stage_state" != "pending" ]]; then autoassist_fail "stage is not pending: $stage"; fi
+  local previous
+  previous="$(autoassist_previous_stage "$stage")"
+  if [[ -n "$previous" && "$(<"$objective_dir/stages/$previous/state")" != "validated" ]]; then
+    autoassist_fail "previous stage must be validated first: $previous"
+  fi
+
+  local evidence_dir="$objective_dir/evidence/$stage"
+  /bin/mkdir -p "$evidence_dir"
+  local copied="$evidence_dir/evidence.bin"
+  /bin/cp -p "$source_file" "$copied"
+  /bin/chmod 600 "$copied"
+  autoassist_atomic_write "$objective_dir/stages/$stage/evidence_sha256" "$(autoassist_sha256 "$copied")"
+  autoassist_atomic_write "$objective_dir/stages/$stage/producer" "$producer"
+  autoassist_atomic_write "$objective_dir/stages/$stage/reported_at" "$(autoassist_now_iso)"
+  autoassist_atomic_write "$objective_dir/stages/$stage/state" "reported"
+  autoassist_atomic_write "$objective_dir/updated_at" "$(autoassist_now_iso)"
+  autoassist_atomic_write "$objective_dir/last_progress_epoch" "$(autoassist_now_epoch)"
+  autoassist_release_held_lock
+  trap - EXIT INT TERM ZERR
+  )
+  /bin/echo "Reported $objective_id $stage"
+}
+
+validate_stage() {
+  local objective_id="$1"
+  local stage="$2"
+  local validator="$3"
+  autoassist_validate_id "$objective_id"
+  autoassist_stage_number "$stage" >/dev/null || autoassist_fail "unknown stage: $stage"
+  autoassist_validate_actor "$validator"
+  local objective_dir="$OBJECTIVES_ROOT/$objective_id"
+  if [[ ! -d "$objective_dir" ]]; then autoassist_fail "unknown objective: $objective_id"; fi
+  local lock_path="$objective_dir/.lock"
+  (
+  autoassist_acquire_lock "$lock_path"
+  trap 'autoassist_release_held_lock' EXIT ZERR
+  trap 'autoassist_release_held_lock; exit 130' INT
+  trap 'autoassist_release_held_lock; exit 143' TERM
+
+  if [[ "$(<"$objective_dir/stages/$stage/state")" != "reported" ]]; then autoassist_fail "stage is not ready for validation: $stage"; fi
+  local producer
+  producer="$(<"$objective_dir/stages/$stage/producer")"
+  if [[ "$producer" == "$validator" ]]; then autoassist_fail "producer and validator labels must differ; label difference alone does not prove independent review"; fi
+  local copied="$objective_dir/evidence/$stage/evidence.bin"
+  local expected
+  expected="$(<"$objective_dir/stages/$stage/evidence_sha256")"
+  if [[ "$(autoassist_sha256 "$copied")" != "$expected" ]]; then autoassist_fail "evidence hash mismatch"; fi
+  autoassist_atomic_write "$objective_dir/stages/$stage/validator" "$validator"
+  autoassist_atomic_write "$objective_dir/stages/$stage/validated_at" "$(autoassist_now_iso)"
+  autoassist_atomic_write "$objective_dir/stages/$stage/state" "validated"
+  autoassist_atomic_write "$objective_dir/updated_at" "$(autoassist_now_iso)"
+  autoassist_atomic_write "$objective_dir/last_progress_epoch" "$(autoassist_now_epoch)"
+
+  local all_validated=1
+  local candidate_stage
+  for candidate_stage in "${STAGES[@]}"; do
+    if [[ "$(<"$objective_dir/stages/$candidate_stage/state")" != "validated" ]]; then all_validated=0; fi
+  done
+  if [[ "$all_validated" -eq 1 ]]; then
+    autoassist_atomic_write "$objective_dir/state" "complete"
+    autoassist_atomic_write "$objective_dir/completed_at" "$(autoassist_now_iso)"
+  fi
+  autoassist_release_held_lock
+  trap - EXIT INT TERM ZERR
+  )
+  /bin/echo "Validated $objective_id $stage"
+}
+
+objective_status() {
+  local requested="${1:-}"
+  ensure_state
+  local objective_dir
+  if [[ -n "$requested" ]]; then
+    objective_dir="$OBJECTIVES_ROOT/$requested"
+    if [[ ! -d "$objective_dir" ]]; then autoassist_fail "unknown objective: $requested"; fi
+    /bin/echo "$requested  $(<"$objective_dir/state")  $(<"$objective_dir/title")"
+    local stage
+    for stage in "${STAGES[@]}"; do
+      /bin/echo "  $stage  $(<"$objective_dir/stages/$stage/state")"
+    done
+    return
+  fi
+  local found=0
+  for objective_dir in "$OBJECTIVES_ROOT"/*(N/); do
+    found=1
+    /bin/echo "${objective_dir:t}  $(<"$objective_dir/state")  $(<"$objective_dir/title")"
+  done
+  if [[ "$found" -eq 0 ]]; then /bin/echo "No objectives."; fi
+}
+
+supervisor_tick() {
+  ensure_state
+  local captured_at
+  captured_at="$(autoassist_now_iso)"
+  autoassist_atomic_write "$STATE_ROOT/heartbeats/supervisor" "$captured_at"
+  local now_epoch
+  now_epoch="$(autoassist_now_epoch)"
+  local objective_dir
+  for objective_dir in "$OBJECTIVES_ROOT"/*(N/); do
+    if [[ "$(<"$objective_dir/state")" != "active" ]]; then continue; fi
+    local last_epoch
+    last_epoch="$(<"$objective_dir/last_progress_epoch")"
+    if [[ $((now_epoch - last_epoch)) -ge 600 ]]; then
+      autoassist_atomic_write "$objective_dir/recovery_needed" "captured_at=$captured_at reason=no_valid_checkpoint_for_600_seconds"
+    fi
+  done
+  /bin/echo "AutoAssist supervisor heartbeat $captured_at"
+}
+
+main() {
+  local command="${1:-help}"
+  if [[ $# -gt 0 ]]; then shift; fi
+  case "$command" in
+    doctor) ensure_state; doctor "${1:-}" ;;
+    initialize-zones) ensure_state; initialize_zones; /bin/echo "Privacy zones initialized." ;;
+    objective-create) [[ $# -eq 2 ]] || autoassist_fail "objective-create requires <id> <title>"; objective_create "$1" "$2" ;;
+    checkpoint) [[ $# -eq 4 ]] || autoassist_fail "checkpoint requires <id> <stage> <file> <actor>"; checkpoint "$1" "$2" "$3" "$4" ;;
+    validate-stage) [[ $# -eq 3 ]] || autoassist_fail "validate-stage requires <id> <stage> <validator>"; validate_stage "$1" "$2" "$3" ;;
+    objective-status) objective_status "${1:-}" ;;
+    supervisor-tick) supervisor_tick ;;
+    privacy-scan) privacy_scan ;;
+    version) /bin/cat "$AUTOASSIST_ROOT/VERSION" ;;
+    help|-h|--help) usage ;;
+    *) usage >&2; autoassist_fail "unknown command: $command" ;;
+  esac
+}
+
+main "$@"
