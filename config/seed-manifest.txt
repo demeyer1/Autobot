@@ -1,0 +1,4 @@
+PROJECTS.md
+00_CONTEXT/MEMORY.md
+00_CONTEXT/ISSUES/issues.json
+
