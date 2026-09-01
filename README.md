@@ -129,3 +129,29 @@ AutoAssist `0.1.0` is an early public release for a single user on a Mac. The pa
 ## License
 
 AutoAssist is available under the [MIT License](LICENSE). Copyright (c) 2026 AutoAssist contributors.
+
+
+## AssistantBench v1.0 result
+
+AutoAssist / ChatGPT-HQ + GPT-5.6 Sol Ultra completed all 181 AssistantBench hidden-test tasks through our custom research harness.
+
+- Accuracy: **50.70%**
+- Answer rate: **100.0%**
+- Precision: **50.7%**
+- Exact match: **27.1%**
+- Easy accuracy: **88.0%**
+- Medium accuracy: **67.7%**
+- Hard accuracy: **39.7%**
+- Global leaderboard position at verification: **#1**
+
+Verification:
+
+- Official leaderboard: https://huggingface.co/spaces/AssistantBench/leaderboard
+- Hidden tasks submitted: 181 of 181
+- Missing or nonterminal answers: 0
+- Submission artifact SHA-256: `af99212a3c5b5045705fcd6f6b762642257447796ca85b6923e6f11906a97991`
+- Submission identity SHA-256: `94d234df96c44c182c1d8a0309ce65f35b2c7cd6e011ea99d0e8880c4dce0085`
+
+The first UI attempt exposed a path-safety problem in the model-name metadata. We fixed the metadata guard, reran the live collision and artifact checks, and submitted the unchanged verified 181-row artifact under the corrected model name.
+
+This result reflects the AutoAssist custom harness and the official AssistantBench hidden scorer. We are publishing the score, artifact identity, and verification boundary without exposing hidden-test answers.
