@@ -18,7 +18,7 @@ This is a product-shape ranking, not a universal OSS leaderboard. It weights nat
 | 4 | [Hermes Agent](https://github.com/NousResearch/hermes-agent) | Self-improving skills, durable memory, session search, subagents, cron, model choice, and messaging channels | Separate terminal/gateway experience. Its README documents voice-memo transcription rather than native ChatGPT Voice orchestration, and no exact equivalent of the AutoAssist write/validation bundle was found in the reviewed primary docs. |
 | 5 | [OwnPilot](https://github.com/ownpilot/ownpilot) | Self-hosted personal platform with agents, crews, persistent memory, MCP client/server, browser automation, audit, 250+ tools, and voice input/output | Separate server/web platform and broader infrastructure footprint. Its reviewed README does not specify the same first-party no-attribution route plus required independent rendered destination readback. |
 
-The earlier HQ-replacement evaluation used a different baseline and its scores are not reused here. A ranking centered on maximum channel breadth, independent self-hosting, model portability, or always-on gateway operation could put one of the alternatives first.
+A ranking centered on maximum channel breadth, independent self-hosting, model portability, or always-on gateway operation could put one of the alternatives first.
 
 ### Primary evidence for ranks 3 through 5
 
