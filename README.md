@@ -1,12 +1,18 @@
 # Autobot
 
-Autobot adds a local operating layer to native ChatGPT. You keep the ChatGPT desktop app, Projects, Voice, long-running work, skills, and Computer Use. Autobot adds durable context, privacy zones, unfinished-work tracking, independent completion checks, and stricter rules for external actions.
+**AutoBot: a self-improving agent runtime that makes frontier AI better at finishing complex work.**
 
-Autobot is an open-source product from its parent company, [Autonomous Production](https://autoprod.ai).
+AutoBot achieved **18.5% higher task completion than the published OpenAI Sol Max baseline**, surpassing **Anthropic’s Claude Opus 5 Max** on OSWorld 2.0, a benchmark of long, multi-application workflows. It also reached **#1 on the official AssistantBench hidden-test leaderboard**. [Results and methodology](https://github.com/demeyer1/Autobot/tree/main/benchmarks)
 
-It is built for one person using a Mac, especially when family, friends, and work all need to stay useful without bleeding into one another.
+**Hard workflows become upgrades to the agent itself.** AutoBot repairs its own harness, independently validates the changes, and carries them forward. The next workflow inherits the improvement. **Compounding capability, without retraining the model.**
 
-Autobot is open source under the [MIT License](LICENSE).
+**Your knowledge outgrows the context window.** Hierarchical memory lives on disk; task-specific retrieval builds the working context. Nightly consolidation integrates new knowledge and corrections. Your agent accumulates institutional memory across projects and conversations.
+
+**Your project can outlive the agent working on it.** Persistent task graphs, atomic checkpoints and independent supervision let a replacement worker resume the assignment. Completion is bound to current requirements and verified destination evidence.
+
+**Local compute makes persistent intelligence economical.** Your CPU handles orchestration, state and integrity checks. Compiled context and reusable proofs reduce repeated inference, directing the model’s budget toward the difficult judgments that move work forward.
+
+Open source. Native ChatGPT on your Mac. Built by [Autonomous Production](https://autoprod.ai). [Get AutoBot](https://github.com/demeyer1/Autobot/releases).
 
 ## Benchmarks
 
