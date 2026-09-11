@@ -41,23 +41,25 @@ This comparison evaluates Autobot plus native ChatGPT for one person managing pe
 
 These are operating-contract differences, not guarantees of error-free execution. Autobot's privacy zones and validator separation are procedural within one Mac; they are not OS isolation or cryptographic identities. OpenClaw and Hermes offer broader standalone deployment, messaging, and model choices. The absence findings above concern the exact required workflows, not an absence of memory, privacy controls, voice, verification tools, or automation in either project.
 
-## Target: ZIP to a working project in under 30 minutes
+## Install version 0.2.0
 
-The setup is designed to fit inside 30 minutes on a supported Mac:
+Download the versioned ZIP and matching checksum from Releases, verify it, extract it and open `Install.command`. The default folder remains `~/AutoAssist`, including upgrades, so an existing local Project keeps its path.
 
-1. Install and sign in to the current [ChatGPT desktop app](https://learn.chatgpt.com/docs/app).
-2. Download the Autobot ZIP from an official release and extract it.
-3. Double-click `Install.command`. The default destination is `~/AutoAssist`.
-4. Open `~/AutoAssist` as the primary folder of a new local ChatGPT Project.
-5. Start a new chat and ask ChatGPT to run the `first-time` skill.
-6. Choose the privacy zones and communication profiles you want, then grant only the macOS and per-app permissions required for your workflows.
-7. Run `./runtime/bin/autoassist doctor` from the installed folder.
+The base install needs no account, API key, Node installation or new OS privacy grant. Advanced task, context and evidence commands use Node.js 22 or later. Missing runtime readiness is reported separately; no runtime is downloaded and no broken service is activated.
 
-The local file installation is automated, and the package test fails if that local step takes 30 minutes or more in its isolated test environment. ChatGPT download time, account sign-in, plan availability, macOS permission prompts, and first-time choices can change the full setup time. Version `0.1.0` is pre-release, so a ZIP-to-ready claim still needs a clean-Mac timing receipt from the exact release candidate.
+For the native workflow, make the installed folder primary in a local Project and run its project-local `first-time` skill. Optional Voice, Goals, Computer Use, connectors and schedules must be available in the user's app/account and verified individually. Autobot does not install an automatic terminal-response hook.
 
-The current ChatGPT download page labels the macOS build for Apple silicon. OpenAI's documentation reviewed for this release does not publish a minimum macOS version, so check the [current app page](https://learn.chatgpt.com/docs/app) before installation.
+Version 0.2.0 adds multiple outputs and requirements, revision-bound evidence, durable ownership/recovery, selective memory/context and transactional upgrades. User stores, schedules and notification targets start empty. Existing users should close the target Project before updating; customized instructions and conflicting changes are preserved for resolution.
 
-Full instructions: [Install Autobot](docs/INSTALL.md)
+[Installation and upgrade](docs/INSTALL.md) · [Capability and dependency table](docs/CAPABILITIES.md) · [Changelog](CHANGELOG.md)
+
+The release validation report identifies the tested package and platform. A same-user isolated directory test is not a fresh Mac or reset permission environment; no universal ZIP-to-ready timing guarantee is made.
+
+## What is new in 0.2.0
+
+One local store now tracks promised outputs, their owners, requirements, corrections and current evidence. Scoped memory and issue records retain provenance. Foreground handoffs keep uncertain actions from being retried blindly. Upgrades preserve user data and detect conflicts in customized files.
+
+The base folder installs without Node or sign-in. The advanced runtime needs Node 22 or newer. Native app capabilities are discovered separately; no model, account, notification recipient or external write is configured for you. See [capabilities and availability](docs/CAPABILITIES.md).
 
 ## Privacy zones
 
@@ -109,7 +111,8 @@ Important limits:
 ```zsh
 ./runtime/bin/autoassist doctor
 ./runtime/bin/autoassist version
-./runtime/bin/autoassist objective-status
+./runtime/bin/autoassist core status
+./runtime/bin/autoassist core help
 ```
 
 Run `./runtime/bin/autoassist help` for the complete local command list.
@@ -120,7 +123,9 @@ Run `./runtime/bin/autoassist help` for the complete local command list.
 
 - [Install](docs/INSTALL.md)
 - [Permissions](docs/PERMISSIONS.md)
+- [Capabilities and availability](docs/CAPABILITIES.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Local runtime reference](docs/CLI-REFERENCE.md)
 - [Privacy](PRIVACY.md)
 - [Security](SECURITY.md)
 - [Autobot and OpenClaw](docs/COMPARISON.md)
@@ -128,7 +133,7 @@ Run `./runtime/bin/autoassist help` for the complete local command list.
 
 ## Current status
 
-Autobot `0.1.0` is an early public release for a single user on a Mac. The package is not a multi-tenant service, an OS sandbox, a cryptographic privacy boundary, or a guarantee that every third-party action will succeed. Treat a downloadable ZIP as verified only when its checksum and manifest match the adjacent release artifacts and the packaged candidate passes the bundled release checks.
+Autobot `0.2.0` is an early public release for a single user on a Mac. The package is not a multi-tenant service, an OS sandbox, a cryptographic privacy boundary, or a guarantee that every third-party action will succeed. Treat a downloadable ZIP as verified only when its checksum and manifest match the adjacent release artifacts and the packaged candidate passes the bundled release checks.
 
 ## License
 

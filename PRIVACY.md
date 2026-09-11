@@ -19,7 +19,7 @@ AutoAssist defaults to the narrowest zone that supports the current assignment. 
 
 The local installer creates each privacy-zone directory with owner-only permissions. Objective state, evidence, profile configuration, and install receipts are also stored with restrictive user permissions.
 
-The default installation is under `~/AutoAssist`. The current installer accepts another child directory only when the destination path contains letters, digits, spaces, periods, underscores, hyphens, and slashes. Use the default if your home path contains another character.
+The default installation is under `~/AutoAssist`. A custom destination must pass the installer's safe-path and ownership checks. Use a deliberately selected child directory; do not move unrelated private content to satisfy installation checks.
 
 Folder permissions inside one logged-in macOS account are not equivalent to:
 
@@ -132,12 +132,12 @@ Moving the folder to Trash is recoverable deletion, not secure erasure. Emptying
 Build and scan releases only from a clean, unconfigured source tree. Never package a populated user workspace. Against the clean candidate, run:
 
 ```zsh
-./scripts/verify-release.sh /path/to/clean/AutoAssist
+./scripts/verify-release.sh /path/to/clean/AutoAssist --media-review /path/to/private/media-review.json
 ```
 
-The release scan checks for absolute user paths, email addresses, phone-like values, private keys, obvious embedded secrets, unfinished scaffold markers, symlinks, and common credential files.
+The release scan checks for absolute user paths, email addresses, phone-like values, private keys, obvious embedded secrets, symlinks, and common credential files.
 
-It is a bounded pattern scan, not a complete privacy proof. Human review remains required. A configured installation contains legitimate paths, labels, and user data and is not expected to pass this clean-release gate.
+The scanner checks the entire exact allowlisted tree, without silently skipping state or output directories. Every media file needs a private review receipt bound to its bytes. The packager repeats checks on archive entries and extracted content and emits a deterministic ZIP, manifest and checksum outside the source. A bounded pattern scan is not a complete privacy proof. Independent semantic review remains required. A configured installation contains legitimate paths, labels, and user data and is not expected to pass this clean-release gate.
 
 ## Known limits
 
@@ -160,4 +160,4 @@ AutoAssist does not claim:
 - [Memories](https://learn.chatgpt.com/docs/customization/memories)
 - [Computer Use](https://learn.chatgpt.com/docs/computer-use)
 
-**Documentation date:** 2026-08-26.
+**Documentation date:** 2026-09-10.
