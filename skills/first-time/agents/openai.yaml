@@ -1,6 +1,6 @@
 interface:
   display_name: "AutoAssist First Time"
-  short_description: "Complete AutoAssist's safe first-use setup"
-  default_prompt: "Use $first-time to complete and verify AutoAssist's first-use setup on this dedicated laptop."
+  short_description: "Actively install, configure, resume, and verify AutoAssist"
+  default_prompt: "Use $first-time to take me through AutoAssist setup. Complete every safe step you can, pause only for a real user-only gate, and resume from verified progress."
 policy:
   allow_implicit_invocation: true

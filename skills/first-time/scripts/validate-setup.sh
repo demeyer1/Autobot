@@ -178,6 +178,10 @@ check_no_secret_material() {
   fi
 }
 
+permission_ready() {
+  [[ "$1" == confirmed-by-user || "$1" == observed-effective ]]
+}
+
 PROFILE="$AUTOASSIST_ROOT/config/profile.conf"
 SETUP="$AUTOASSIST_ROOT/config/first-time.conf"
 MARKER="$AUTOASSIST_ROOT/.install-state/first-time-complete"
@@ -211,6 +215,14 @@ SHARED_OPT_IN=""
 TONE_MODE=""
 TONE_PROFILES=""
 REQUESTED_CAPABILITIES=""
+DEDICATED_LAPTOP_READY=""
+CHATGPT_SIGN_IN_METHOD=""
+CHATGPT_SIGN_IN_CONFIRMED=""
+NATIVE_PROJECT_STATE=""
+NATIVE_COMPUTER_USE_STATE=""
+NATIVE_VOICE_STATE=""
+NATIVE_APP_AUTOMATION_STATE=""
+NATIVE_GOAL_STATE=""
 PERMISSION_MICROPHONE=""
 PERMISSION_SCREEN_RECORDING=""
 PERMISSION_ACCESSIBILITY=""
@@ -220,19 +232,32 @@ if [[ -f "$SETUP" && ! -L "$SETUP" ]]; then
   check_mode "$SETUP" 600 "first-time configuration is owner-only"
   check_no_secret_material "$SETUP"
   check_exact_value "$SETUP" SETUP_VERSION 1
-  check_exact_value "$SETUP" DEDICATED_LAPTOP_READY yes
-  check_allowed_value "$SETUP" CHATGPT_SIGN_IN_METHOD already-signed-in native-sso os-sso browser-sso
-  check_exact_value "$SETUP" CHATGPT_SIGN_IN_CONFIRMED yes
+  check_allowed_value "$SETUP" DEDICATED_LAPTOP_READY local-only yes
+  if read_value "$SETUP" DEDICATED_LAPTOP_READY; then DEDICATED_LAPTOP_READY="$CONFIG_VALUE"; fi
+  check_allowed_value "$SETUP" CHATGPT_SIGN_IN_METHOD not-configured already-signed-in native-sso os-sso browser-sso
+  if read_value "$SETUP" CHATGPT_SIGN_IN_METHOD; then CHATGPT_SIGN_IN_METHOD="$CONFIG_VALUE"; fi
+  check_allowed_value "$SETUP" CHATGPT_SIGN_IN_CONFIRMED no yes
+  if read_value "$SETUP" CHATGPT_SIGN_IN_CONFIRMED; then CHATGPT_SIGN_IN_CONFIRMED="$CONFIG_VALUE"; fi
   if read_value "$SETUP" REQUESTED_CAPABILITIES; then REQUESTED_CAPABILITIES="$CONFIG_VALUE"; fi
-  check_allowed_value "$SETUP" PERMISSION_MICROPHONE confirmed-by-user deferred-not-needed required-later
+  check_allowed_value "$SETUP" NATIVE_PROJECT_STATE confirmed-primary manual-primary-required unavailable
+  if read_value "$SETUP" NATIVE_PROJECT_STATE; then NATIVE_PROJECT_STATE="$CONFIG_VALUE"; fi
+  check_allowed_value "$SETUP" NATIVE_COMPUTER_USE_STATE not-requested available manual-setup-required unavailable
+  if read_value "$SETUP" NATIVE_COMPUTER_USE_STATE; then NATIVE_COMPUTER_USE_STATE="$CONFIG_VALUE"; fi
+  check_allowed_value "$SETUP" NATIVE_VOICE_STATE not-requested available manual-setup-required unavailable
+  if read_value "$SETUP" NATIVE_VOICE_STATE; then NATIVE_VOICE_STATE="$CONFIG_VALUE"; fi
+  check_allowed_value "$SETUP" NATIVE_APP_AUTOMATION_STATE not-requested available manual-setup-required unavailable
+  if read_value "$SETUP" NATIVE_APP_AUTOMATION_STATE; then NATIVE_APP_AUTOMATION_STATE="$CONFIG_VALUE"; fi
+  check_allowed_value "$SETUP" NATIVE_GOAL_STATE not-requested available manual-setup-required unavailable
+  if read_value "$SETUP" NATIVE_GOAL_STATE; then NATIVE_GOAL_STATE="$CONFIG_VALUE"; fi
+  check_allowed_value "$SETUP" PERMISSION_MICROPHONE confirmed-by-user observed-effective deferred-not-needed required-later
   if read_value "$SETUP" PERMISSION_MICROPHONE; then PERMISSION_MICROPHONE="$CONFIG_VALUE"; fi
-  check_allowed_value "$SETUP" PERMISSION_SCREEN_RECORDING confirmed-by-user deferred-not-needed required-later
+  check_allowed_value "$SETUP" PERMISSION_SCREEN_RECORDING confirmed-by-user observed-effective deferred-not-needed required-later
   if read_value "$SETUP" PERMISSION_SCREEN_RECORDING; then PERMISSION_SCREEN_RECORDING="$CONFIG_VALUE"; fi
-  check_allowed_value "$SETUP" PERMISSION_ACCESSIBILITY confirmed-by-user deferred-not-needed required-later
+  check_allowed_value "$SETUP" PERMISSION_ACCESSIBILITY confirmed-by-user observed-effective deferred-not-needed required-later
   if read_value "$SETUP" PERMISSION_ACCESSIBILITY; then PERMISSION_ACCESSIBILITY="$CONFIG_VALUE"; fi
-  check_allowed_value "$SETUP" PERMISSION_AUTOMATION confirmed-by-user deferred-not-needed required-later
+  check_allowed_value "$SETUP" PERMISSION_AUTOMATION confirmed-by-user observed-effective deferred-not-needed required-later
   if read_value "$SETUP" PERMISSION_AUTOMATION; then PERMISSION_AUTOMATION="$CONFIG_VALUE"; fi
-  check_allowed_value "$SETUP" PERMISSION_FILES_AND_FOLDERS confirmed-by-user deferred-not-needed required-later
+  check_allowed_value "$SETUP" PERMISSION_FILES_AND_FOLDERS confirmed-by-user observed-effective deferred-not-needed required-later
   if read_value "$SETUP" PERMISSION_FILES_AND_FOLDERS; then PERMISSION_FILES_AND_FOLDERS="$CONFIG_VALUE"; fi
   if read_value "$SETUP" ACTIVE_PRIVACY_ZONES; then ACTIVE_ZONES="$CONFIG_VALUE"; fi
   if read_value "$SETUP" SHARED_ZONE_OPT_IN; then SHARED_OPT_IN="$CONFIG_VALUE"; fi
@@ -243,6 +268,32 @@ if [[ -f "$SETUP" && ! -L "$SETUP" ]]; then
   check_exact_value "$SETUP" EXTERNAL_WRITE_POLICY first-party-rendered-only
   check_exact_value "$SETUP" NO_ATTRIBUTION_POLICY fail-closed
   check_exact_value "$SETUP" NATIVE_GOAL_PERSISTENCE required
+fi
+
+if [[ "$NATIVE_PROJECT_STATE" == confirmed-primary ]]; then
+  pass "installed folder is the confirmed primary local Project"
+elif [[ "$NATIVE_PROJECT_STATE" == unavailable ]]; then
+  pass "native Project is unavailable for this explicit local-only route"
+else
+  fail "manual primary-Project selection is still pending"
+fi
+
+if [[ "$CHATGPT_SIGN_IN_METHOD" == not-configured ]]; then
+  if [[ "$CHATGPT_SIGN_IN_CONFIRMED" == no ]]; then pass "accountless sign-in state"; else fail "not-configured sign-in must remain unconfirmed"; fi
+  if [[ -f "$PROFILE" && ! -L "$PROFILE" ]] && read_value "$PROFILE" CHATGPT_ACCOUNT_LABEL && [[ "$CONFIG_VALUE" == not-configured ]]; then
+    pass "CHATGPT_ACCOUNT_LABEL accountless label"
+  else
+    fail "CHATGPT_ACCOUNT_LABEL must equal not-configured for accountless setup"
+  fi
+elif [[ -n "$CHATGPT_SIGN_IN_METHOD" ]]; then
+  if [[ "$CHATGPT_SIGN_IN_CONFIRMED" == yes ]]; then pass "configured sign-in confirmation"; else fail "configured sign-in method requires confirmation"; fi
+  for profile_key in CHATGPT_ACCOUNT_LABEL DEFAULT_BROWSER_LABEL DEFAULT_BROWSER_PROFILE_LABEL; do
+    if [[ -f "$PROFILE" && ! -L "$PROFILE" ]] && read_value "$PROFILE" "$profile_key" && [[ "$CONFIG_VALUE" != not-configured ]]; then
+      pass "$profile_key configured label"
+    else
+      fail "$profile_key must identify the configured context"
+    fi
+  done
 fi
 
 typeset -A seen_capabilities
@@ -262,20 +313,23 @@ else
 fi
 
 if [[ -n "${seen_capabilities[voice]:-}" ]]; then
-  if [[ "$PERMISSION_MICROPHONE" == "confirmed-by-user" ]]; then pass "voice requires microphone confirmed-by-user"; else fail "voice requires microphone confirmed-by-user"; fi
+  if [[ "$NATIVE_VOICE_STATE" == available ]]; then pass "voice capability is available"; else fail "voice requires observed native availability"; fi
+  if permission_ready "$PERMISSION_MICROPHONE"; then pass "voice has current effective microphone access"; else fail "voice requires current effective microphone access"; fi
 fi
 if [[ -n "${seen_capabilities[computer-use]:-}" ]]; then
-  if [[ "$PERMISSION_SCREEN_RECORDING" == "confirmed-by-user" ]]; then pass "computer-use requires screen recording confirmed-by-user"; else fail "computer-use requires screen recording confirmed-by-user"; fi
-  if [[ "$PERMISSION_ACCESSIBILITY" == "confirmed-by-user" ]]; then pass "computer-use requires accessibility confirmed-by-user"; else fail "computer-use requires accessibility confirmed-by-user"; fi
+  if [[ "$NATIVE_COMPUTER_USE_STATE" == available ]]; then pass "computer-use capability is available"; else fail "computer-use requires observed native availability"; fi
+  if permission_ready "$PERMISSION_SCREEN_RECORDING"; then pass "computer-use has current effective screen recording access"; else fail "computer-use requires current effective screen recording access"; fi
+  if permission_ready "$PERMISSION_ACCESSIBILITY"; then pass "computer-use has current effective accessibility access"; else fail "computer-use requires current effective accessibility access"; fi
 fi
 if [[ -n "${seen_capabilities[app-automation]:-}" ]]; then
-  if [[ "$PERMISSION_AUTOMATION" == "confirmed-by-user" ]]; then pass "app-automation requires automation confirmed-by-user"; else fail "app-automation requires automation confirmed-by-user"; fi
+  if [[ "$NATIVE_APP_AUTOMATION_STATE" == available ]]; then pass "app-automation capability is available"; else fail "app-automation requires observed native availability"; fi
+  if permission_ready "$PERMISSION_AUTOMATION"; then pass "app-automation has current effective automation access"; else fail "app-automation requires current effective automation access"; fi
 fi
 if [[ -n "${seen_capabilities[protected-local-files]:-}" ]]; then
-  if [[ "$PERMISSION_FILES_AND_FOLDERS" == "confirmed-by-user" ]]; then pass "protected-local-files requires files and folders confirmed-by-user"; else fail "protected-local-files requires files and folders confirmed-by-user"; fi
+  if permission_ready "$PERMISSION_FILES_AND_FOLDERS"; then pass "protected-local-files has current effective files and folders access"; else fail "protected-local-files requires current effective files and folders access"; fi
 fi
 if [[ -n "${seen_capabilities[native-goal]:-}" ]]; then
-  if [[ -f "$SETUP" && ! -L "$SETUP" ]] && read_value "$SETUP" NATIVE_GOAL_PERSISTENCE && [[ "$CONFIG_VALUE" == "required" ]]; then
+  if [[ "$NATIVE_GOAL_STATE" == available && -f "$SETUP" && ! -L "$SETUP" ]] && read_value "$SETUP" NATIVE_GOAL_PERSISTENCE && [[ "$CONFIG_VALUE" == "required" ]]; then
     pass "native-goal requires native Goal persistence"
   else
     fail "native-goal requires native Goal persistence"

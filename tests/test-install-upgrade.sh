@@ -2,6 +2,11 @@
 set -eu
 umask 077
 SOURCE_ROOT="${0:A:h:h}"
+CURRENT_VERSION="$(/bin/cat "$SOURCE_ROOT/VERSION")"
+[[ "$CURRENT_VERSION" =~ '^[0-9]+\.[0-9]+\.[0-9]+$' ]] || { /bin/echo "candidate VERSION is invalid" >&2; exit 1; }
+CURRENT_PATCH="${CURRENT_VERSION##*.}"
+NEXT_PATCH=$((CURRENT_PATCH + 1))
+NEXT_VERSION_VALUE="${CURRENT_VERSION%.*}.$NEXT_PATCH"
 LEGACY_ZIP="${AUTOASSIST_LEGACY_ZIP:-}"
 [[ -n "$LEGACY_ZIP" && "$LEGACY_ZIP" == /* && -f "$LEGACY_ZIP" && ! -L "$LEGACY_ZIP" ]] || { /bin/echo "AUTOASSIST_LEGACY_ZIP must name exact public v0.1.0 ZIP" >&2; exit 2; }
 [[ "$(/usr/bin/shasum -a 256 "$LEGACY_ZIP" | /usr/bin/awk '{print $1}')" == bdd1985cb7a3494d2df32cb0c03e971dec6fd87bee476e1f475f0c4a6f78ef3b ]] || { /bin/echo "legacy ZIP hash mismatch" >&2; exit 1; }
@@ -20,7 +25,7 @@ LEGACY_SOURCE="$TEST_ROOT/extracted/AutoAssist"
 /usr/bin/printf '\nuser seed survives\n' >> "$DESTINATION/PROJECTS.md"
 seed_hash="$(/usr/bin/shasum -a 256 "$DESTINATION/PROJECTS.md" | /usr/bin/awk '{print $1}')"
 AUTOASSIST_TEST_NODE_ABSENT=1 "$SOURCE_ROOT/install.sh" --home-root "$ACCOUNT_HOME" --destination "$DESTINATION" --instance-id legacyfixture --skip-launch-agent --target-quiescent --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/upgrade.log"
-[[ "$(/bin/cat "$DESTINATION/VERSION")" == 0.2.0 && "$seed_hash" == "$(/usr/bin/shasum -a 256 "$DESTINATION/PROJECTS.md" | /usr/bin/awk '{print $1}')" ]]
+[[ "$(/bin/cat "$DESTINATION/VERSION")" == "$CURRENT_VERSION" && "$seed_hash" == "$(/usr/bin/shasum -a 256 "$DESTINATION/PROJECTS.md" | /usr/bin/awk '{print $1}')" ]]
 [[ -f "$DESTINATION/.install-state/receipt.json" && -f "$DESTINATION/.install-state/installed-manifest.sha256" ]]
 [[ ! -e "$ACCOUNT_HOME/Library/LaunchAgents/io.autoassist.supervisor.plist" ]] || { /bin/echo "skip-launch update orphaned the legacy plist" >&2; exit 1; }
 /usr/bin/grep -F -q '"service_label":""' "$DESTINATION/.install-state/receipt.json"
@@ -28,13 +33,13 @@ before_legacy_rollback="$(/usr/bin/shasum -a 256 "$DESTINATION/VERSION" | /usr/b
 if "$DESTINATION/install.sh" --home-root "$ACCOUNT_HOME" --destination "$DESTINATION" --rollback --skip-launch-agent --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/legacy-rollback.log" 2>&1; then /bin/echo "schema-incompatible legacy rollback was accepted" >&2; exit 1; fi
 [[ "$before_legacy_rollback" == "$(/usr/bin/shasum -a 256 "$DESTINATION/VERSION" | /usr/bin/awk '{print $1}')" ]]
 
-NEXT_VERSION="$TEST_ROOT/release-0.2.1"
-/bin/cp -Rp "$SOURCE_ROOT" "$NEXT_VERSION"
-/usr/bin/printf '0.2.1\n' > "$NEXT_VERSION/VERSION"
-AUTOASSIST_TEST_NODE_ABSENT=1 "$NEXT_VERSION/install.sh" --home-root "$ACCOUNT_HOME" --destination "$DESTINATION" --instance-id legacyfixture --skip-launch-agent --target-quiescent --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/next-version.log"
-[[ "$(/bin/cat "$DESTINATION/VERSION")" == 0.2.1 ]]
+NEXT_VERSION_ROOT="$TEST_ROOT/release-$NEXT_VERSION_VALUE"
+/bin/cp -Rp "$SOURCE_ROOT" "$NEXT_VERSION_ROOT"
+/usr/bin/printf '%s\n' "$NEXT_VERSION_VALUE" > "$NEXT_VERSION_ROOT/VERSION"
+AUTOASSIST_TEST_NODE_ABSENT=1 "$NEXT_VERSION_ROOT/install.sh" --home-root "$ACCOUNT_HOME" --destination "$DESTINATION" --instance-id legacyfixture --skip-launch-agent --target-quiescent --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/next-version.log"
+[[ "$(/bin/cat "$DESTINATION/VERSION")" == "$NEXT_VERSION_VALUE" ]]
 "$DESTINATION/install.sh" --home-root "$ACCOUNT_HOME" --destination "$DESTINATION" --rollback --skip-launch-agent --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/rollback.log"
-[[ "$(/bin/cat "$DESTINATION/VERSION")" == 0.2.0 && "$seed_hash" == "$(/usr/bin/shasum -a 256 "$DESTINATION/PROJECTS.md" | /usr/bin/awk '{print $1}')" ]] || { /bin/echo "schema-compatible rollback did not preserve current seed state" >&2; exit 1; }
+[[ "$(/bin/cat "$DESTINATION/VERSION")" == "$CURRENT_VERSION" && "$seed_hash" == "$(/usr/bin/shasum -a 256 "$DESTINATION/PROJECTS.md" | /usr/bin/awk '{print $1}')" ]] || { /bin/echo "schema-compatible rollback did not preserve current seed state" >&2; exit 1; }
 /usr/bin/printf '\nuser README customization\n' >> "$DESTINATION/README.md"
 before="$(/usr/bin/shasum -a 256 "$DESTINATION/README.md" | /usr/bin/awk '{print $1}')"
 AUTOASSIST_TEST_NODE_ABSENT=1 "$SOURCE_ROOT/install.sh" --home-root "$ACCOUNT_HOME" --destination "$DESTINATION" --instance-id legacyfixture --skip-launch-agent --target-quiescent --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/reinstall-same-release.log"

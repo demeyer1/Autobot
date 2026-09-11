@@ -9,4 +9,5 @@ command -v node >/dev/null 2>&1 || { print -u2 'Node 22 or newer is required for
 "$ROOT/tests/test-install-upgrade.sh"
 "$ROOT/tests/test-install-interruption.sh"
 "$ROOT/tests/test-first-time-status.sh"
+"$ROOT/tests/test-first-time-walkthrough.sh"
 print 'All focused AutoAssist engineering tests passed. Release media review and actual packaged/downloaded acceptance are separate gates.'

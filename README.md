@@ -47,23 +47,23 @@ This comparison evaluates Autobot plus native ChatGPT for one person managing pe
 
 These are operating-contract differences, not guarantees of error-free execution. Autobot's privacy zones and validator separation are procedural within one Mac; they are not OS isolation or cryptographic identities. OpenClaw and Hermes offer broader standalone deployment, messaging, and model choices. The absence findings above concern the exact required workflows, not an absence of memory, privacy controls, voice, verification tools, or automation in either project.
 
-## Install version 0.2.0
+## Install version 0.3.0
 
 Download the versioned ZIP and matching checksum from Releases, verify it, extract it and open `Install.command`. The default folder remains `~/AutoAssist`, including upgrades, so an existing local Project keeps its path.
 
 The base install needs no account, API key, Node installation or new OS privacy grant. Advanced task, context and evidence commands use Node.js 22 or later. Missing runtime readiness is reported separately; no runtime is downloaded and no broken service is activated.
 
-For the native workflow, make the installed folder primary in a local Project and run its project-local `first-time` skill. Optional Voice, Goals, Computer Use, connectors and schedules must be available in the user's app/account and verified individually. Autobot does not install an automatic terminal-response hook.
+The small bootstrap comes first: verify and extract the release, run `Install.command`, then use **Edit project > Add folder > Make primary** in ChatGPT or Codex and start a fresh task there. Ask: “Run the first-time skill for this installed folder.” The active walkthrough then takes over, performs safe local setup, resumes verified work after interruption and pauses only for a visible user-only step. It does not require Computer Use before Computer Use itself is configured. Optional Voice, Goals, Computer Use, connectors and schedules must be available in the user's app/account and verified individually. Autobot does not install an automatic terminal-response hook.
 
-Version 0.2.0 adds multiple outputs and requirements, revision-bound evidence, durable ownership/recovery, selective memory/context and transactional upgrades. User stores, schedules and notification targets start empty. Existing users should close the target Project before updating; customized instructions and conflicting changes are preserved for resolution.
+Version 0.3.0 adds active resumable first-time onboarding with private local defaults, explicit native-capability states and completion bound to independent local validation. User stores, schedules and notification targets start empty. Existing users should close the target Project before updating; customized instructions and conflicting changes are preserved for resolution.
 
 [Installation and upgrade](docs/INSTALL.md) · [Capability and dependency table](docs/CAPABILITIES.md) · [Changelog](CHANGELOG.md)
 
 The release validation report identifies the tested package and platform. A same-user isolated directory test is not a fresh Mac or reset permission environment; no universal ZIP-to-ready timing guarantee is made.
 
-## What is new in 0.2.0
+## What is new in 0.3.0
 
-One local store now tracks promised outputs, their owners, requirements, corrections and current evidence. Scoped memory and issue records retain provenance. Foreground handoffs keep uncertain actions from being retried blindly. Upgrades preserve user data and detect conflicts in customized files.
+The project-local first-time skill now acts as the setup operator. It checks current state, applies safe local defaults, runs supported actions, preserves the earliest unresolved user or capability gate, and returns to the user's original task only after current marker and status readback.
 
 The base folder installs without Node or sign-in. The advanced runtime needs Node 22 or newer. Native app capabilities are discovered separately; no model, account, notification recipient or external write is configured for you. See [capabilities and availability](docs/CAPABILITIES.md).
 
@@ -139,7 +139,7 @@ Run `./runtime/bin/autoassist help` for the complete local command list.
 
 ## Current status
 
-Autobot `0.2.0` is an early public release for a single user on a Mac. The package is not a multi-tenant service, an OS sandbox, a cryptographic privacy boundary, or a guarantee that every third-party action will succeed. Treat a downloadable ZIP as verified only when its checksum and manifest match the adjacent release artifacts and the packaged candidate passes the bundled release checks.
+Autobot `0.3.0` is an early public release for a single user on a Mac. The package is not a multi-tenant service, an OS sandbox, a cryptographic privacy boundary, or a guarantee that every third-party action will succeed. Treat a downloadable ZIP as verified only when its checksum and manifest match the adjacent release artifacts and the packaged candidate passes the bundled release checks.
 
 ## License
 

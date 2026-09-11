@@ -27,15 +27,20 @@ Required keys and allowed values:
 
 ```text
 SETUP_VERSION=1
-DEDICATED_LAPTOP_READY=yes
-CHATGPT_SIGN_IN_METHOD=already-signed-in|native-sso|os-sso|browser-sso
-CHATGPT_SIGN_IN_CONFIRMED=yes
+DEDICATED_LAPTOP_READY=local-only|yes
+CHATGPT_SIGN_IN_METHOD=not-configured|already-signed-in|native-sso|os-sso|browser-sso
+CHATGPT_SIGN_IN_CONFIRMED=no|yes
 REQUESTED_CAPABILITIES=<empty or comma-separated subset of voice,computer-use,app-automation,protected-local-files,native-goal>
-PERMISSION_MICROPHONE=confirmed-by-user|deferred-not-needed|required-later
-PERMISSION_SCREEN_RECORDING=confirmed-by-user|deferred-not-needed|required-later
-PERMISSION_ACCESSIBILITY=confirmed-by-user|deferred-not-needed|required-later
-PERMISSION_AUTOMATION=confirmed-by-user|deferred-not-needed|required-later
-PERMISSION_FILES_AND_FOLDERS=confirmed-by-user|deferred-not-needed|required-later
+NATIVE_PROJECT_STATE=confirmed-primary|manual-primary-required|unavailable
+NATIVE_COMPUTER_USE_STATE=not-requested|available|manual-setup-required|unavailable
+NATIVE_VOICE_STATE=not-requested|available|manual-setup-required|unavailable
+NATIVE_APP_AUTOMATION_STATE=not-requested|available|manual-setup-required|unavailable
+NATIVE_GOAL_STATE=not-requested|available|manual-setup-required|unavailable
+PERMISSION_MICROPHONE=confirmed-by-user|observed-effective|deferred-not-needed|required-later
+PERMISSION_SCREEN_RECORDING=confirmed-by-user|observed-effective|deferred-not-needed|required-later
+PERMISSION_ACCESSIBILITY=confirmed-by-user|observed-effective|deferred-not-needed|required-later
+PERMISSION_AUTOMATION=confirmed-by-user|observed-effective|deferred-not-needed|required-later
+PERMISSION_FILES_AND_FOLDERS=confirmed-by-user|observed-effective|deferred-not-needed|required-later
 ACTIVE_PRIVACY_ZONES=<comma-separated subset of PRIVATE,FAMILY_FRIENDS,WORK,SHARED>
 SHARED_ZONE_OPT_IN=yes|no
 TONE_LEARNING=disabled|opt-in
@@ -47,13 +52,17 @@ NO_ATTRIBUTION_POLICY=fail-closed
 NATIVE_GOAL_PERSISTENCE=required
 ```
 
-All capabilities are optional. An empty `REQUESTED_CAPABILITIES` value is valid. Every capability that is requested must already have its complete setup state resolved before validation can pass:
+`local-only` is the safe default and makes no claim that the Mac or macOS account is dedicated. Use `yes` only after the user confirms the stronger readiness checklist. `CHATGPT_SIGN_IN_METHOD=not-configured` requires `CHATGPT_SIGN_IN_CONFIRMED=no` and `CHATGPT_ACCOUNT_LABEL=not-configured`. Browser and browser-profile labels remain independent: preserve a real already observed label, or use `not-configured` when unknown. Every configured sign-in method requires a fresh rendered nonsecret account label and `CHATGPT_SIGN_IN_CONFIRMED=yes`.
 
-- `voice` requires `PERMISSION_MICROPHONE=confirmed-by-user`.
-- `computer-use` requires both `PERMISSION_SCREEN_RECORDING=confirmed-by-user` and `PERMISSION_ACCESSIBILITY=confirmed-by-user`.
-- `app-automation` requires `PERMISSION_AUTOMATION=confirmed-by-user`.
-- `protected-local-files` requires `PERMISSION_FILES_AND_FOLDERS=confirmed-by-user`.
-- `native-goal` requires `NATIVE_GOAL_PERSISTENCE=required`.
+`NATIVE_PROJECT_STATE=confirmed-primary` means the current task freshly resolved the installed folder as the primary local Project. `manual-primary-required` is the precise resumable state when native Project onboarding was selected and the user must complete that UI step; it cannot pass completion validation. `unavailable` is valid for an explicitly resolved CLI/current-root local-only route and makes no native Project claim. The other native fields record observed availability separately from the macOS permission records below. `available` is valid only after supported capability readback; `manual-setup-required` identifies a real user-only setup surface; `unavailable` is a truthful current limitation; `not-requested` is the default.
+
+All capabilities are optional. An empty `REQUESTED_CAPABILITIES` value is valid. Every capability that is requested must already have both its native state and effective access resolved before validation can pass. `confirmed-by-user` records the user's direct confirmation. `observed-effective` records a fresh successful supported invocation in the same project, profile/account, process and target-app context; it must never be inferred from saved configuration, a receipt, a shell probe or synthetic fixture. Either state avoids asking the user to reconfirm access that just worked:
+
+- `voice` requires `NATIVE_VOICE_STATE=available` and effective microphone access.
+- `computer-use` requires `NATIVE_COMPUTER_USE_STATE=available` and effective screen-recording and accessibility access.
+- `app-automation` requires `NATIVE_APP_AUTOMATION_STATE=available` and effective automation access.
+- `protected-local-files` requires effective files-and-folders access for the selected location.
+- `native-goal` requires `NATIVE_GOAL_STATE=available` and `NATIVE_GOAL_PERSISTENCE=required`.
 
 `required-later` remains an honest unresolved status, but a capability that depends on it is not ready and cannot pass completion validation. Never change a permission status to `confirmed-by-user` until the owner has actually confirmed the grant in System Settings.
 
@@ -115,3 +124,7 @@ The validator passes `AUTOASSIST_ACCOUNT_HOME=<account-home>` only to the instal
 ## Completion marker
 
 `.install-state/first-time-complete` is evidence that setup passed, not a preference file. Create it only after doctor, deterministic setup validation, the local smoke objective, and an independent read-only review pass. `scripts/validate-setup.sh --require-marker` verifies its schema and binding to the current setup config.
+
+## Walkthrough progress
+
+`.install-state/first-time-progress` is a fixed-schema resume aid owned by `scripts/walkthrough-progress.sh`. It stores only the bound root hash, typed stage/status/gate/evidence values, optional smoke objective ID, setup-config hash and timestamp. It contains no labels, credentials, screenshots or free text. Progress never replaces setup validation, independent acceptance or the completion marker.
