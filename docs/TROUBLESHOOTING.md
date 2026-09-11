@@ -28,6 +28,14 @@ The base workspace installs without Node or a signed-in app. Advanced durable st
 
 Open the installed `AutoAssist` folder as the **primary folder** of a supported native local Project. Confirm `AGENTS.md` and `.agents/skills/first-time/SKILL.md` exist. Start a fresh task and ask which instructions were loaded. A secondary folder or web Project does not provide the same local discovery behavior. [Local Projects](https://learn.chatgpt.com/docs/projects)
 
+Computer Use cannot click ChatGPT/Codex's own Project controls or operate Terminal. Use **Edit project > Add folder > Make primary** yourself, then resume in a fresh local task. Do not mark that step confirmed from a shell path alone.
+
+## First-time walkthrough was interrupted
+
+Run `./skills/first-time/scripts/walkthrough-progress.sh --root <root> --account-home <account-home> show`. The record is a nonsecret resume cursor, not completion proof. Revalidate the receipt, configuration, doctor result and any local smoke before advancing. If an action completed before the checkpoint write, use its current artifact instead of repeating it. A later local action never clears an earlier native Project, identity, permission or capability gate; clear the earlier gate only after fresh readback at that phase.
+
+Setup is complete only when `validate-setup.sh --require-marker` succeeds and the generated first-time status reads current. If Computer Use or Node is unavailable, report that capability separately and continue only the unaffected local steps.
+
 ## Optional supervisor not running
 
 Doctor reports the saved service configuration; that alone does not prove a live launch. The instance-specific service label and plist path are in `.install-state/receipt.json`. Inspect that exact label with `launchctl print gui/USER_ID/SERVICE_LABEL`, substituting your numeric user ID and receipt label. Inspect `state/logs` and the current core status for fresh activity.

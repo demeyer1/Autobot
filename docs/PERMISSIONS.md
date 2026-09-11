@@ -50,6 +50,10 @@ According to the current [Computer Use documentation](https://learn.chatgpt.com/
 
 AutoAssist never approves a macOS privacy prompt for the user. The user must review the process name, requested access, and reason in System Settings.
 
+Computer Use also cannot automate ChatGPT/Codex itself, Terminal, an administrator authentication flow or a macOS security/privacy approval. The first-time agent performs supported local work and supported target-app actions, then pauses only when a fresh readable surface names one of those user-only steps. A blank capture, spinner, tool failure or elapsed time is not an authentication or permission prompt. After the user acts, the agent must re-read the same project, profile/account and capability surface before continuing.
+
+Configuration records native feature availability separately from user-confirmed permission. A shell test, receipt, prior completion marker or synthetic test fixture does not prove that Computer Use is installed, that the intended app is approved, or that a macOS permission is present. An unavailable optional feature remains a precise resumable capability; local/private setup can continue.
+
 Use a structured connector or MCP tool for authorized reads and repeatable data access when it is available. Use Computer Use for visual interaction in the signed-in first-party app. AutoAssist's default external-write policy still requires a rendered preflight and postflight.
 
 ### Locked use

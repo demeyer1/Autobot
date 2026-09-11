@@ -13,7 +13,7 @@ Keep enough space for the package plus a staged copy and recoverable backup of a
 ## Download and install
 
 1. Download the versioned ZIP and matching checksum from this repository's Releases page. Use the release asset, not GitHub's automatic source-code ZIP.
-2. In the folder containing both files, run `shasum -a 256 -c AutoAssist-v0.2.0.zip.sha256`. Continue only if it reports `OK`.
+2. In the folder containing both files, run `shasum -a 256 -c AutoAssist-v0.3.0.zip.sha256`. Continue only if it reports `OK`. If the matching checksum companion is missing, retrieve it from the same official release and stop before installation if verification is not possible.
 3. Extract the ZIP, open the extracted folder and double-click `Install.command`. You can also run `./install.sh` from Terminal.
 4. If macOS blocks opening the file, inspect its origin and use the standard Finder/System Settings opening flow. Do not disable Gatekeeper or strip security attributes as an installation shortcut.
 5. Read the reported installation path and doctor result. An installed folder and an available advanced runtime are separate results.
@@ -28,11 +28,20 @@ A different destination can be selected explicitly:
 
 ## Start a local Project
 
-If you use the native desktop workflow, add the installed folder to a **local Project** and make it the primary folder. An uploaded web project is a different environment and does not directly expose the folder. [Local Projects](https://learn.chatgpt.com/docs/projects)
+First complete this minimal bootstrap. It does not require Computer Use:
 
-Start a chat in that Project and ask: “Run the first-time skill for this installed folder. Show me what works locally and which optional capabilities are unavailable.” The project-local skill avoids replacing an unrelated global skill.
+1. Download the release ZIP and checksum companion, verify the checksum, extract them and open `Install.command` as described above.
+2. Open ChatGPT or Codex and create or edit a local Project.
+3. Choose **Edit project > Add folder**, select the installed `AutoAssist` folder and choose **Make primary**.
+4. Start a fresh task in that Project and ask: “Run the first-time skill for this installed folder.”
 
-First-time setup checks the exact installation, creates empty privacy-zone indexes, explains selective context, and reports native capabilities. You choose accounts and permissions only for workflows you want. No contact, notification recipient, recurring task or spending authority is inherited from the maintainer.
+An uploaded web project is a different environment and does not directly expose the folder. [Local Projects](https://learn.chatgpt.com/docs/projects)
+
+At that point the project-local skill takes over. It avoids replacing an unrelated global skill. Ask it to show what works locally and which optional capabilities are unavailable.
+
+The first-time agent now works through the setup in the foreground. It checks the exact installation, creates empty privacy-zone indexes, applies local/private defaults, runs local verification when supported and reports native capabilities. It resumes from validated files after an interruption and asks only at a freshly visible credential, security, permission, consent or manual Project step. You choose accounts and permissions only for workflows you want. No contact, notification recipient, recurring task or spending authority is inherited from the maintainer.
+
+Computer Use cannot operate ChatGPT/Codex itself or Terminal. If native controls are unavailable, use **Edit project > Add folder**, choose the installed folder, and **Make primary**. Start a fresh task in that local Project and ask the agent to read back its working folder, `AGENTS.md` and project-local first-time skill. An explicitly resolved command-line/current-root setup can remain local-only without claiming a native Project selection.
 
 A useful first task is a small local plan with two outputs, such as a checklist and a short summary. Ask the agent to register both outputs, write them locally, and have a separate reviewer reopen and check them. Use `./runtime/bin/autoassist help` for the installed command interface.
 
