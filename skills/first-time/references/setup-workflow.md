@@ -5,13 +5,13 @@ Use this sequence for a new installation or a failed setup repair. Keep the user
 ## 1. Establish local state
 
 - Pin the AutoAssist root and confirm it is a child of the current macOS user's home or another user-selected accessible local folder.
-- Run `AUTOASSIST_ACCOUNT_HOME=<account-home> runtime/bin/autoassist doctor --quiet`, scoping that variable to the doctor process only. An expected first-run failure is setup state, not permission to weaken a control.
+- Run `AUTOASSIST_ACCOUNT_HOME=<account-home> runtime/bin/autoassist doctor --quiet`, scoping that variable to the doctor process only. Base integrity may pass while advanced runtime is unavailable. That state permits local inspection, privacy-zone initialization, repair, and uninstall, but it does not permit advanced objectives or a scheduler.
 - Inspect only the release files and configuration named by this skill. Do not enumerate protected folders.
 - Confirm the laptop is intended for AutoAssist and is not a shared unmanaged machine. Use the readiness checklist in `macos-and-sign-in.md`.
 
 ## 2. Handle user-present boundaries
 
-- Ask the user to complete ChatGPT sign-in in the native first-party app or browser using their chosen SSO route.
+- If the user wants account-backed capabilities, ask them to complete ChatGPT sign-in in the native first-party app or browser using their chosen SSO route. Accountless base readiness does not require this step.
 - Verify only the rendered account label they approve for local storage.
 - Explain each relevant macOS permission separately. The user opens System Settings and grants or declines it. Record `confirmed-by-user`, `deferred-not-needed`, or `required-later`; do not infer live TCC state.
 - If authentication, MFA, Keychain, a passkey, or a permission prompt appears, stop control before the user acts and resume only after the first-party surface is stable.
@@ -27,7 +27,7 @@ Use this sequence for a new installation or a failed setup repair. Keep the user
 ## 4. Verify without external mutation
 
 - Run doctor again with the same process-scoped `AUTOASSIST_ACCOUNT_HOME=<account-home>` binding.
-- Run `skills/first-time/scripts/validate-setup.sh --root <root> --account-home <account-home> --smoke`. The explicit account home binds doctor to the same installed skill and LaunchAgent definition created by an isolated `--home-root` installation.
+- When doctor reports runtime `available`, run `skills/first-time/scripts/validate-setup.sh --root <root> --account-home <account-home> --smoke`. If it reports runtime `unavailable` or `unsupported`, do not create a scheduler or alternate state ledger; report the Node 22+ prerequisite and leave advanced setup incomplete.
 - The smoke must finish one local objective through `research_complete`, `draft_complete`, `destination_updated`, `save_confirmed`, and `rendered_readback_verified`. Every evidence record must state `external_mutation=false`, and producer and validator labels must differ.
 - Run `skills/first-time/scripts/write-status.sh --root <root> --account-home <account-home> --state pending`. The writer owns only `01_PROJECTS/first-time/STATUS.md` and the one first-time entry in `PROJECTS.md`; it preserves every unrelated project entry.
 - Ask an independent read-only validator to inspect current files and smoke state. Do not accept the setup actor's own narrative as terminal evidence.
