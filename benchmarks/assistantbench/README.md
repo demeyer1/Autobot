@@ -2,7 +2,7 @@
 
 At the recorded verification, Autobot ChatGPT-HQ + GPT-5.6 Sol Ultra ranked **#1** on the official AssistantBench test leaderboard. It scored **50.70% accuracy** with a **100.0% answer rate** across all 181 hidden-test tasks.
 
-[![AssistantBench leaderboard showing Autobot in the top position at 50.70% accuracy](../../docs/assistantbench-leaderboard-autoassist-number-one-2026-09-01.png)](https://huggingface.co/spaces/AssistantBench/leaderboard)
+[![AssistantBench leaderboard showing Autobot in the top position at 50.70% accuracy](leaderboard.png)](https://huggingface.co/spaces/AssistantBench/leaderboard)
 
 - Official score: **50.70% accuracy**
 - Official position: **#1**
