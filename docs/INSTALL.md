@@ -1,181 +1,78 @@
-# Install AutoAssist on macOS
+# Install Autobot
 
-AutoAssist is designed as a guided ZIP install into a local ChatGPT Project. The target is less than 30 minutes from an official release ZIP to a working first project on a supported Mac.
-
-Version `0.1.0` is pre-release. Its automated install test fails when the local file installation takes 30 minutes or more in an isolated test home. A complete ZIP-to-ready timing claim still needs a clean-Mac receipt covering ChatGPT installation, sign-in, permissions, first-time choices, and final validation.
+The default folder is `~/AutoAssist`. The product is called Autobot; keeping the folder name preserves existing local Project paths.
 
 ## Before you start
 
-You need:
+The base installer uses macOS's zsh and standard local tools. It requires no administrator account, API key, sign-in, Node installation or new privacy permission. Advanced task/context/evidence commands require Node.js 22 or later. The installer diagnoses runtime availability and does not download or change your shared toolchain.
 
-- A Mac that can run the current [ChatGPT desktop app](https://learn.chatgpt.com/docs/app). The current download link is labeled for Apple silicon. OpenAI's documentation reviewed for this release does not state a minimum macOS version.
-- A signed-in ChatGPT account with access to the native features you plan to use. Voice, Computer Use, usage limits, and workspace controls vary by plan, region, and rollout.
-- A user-owned folder under your home directory. The default is `~/AutoAssist`.
-- Enough free local space for the release, objective evidence, logs, and future outputs. No minimum storage figure has been measured for this pre-release.
-- Time to review macOS and ChatGPT permission prompts. AutoAssist does not approve them for you.
+The current release is tested on the macOS/CPU/runtime listed in its validation report. Intel Macs and other macOS versions are not implied to be tested by an Apple-silicon run. Native app support is separate: check the [current ChatGPT desktop requirements](https://learn.chatgpt.com/docs/app), available local Project features and your account's access.
 
-First-time setup requires a dedicated owner environment. Use a dedicated Mac or a separate macOS user account that only the intended owner can unlock.
+Keep enough space for the package plus a staged copy and recoverable backup of an existing installation. The installer checks space before a transaction. Large user workspaces need more room than a fresh install. Back up important data before upgrading pre-release software.
 
-## Install from the official ZIP
+## Download and install
 
-1. Download an official AutoAssist release ZIP.
-2. Verify that the ZIP's SHA-256 matches the checksum published with the release. Do not install when the checksum is absent or different.
-3. Extract the ZIP into a normal user-accessible folder. Avoid Desktop, Documents, Downloads, Photos, iCloud, or an external volume as the permanent installation path if you want to minimize macOS protected-folder prompts.
-4. Open the extracted AutoAssist folder.
-5. Double-click `Install.command`.
-6. Read the Terminal output. The default destination is `~/AutoAssist`.
-7. Wait for the final line that reports the installation duration and the next step.
+1. Download the versioned ZIP and matching checksum from this repository's Releases page. Use the release asset, not GitHub's automatic source-code ZIP.
+2. In the folder containing both files, run `shasum -a 256 -c AutoAssist-v0.2.0.zip.sha256`. Continue only if it reports `OK`.
+3. Extract the ZIP, open the extracted folder and double-click `Install.command`. You can also run `./install.sh` from Terminal.
+4. If macOS blocks opening the file, inspect its origin and use the standard Finder/System Settings opening flow. Do not disable Gatekeeper or strip security attributes as an installation shortcut.
+5. Read the reported installation path and doctor result. An installed folder and an available advanced runtime are separate results.
 
-`Install.command` invokes the local `install.sh` with no network installer and no `sudo`. The installer:
-
-- validates that the release skeleton is present;
-- refuses `/`, your home directory itself, or a destination outside the selected home root;
-- refuses to overwrite an existing unmanaged destination;
-- copies only release-allowlisted content;
-- creates owner-only local install state and privacy zones;
-- installs the bundled `first-time` skill under `~/.codex/skills/first-time`;
-- refuses to replace a non-AutoAssist skill at that path;
-- installs a user LaunchAgent for the one-minute liveness supervisor;
-- writes a local installation receipt with version, UTC timestamp, duration, and path.
-
-The release candidate must pass its privacy and package validation before distribution. Do not use a ZIP that reports a missing allowlist entry or unfinished scaffold marker.
-
-## Terminal installation
-
-If you prefer Terminal:
+A different destination can be selected explicitly:
 
 ```zsh
-cd /path/to/extracted/AutoAssist
-./install.sh
+./install.sh --destination "$HOME/Autobot Workspace"
 ```
 
-See available options:
+`--home-root` is for an explicitly selected account root or isolated test environment. It does not change the process's HOME or Codex configuration root. Installation refuses broad, unsafe or unmanaged destinations.
 
-```zsh
-./install.sh --help
-```
+## Start a local Project
 
-Supported installer options include:
+If you use the native desktop workflow, add the installed folder to a **local Project** and make it the primary folder. An uploaded web project is a different environment and does not directly expose the folder. [Local Projects](https://learn.chatgpt.com/docs/projects)
 
-- `--destination PATH` to choose another child directory of your home root. The current installer accepts only letters, digits, spaces, periods, underscores, hyphens, and slashes in the destination path. Use the default if your home path contains another character.
-- `--skip-launch-agent` to install without loading the liveness supervisor;
-- `--home-root PATH` for isolated release testing, not ordinary use. If `--destination` is omitted, the installer uses `<PATH>/AutoAssist`.
+Start a chat in that Project and ask: “Run the first-time skill for this installed folder. Show me what works locally and which optional capabilities are unavailable.” The project-local skill avoids replacing an unrelated global skill.
 
-For an existing managed installation, the installer has a separate update path. It replaces the files named in `config/immutable-manifest.txt`, including the operating contract, product policies, documentation, runtime, scripts, bundled skill, tests, and templates. It copies `PROJECTS.md`, `00_CONTEXT/MEMORY.md`, and `00_CONTEXT/ISSUES/issues.json` only when missing.
+First-time setup checks the exact installation, creates empty privacy-zone indexes, explains selective context, and reports native capabilities. You choose accounts and permissions only for workflows you want. No contact, notification recipient, recurring task or spending authority is inherited from the maintainer.
 
-The update path preserves existing privacy-zone contents, user initiative folders, non-README inbox and output contents, `config/profile.conf`, runtime state, and the three existing seed files above. The automated install test writes sentinels across those preserved areas, reruns the installer, and requires every sentinel hash to remain unchanged.
+A useful first task is a small local plan with two outputs, such as a checklist and a short summary. Ask the agent to register both outputs, write them locally, and have a separate reviewer reopen and check them. Use `./runtime/bin/autoassist help` for the installed command interface.
 
-Back up important user data before any pre-release update. The preservation test covers the checked paths and cannot predict every future schema or manual customization.
-
-## Create the local ChatGPT Project
-
-After the local install:
-
-1. Open the ChatGPT desktop app.
-2. Create a new **local project**.
-3. Add `~/AutoAssist` as its primary folder.
-4. Confirm that the Project can see `AGENTS.md`, `PROJECTS.md`, and `00_CONTEXT/MEMORY.md`.
-5. Start a new chat in that Project.
-6. Ask ChatGPT to run the `first-time` skill.
-
-The primary folder sets the default working directory and lets ChatGPT discover project-level `AGENTS.md`, skills, and `config.toml`. Secondary folders can be searched and edited, but ChatGPT does not automatically discover project instructions from them. [ChatGPT Projects](https://learn.chatgpt.com/docs/projects)
-
-## Run first-time setup
-
-The guided skill should:
-
-1. Explain the four privacy zones.
-2. Ask for labels, not credentials, for the current user, ChatGPT account, browser, browser profile, and usual destination.
-3. Create only the communication profiles the user wants.
-4. Review the exact permission surfaces needed for the selected workflows.
-5. Run local setup validation.
-6. Leave credentials, authentication codes, payment data, and raw message archives outside the AutoAssist workspace.
-
-If the bundled skill is not complete or cannot be discovered, stop. Do not invent identity values or manually copy private history into the workspace. See [Troubleshooting](TROUBLESHOOTING.md).
-
-## Configure native ChatGPT permissions
-
-Start with **Ask for approval**. Install and configure Computer Use only if you need GUI interaction. Grant microphone access only if you use Voice. Screen context and app control require separate macOS permissions.
-
-Follow [Permissions](PERMISSIONS.md) before granting anything. Full access is not the AutoAssist default.
-
-## Verify the installation
-
-From `~/AutoAssist`:
+## Diagnose readiness
 
 ```zsh
 ./runtime/bin/autoassist doctor
 ./runtime/bin/autoassist version
 ```
 
-Expected results:
+Installation integrity covers the local files, path binding and permissions. Missing Node means the advanced runtime is unavailable; it is not permission to download a runtime or activate a broken service. Install a supported Node version through the [official distribution](https://nodejs.org/en/download) if you want those commands, then rerun doctor.
 
-- `doctor` reports required files and definitions as `PASS` and ends with `AutoAssist doctor passed.` It checks the LaunchAgent plist, not whether that service is currently loaded.
-- `version` prints the installed version.
+Native app, Voice, Goals, Computer Use, connectors and reasoning schedules are optional. Verify each separately. No terminal hook is installed to intercept every assistant response. See [Capabilities](CAPABILITIES.md).
 
-Confirm that the standard supervisor is loaded:
+## Upgrade an existing installation
 
-```zsh
-launchctl print "gui/$(id -u)/io.autoassist.supervisor"
-```
+Close or finish work in the target Autobot Project before upgrading. Quiesce that installation only; other Projects do not need to stop. An old runtime or editor cannot be made safe by a new lock it does not recognize.
 
-After the `first-time` skill creates and independently validates its marker, run:
+Extract the new official package and run:
 
 ```zsh
-./skills/first-time/scripts/validate-setup.sh --root "$PWD" --require-marker
+./install.sh --target-quiescent
 ```
 
-The setup validator checks the configured root, owner-only file modes, required labels, privacy choices, communication-profile settings, local smoke objective, doctor result, and marker binding.
+The installer recognizes the published old receipt and compares original product files, your installed bytes and the new version. It preserves user files and detects conflicting custom instructions or policies before replacing them. Resolve a reported conflict using the staged guidance; do not delete your customization just to make an update pass.
 
-The package privacy scan is for a clean release candidate before user configuration. Do not run it against a populated installation and treat legitimate user records as release defects. It remains a bounded pattern scan, not proof that arbitrary text contains no sensitive information.
+The transaction preserves state, checks for concurrent changes and retains recoverable evidence. An interruption is recovered through the same installer. Do not manually delete a transaction journal or move swap directories while recovery is pending.
 
-## Verify durable objectives
+To repair product-file or permission drift, use `./install.sh --repair --target-quiescent` from the same release. To restore a retained earlier code version, use `./install.sh --rollback --target-quiescent`. Rollback preserves current user state and refuses an incompatible schema; it does not silently discard newer data.
 
-Create a harmless local objective:
+## Local liveness
 
-```zsh
-./runtime/bin/autoassist objective-create install-check "Verify the AutoAssist installation"
-./runtime/bin/autoassist objective-status install-check
-```
+The optional service is scoped to one installation. It records local liveness and pending work; it does not run a model or control desktop apps. `--skip-launch-agent` leaves it inactive. An unavailable runtime cannot arm it.
 
-The objective should be `active` with five pending stages. Do not report fake stage evidence merely to turn the status green. Use a real workflow with a different producer and validator label when testing completion integrity.
+Native scheduled reasoning is configured separately through supported app controls. It requires the app, computer and local files to remain available. Verify an actual run before relying on it. [Scheduled tasks](https://learn.chatgpt.com/docs/automations)
 
-## Native feature setup
+## Remove the installation
 
-- [Voice setup and limits](https://learn.chatgpt.com/docs/features/voice)
-- [Computer Use setup](https://learn.chatgpt.com/docs/computer-use)
-- [Long-running Goal mode](https://learn.chatgpt.com/docs/long-running-work)
-- [Scheduled tasks](https://learn.chatgpt.com/docs/automations)
-- [Skills and plugins](https://learn.chatgpt.com/docs/skills-and-plugins)
+Run the installed `uninstall.sh` with its exact destination and account home when nondefault. The reversible path stops only the receipt-bound service, removes only owned projections and moves the folder to recoverable Trash. It does not delete user data or an unrelated global skill. Conflicting ownership is reported instead of guessed.
 
-For local Goals and scheduled work, keep the Mac, ChatGPT app, and workspace available. Enable **Prevent sleep while running** when appropriate.
+## Test boundary
 
-## Uninstall
-
-Run the uninstaller from the managed installation:
-
-```zsh
-~/AutoAssist/uninstall.sh
-```
-
-The script refuses a broad or unmanaged target, stops the AutoAssist supervisor, and moves the managed installation into Trash with a timestamp. That makes the workspace recoverable until Trash is emptied.
-
-Before uninstalling, inspect and back up any user-owned project, context, or output files you intend to keep. The current uninstaller leaves `~/.codex/skills/first-time` and `~/Library/LaunchAgents/io.autoassist.supervisor.plist` in place after stopping the loaded service and moving the AutoAssist root. Remove those exact AutoAssist-managed files separately only after reviewing them. The uninstaller does not remove ChatGPT settings or revoke macOS privacy grants.
-
-### Gatekeeper and signing status
-
-Version `0.1.0` does not yet include a documented code-signing or notarization attestation. If macOS blocks `Install.command`, do not disable Gatekeeper, strip quarantine attributes, or weaken system security to continue. Stop and obtain an official release with clear signing and notarization status, or review and run the local shell installer only through a security process you already trust.
-
-## Installation sources
-
-- [ChatGPT desktop app](https://learn.chatgpt.com/docs/app)
-- [ChatGPT quickstart](https://learn.chatgpt.com/docs/quickstart)
-- [Projects](https://learn.chatgpt.com/docs/projects)
-- [Permission modes](https://learn.chatgpt.com/docs/permission-modes)
-- [Computer Use](https://learn.chatgpt.com/docs/computer-use)
-- [Voice](https://learn.chatgpt.com/docs/features/voice)
-- [Long-running work](https://learn.chatgpt.com/docs/long-running-work)
-- [Scheduled tasks](https://learn.chatgpt.com/docs/automations)
-- [Troubleshooting](https://learn.chatgpt.com/docs/reference/troubleshooting)
-
-**Documentation date:** 2026-08-26. Check the linked OpenAI pages for current product behavior before installation.
+Read the release validation report for actual tested bytes and commands. An isolated folder under the same macOS user proves path/state isolation; it is not a fresh macOS account, reset TCC database or VM. This release does not claim that existing host permissions prove every new Mac's permission behavior.

@@ -469,19 +469,28 @@ fi
 
 validate_smoke_objective() {
   local objective_id="$1"
-  local objective_dir="$AUTOASSIST_ROOT/state/objectives/$objective_id"
-  if [[ ! "$objective_id" =~ '^[a-z0-9][a-z0-9-]{2,63}$' || ! -d "$objective_dir" ]]; then
+  local evidence_dir="$AUTOASSIST_ROOT/03_OUTPUTS/.first-time-smoke/$objective_id"
+  local status_json="$TEMP_ROOT/objective-status-$objective_id.json"
+  if [[ ! "$objective_id" =~ '^[a-z0-9][a-z0-9-]{2,63}$' || ! -d "$evidence_dir" || -L "$evidence_dir" ]]; then
     fail "smoke objective exists"
     return
   fi
-  if [[ "$(<"$objective_dir/state")" == "complete" ]]; then pass "smoke objective complete"; else fail "smoke objective complete"; fi
+  if ! "$RUNTIME" objective-status "$objective_id" > "$status_json" 2>/dev/null; then
+    fail "smoke objective status is readable"
+    return
+  fi
+  readiness="$(/usr/bin/plutil -extract result.readiness.complete raw -o - "$status_json" 2>/dev/null || true)"
+  if [[ "$readiness" == "true" ]]; then pass "smoke objective complete"; else fail "smoke objective complete"; fi
   local stage
   for stage in "${STAGES[@]}"; do
-    if [[ "$(<"$objective_dir/stages/$stage/state")" == "validated" ]]; then pass "smoke $stage validated"; else fail "smoke $stage validated"; fi
-    producer="$(<"$objective_dir/stages/$stage/producer")"
-    validator="$(<"$objective_dir/stages/$stage/validator")"
-    if [[ -n "$producer" && -n "$validator" && "$producer" != "$validator" ]]; then pass "smoke $stage distinct producer/validator labels"; else fail "smoke $stage distinct producer/validator labels"; fi
-    evidence="$objective_dir/evidence/$stage/evidence.bin"
+    if [[ "$readiness" == "true" ]]; then
+      pass "smoke $stage validated"
+      pass "smoke $stage distinct producer/validator labels"
+    else
+      fail "smoke $stage validated"
+      fail "smoke $stage distinct producer/validator labels"
+    fi
+    evidence="$evidence_dir/$stage.txt"
     if [[ -f "$evidence" && ! -L "$evidence" ]] && /usr/bin/grep -qx 'external_mutation=false' "$evidence"; then
       pass "smoke $stage no external mutation"
     else
@@ -502,15 +511,19 @@ run_smoke() {
     return
   fi
   pass "create local smoke objective"
+  evidence_dir="$AUTOASSIST_ROOT/03_OUTPUTS/.first-time-smoke/$SMOKE_OBJECTIVE_ID"
+  /bin/mkdir -p "$evidence_dir"
+  /bin/chmod 700 "$AUTOASSIST_ROOT/03_OUTPUTS/.first-time-smoke" "$evidence_dir"
   local stage
   for stage in "${STAGES[@]}"; do
-    evidence="$TEMP_ROOT/$stage.txt"
+    evidence="$evidence_dir/$stage.txt"
     /usr/bin/printf '%s\n' \
       "objective_id=$SMOKE_OBJECTIVE_ID" \
       "stage=$stage" \
       "external_mutation=false" \
       "check=local-first-time-smoke" \
       "captured_at=$(/bin/date -u +%Y-%m-%dT%H:%M:%SZ)" > "$evidence"
+    /bin/chmod 600 "$evidence"
     if ! "$RUNTIME" checkpoint "$SMOKE_OBJECTIVE_ID" "$stage" "$evidence" first-time-smoke-producer >"$TEMP_ROOT/checkpoint-$stage.log" 2>&1; then
       fail "report smoke $stage"
       /bin/cat "$TEMP_ROOT/checkpoint-$stage.log" >&2

@@ -3,13 +3,20 @@
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>io.autoassist.supervisor</string>
+  <string>__SERVICE_LABEL__</string>
   <key>ProgramArguments</key>
   <array>
     <string>/bin/zsh</string>
     <string>__AUTOASSIST_HOME__/runtime/bin/autoassist</string>
     <string>supervisor-tick</string>
   </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>AUTOASSIST_ACCOUNT_HOME</key>
+    <string>__ACCOUNT_HOME__</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>__AUTOASSIST_HOME__</string>
   <key>RunAtLoad</key>
   <true/>
   <key>StartInterval</key>
@@ -22,4 +29,3 @@
   <string>Background</string>
 </dict>
 </plist>
-

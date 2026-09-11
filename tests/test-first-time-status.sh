@@ -5,6 +5,7 @@ umask 077
 
 SOURCE_ROOT="${0:A:h:h}"
 TEST_ROOT="$(/usr/bin/mktemp -d -t autoassist-first-time-status-test)"
+TEST_ROOT="${TEST_ROOT:A}"
 TEST_HOME="$TEST_ROOT/home"
 INSTALL_ROOT="$TEST_HOME/AutoAssist"
 OUTPUT_ROOT="$TEST_ROOT/output"
@@ -22,6 +23,9 @@ trap cleanup EXIT INT TERM
 "$SOURCE_ROOT/install.sh" \
   --destination "$INSTALL_ROOT" \
   --home-root "$TEST_HOME" \
+  --instance-id firsttimestatus \
+  --test-mode \
+  --test-root "$TEST_ROOT" \
   --skip-launch-agent > "$OUTPUT_ROOT/install.log"
 TEST_HOME="${TEST_HOME:A}"
 INSTALL_ROOT="${INSTALL_ROOT:A}"
@@ -158,6 +162,10 @@ fi
 "$SOURCE_ROOT/install.sh" \
   --destination "$INSTALL_ROOT" \
   --home-root "$TEST_HOME" \
+  --instance-id firsttimestatus \
+  --target-quiescent \
+  --test-mode \
+  --test-root "$TEST_ROOT" \
   --skip-launch-agent > "$OUTPUT_ROOT/reinstall.log"
 
 unrelated_status_hash_after="$(/usr/bin/shasum -a 256 "$INSTALL_ROOT/01_PROJECTS/unrelated-user-project/STATUS.md" | /usr/bin/awk '{print $1}')"
