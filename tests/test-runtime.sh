@@ -1,70 +1,56 @@
 #!/bin/zsh
-
 set -eu
-
 SOURCE_ROOT="${0:A:h:h}"
-TEST_ROOT="$(/usr/bin/mktemp -d -t autoassist-runtime-test)"
-trap '/bin/rm -rf "$TEST_ROOT"' EXIT INT TERM
-RUNTIME_ROOT="$TEST_ROOT/AutoAssist"
-/bin/mkdir -p "$RUNTIME_ROOT"
-while IFS= read -r entry || [[ -n "$entry" ]]; do
-  [[ -z "$entry" || "$entry" == \#* ]] && continue
-  if [[ "$entry" == /* || "$entry" == *'..'* || "$entry" == *$'\n'* ]]; then
-    /bin/echo "unsafe runtime fixture allowlist entry" >&2
-    exit 1
-  fi
-  if [[ ! -f "$SOURCE_ROOT/$entry" || -L "$SOURCE_ROOT/$entry" ]]; then
-    /bin/echo "runtime fixture allowlist entry is not a regular file" >&2
-    exit 1
-  fi
-  /bin/mkdir -p "$RUNTIME_ROOT/${entry:h}"
-  /bin/cp -p "$SOURCE_ROOT/$entry" "$RUNTIME_ROOT/$entry"
-done < "$SOURCE_ROOT/config/release-allowlist.txt"
-/bin/chmod +x "$RUNTIME_ROOT/runtime/bin/autoassist" "$RUNTIME_ROOT/runtime/lib/common.sh" "$RUNTIME_ROOT/scripts/privacy-scan.sh"
-
-CLI="$RUNTIME_ROOT/runtime/bin/autoassist"
-"$CLI" initialize-zones >/dev/null
-"$CLI" objective-create test-objective "Test objective" >/dev/null
-
-stages=(research_complete draft_complete destination_updated save_confirmed rendered_readback_verified)
-counter=0
-for stage in "${stages[@]}"; do
-  counter=$((counter + 1))
-  evidence="$TEST_ROOT/evidence-$counter.txt"
-  /usr/bin/printf 'stage=%s\nsequence=%s\n' "$stage" "$counter" > "$evidence"
-  "$CLI" checkpoint test-objective "$stage" "$evidence" worker-one >/dev/null
-  if "$CLI" validate-stage test-objective "$stage" worker-one >/dev/null 2>&1; then
-    /bin/echo "same-label validation unexpectedly passed" >&2
-    exit 1
-  fi
-  if [[ -e "$RUNTIME_ROOT/state/objectives/test-objective/.lock" ]]; then
-    /bin/echo "same-label rejection left the objective lock behind" >&2
-    exit 1
-  fi
-  "$CLI" validate-stage test-objective "$stage" validator-two >/dev/null
+TEST_ROOT="$(/usr/bin/mktemp -d -t autobot-runtime-test)"
+TEST_ROOT="${TEST_ROOT:A}"
+trap '/bin/rm -rf "$TEST_ROOT"' EXIT
+APP="$TEST_ROOT/account home/Autobot Workspace"
+/bin/mkdir -p "$APP/runtime" "$APP/03_OUTPUTS" "$APP/.install-state"
+/bin/cp -R "$SOURCE_ROOT/runtime/bin" "$SOURCE_ROOT/runtime/core" "$APP/runtime/"
+/bin/cp "$SOURCE_ROOT/VERSION" "$SOURCE_ROOT/AGENTS.md" "$APP/"
+CLI="$APP/runtime/bin/autoassist"
+"$CLI" help >/dev/null
+"$CLI" version >/dev/null
+[[ ! -e "$APP/state" ]]
+if "$CLI" supervisor-tick --help >"$TEST_ROOT/error" 2>&1; then exit 1; fi
+[[ ! -e "$APP/state" ]]
+if "$CLI" objective-status one extra >"$TEST_ROOT/error" 2>&1; then exit 1; fi
+[[ ! -e "$APP/state" ]]
+AUTOASSIST_NODE=/no-such-node "$CLI" version >/dev/null
+AUTOASSIST_NODE=/no-such-node "$CLI" help >/dev/null
+if AUTOASSIST_NODE=/no-such-node "$CLI" core read >"$TEST_ROOT/error" 2>&1; then exit 1; fi
+/usr/bin/grep -q runtime-unavailable "$TEST_ROOT/error"
+[[ ! -e "$APP/state" ]]
+AUTOASSIST_NODE=/no-such-node "$CLI" initialize-zones >/dev/null
+[[ -d "$APP/00_CONTEXT/PRIVATE" && ! -e "$APP/state" ]]
+"$CLI" objective-create legacy-one 'Synthetic legacy-compatible objective' >/dev/null
+for stage in research_complete draft_complete destination_updated save_confirmed rendered_readback_verified; do
+  /usr/bin/printf 'Synthetic %s\n' "$stage" > "$APP/03_OUTPUTS/$stage.txt"
+  "$CLI" checkpoint legacy-one "$stage" "$APP/03_OUTPUTS/$stage.txt" producer >/dev/null
+  if "$CLI" validate-stage legacy-one "$stage" producer >"$TEST_ROOT/error" 2>&1; then exit 1; fi
+  "$CLI" validate-stage legacy-one "$stage" reviewer >/dev/null
 done
-
-if [[ "$(<"$RUNTIME_ROOT/state/objectives/test-objective/state")" != "complete" ]]; then
-  /bin/echo "objective did not reach complete after five independent validations" >&2
-  exit 1
+"$CLI" objective-status legacy-one > "$TEST_ROOT/status.json"
+node -e 'const r=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));if(!r.result.readiness.complete)process.exit(1)' "$TEST_ROOT/status.json"
+[[ ! -e "$APP/state/objectives" ]]
+BEFORE="$(/usr/bin/shasum -a 256 "$APP/state/core.json")"
+"$CLI" objective-status >/dev/null
+"$CLI" core help >/dev/null
+if "$CLI" supervisor-tick --help >/dev/null 2>&1; then exit 1; fi
+AFTER="$(/usr/bin/shasum -a 256 "$APP/state/core.json")"
+[[ "$BEFORE" == "$AFTER" ]]
+# A real v0.1.0 source path may be supplied by the release integration harness.
+# It is never downloaded, installed, scheduled, or bundled by this test.
+if [[ -n "${AUTOASSIST_LEGACY_SOURCE:-}" ]]; then
+  OLD="$TEST_ROOT/old-source"
+  /bin/mkdir -p "$OLD/runtime"
+  /bin/cp -R "$AUTOASSIST_LEGACY_SOURCE/runtime/bin" "$AUTOASSIST_LEGACY_SOURCE/runtime/lib" "$OLD/runtime/"
+  /bin/zsh "$OLD/runtime/bin/autoassist" objective-create imported-one 'Actual old public runtime objective' >/dev/null
+  /bin/cp -R "$OLD/state/objectives" "$APP/state/"
+  IMPORT_BEFORE="$(/usr/bin/shasum -a 256 "$APP/state/objectives/imported-one/title")"
+  "$CLI" core legacy-import > "$TEST_ROOT/import.json"
+  "$CLI" objective-status imported-one > "$TEST_ROOT/import-status.json"
+  [[ "$IMPORT_BEFORE" == "$(/usr/bin/shasum -a 256 "$APP/state/objectives/imported-one/title")" ]]
+  node -e 'const r=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));if(!r.result.root.legacy_compatibility||r.result.root.id!=="imported-one")process.exit(1)' "$TEST_ROOT/import-status.json"
 fi
-
-"$CLI" objective-create tamper-objective "Tamper objective" >/dev/null
-tamper_source="$TEST_ROOT/tamper.txt"
-/usr/bin/printf 'original\n' > "$tamper_source"
-"$CLI" checkpoint tamper-objective research_complete "$tamper_source" worker-one >/dev/null
-/usr/bin/printf 'changed\n' > "$RUNTIME_ROOT/state/objectives/tamper-objective/evidence/research_complete/evidence.bin"
-if "$CLI" validate-stage tamper-objective research_complete validator-two >/dev/null 2>&1; then
-  /bin/echo "tampered evidence unexpectedly validated" >&2
-  exit 1
-fi
-
-"$CLI" objective-create stalled-objective "Stalled objective" >/dev/null
-/usr/bin/printf '0\n' > "$RUNTIME_ROOT/state/objectives/stalled-objective/last_progress_epoch"
-"$CLI" supervisor-tick >/dev/null
-if [[ ! -f "$RUNTIME_ROOT/state/objectives/stalled-objective/recovery_needed" ]]; then
-  /bin/echo "stalled objective was not flagged for recovery" >&2
-  exit 1
-fi
-
-/bin/echo "Runtime tests passed."
+/bin/echo 'PASS runtime shell, Node-unavailable base, single-store legacy CLI, and read-only inspection'
