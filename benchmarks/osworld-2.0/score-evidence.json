@@ -1,0 +1,871 @@
+{
+  "schema_version": 1,
+  "description": "Exact selected native result text with source SHA-256 bindings. Evaluator provenance is an allowlisted extract from the sealed source receipts.",
+  "source_score_seal_sha256": "50a965b75f1a595354c25322a35232411747ade4f6f874679382b6eb99013247",
+  "tasks": [
+    {
+      "task_id": "001",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "3e973c81a69caa4fccf9fe47f7a4a1868c3b9108d8141f335c251dd2ea5b984e",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-005-6f8c3735cb22"
+    },
+    {
+      "task_id": "002",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "0c18f0a34ef0ac9a8c0ecea6f53c5348b3f43f16259486aca70aa07bd4d67db5",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-005-a0b525e03c56"
+    },
+    {
+      "task_id": "003",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "3a9238cc2ef835911037a058dc5563cba04d7859b29fc6a306d399f9087d70f5",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-005-c12219fc98a0"
+    },
+    {
+      "task_id": "004",
+      "native_result_text": "0.7667\n",
+      "native_result_sha256": "cc445d3040308c3eb6d986fcc7387e4545aaef65dfa01c9c74ecc220647574a9",
+      "evaluator_receipt_sha256": "81d723407b161a7414038bca498ae6e0b85c850b70462dfaac15e7c1c743df38",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-005-c4614920c6d7"
+    },
+    {
+      "task_id": "005",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "237c5d088d78c8b2d9e7275b39deb783f085456c343648032abd7d0ad5847642",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-778077047fad"
+    },
+    {
+      "task_id": "006",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "200be65ba0c018195baa1a3c995854fd003b03c7b5857ec6ec875240cb253310",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-a8b19a6878b0"
+    },
+    {
+      "task_id": "007",
+      "native_result_text": "0.6\n",
+      "native_result_sha256": "aad816ea07062223f75fb606f5c0d42dfaa51388c7f56625c3109025bb90112f",
+      "evaluator_receipt_sha256": "0d5ae01e7342637009516e55d4b8bd54c320a7cf4fc9c9b5f76d8bce38208567",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-003-4b7f98b4abc6"
+    },
+    {
+      "task_id": "008",
+      "native_result_text": "0.8816\n",
+      "native_result_sha256": "c2ee0a8cdf867dbd4d4c4c0ced19d8cb9dabae2c410daa24ffe13024a0db4059",
+      "evaluator_receipt_sha256": "a8c414a26087942105b51227789dcdd1b92424847827c8422b19ca54b76de1d7",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-c72153c8eaca"
+    },
+    {
+      "task_id": "009",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "76ba398094fd37aa10d0c051f4432b0d70aafe87e562c7f247bd1d263428eed0",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-003-4cc493ad44fb"
+    },
+    {
+      "task_id": "010",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "fcf742a74e990394649a2204f28f226450bb8f587a061ed505184ed8c51b65e8",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-226b9de9156a"
+    },
+    {
+      "task_id": "011",
+      "native_result_text": "0.1111111111111111\n",
+      "native_result_sha256": "8152fce06e8a2ace577ed80dd1e8885cdb868817cb50e1ebacebf034ebdbf171",
+      "evaluator_receipt_sha256": "ab4398629d81193c702277a49ff39398530c9e6b0e0d641ef69c0cb2d00f21bc",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-ff6d9948d03e"
+    },
+    {
+      "task_id": "012",
+      "native_result_text": "0.2\n",
+      "native_result_sha256": "88930bd051d214a973581b9492a5ca110aea3fdd5dc65a68bc444b6173877bbd",
+      "evaluator_receipt_sha256": "cb62f2e9cdf64bd71b9d927121de327efc7350d47e03a3306e3d6b0ba309cdac",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-9cfdca7eca92"
+    },
+    {
+      "task_id": "013",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "d7dffdf8f800119bd989422282b44ef21b5654bc4ad6c7b26592d69417f9bc29",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-f21867781d0a"
+    },
+    {
+      "task_id": "014",
+      "native_result_text": "0.7400000000000001\n",
+      "native_result_sha256": "9f280c6cf403f9045440c5514bafaa8987e88e214ecf5673b09f12f73bab7872",
+      "evaluator_receipt_sha256": "94658eca11fb7117a79122832d360bf1125969fdec5cf0f517cf0f62d7e215f7",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-b841ee065096"
+    },
+    {
+      "task_id": "015",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "d1d38ba668303b79335431a04acd567d37a020731d47da6e50fb6910c2965e99",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-d17800ec103d"
+    },
+    {
+      "task_id": "016",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "b1d5bf25889d8025e564d8f7a39ac95e59d2aa6829cb197a124453eeb8a71ffc",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-9e5c22f0ff39"
+    },
+    {
+      "task_id": "017",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "d21175daf5d363b23ccd9b8618a1a1fc033a996c0a4da1afb974b4fac33432fc",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-8ddc064cbb7e"
+    },
+    {
+      "task_id": "018",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "6dcf787a807f1e5f144239b46de05eb82d253fae81177e575fddc8dd04abd216",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-5b20a3ad4c32"
+    },
+    {
+      "task_id": "019",
+      "native_result_text": "0.7\n",
+      "native_result_sha256": "3b1add489f8961560bc1562f10cabcf762bce961623cca362f0128522fe1ed29",
+      "evaluator_receipt_sha256": "236e4601a1a0435517937ff756d497cbf9da6dcea18f6c3e364b1ceda7584a91",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-fae7d06d8652"
+    },
+    {
+      "task_id": "020",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "38a3fbba1478901db7a0a879a8b8e91d9655c4d73f3f0727a7a3955c68b18456",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-2cc1fba31a27"
+    },
+    {
+      "task_id": "021",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "d0a880143ff13f7323e0db8637c11bf70dba3deb252b29d21a207a4f74defc4f",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-5f1707ea9df3"
+    },
+    {
+      "task_id": "022",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "0f224f4cfcbbe234f6c7e18301416c929f0f4185dcbdf1f0890a3473a0f6c5e1",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-0b2e5da1096e"
+    },
+    {
+      "task_id": "023",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "eaa79d9f1346883c1e4dcfc178eee69cbf109c5fb20ae2ecab73f1b1db02d99b",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-ec049caff690"
+    },
+    {
+      "task_id": "024",
+      "native_result_text": "0.3764005146700085\n",
+      "native_result_sha256": "5ea447f87468900b48d32a0b78230e0b7614b92bf3ad3bcc0d0468af7b0396e1",
+      "evaluator_receipt_sha256": "c8269e5e2a18ca12e749b5c42e36b298955131be579487f305516b8879edec12",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-f93cfb19b9da"
+    },
+    {
+      "task_id": "025",
+      "native_result_text": "0.7781809462915601\n",
+      "native_result_sha256": "7d12c62b971fd0f397ff587272cf77ea8cdc2a1ffb7046eefef340d776156784",
+      "evaluator_receipt_sha256": "3122583309cd92c5293c5627eed71cb38e9abd2d605f97b19be216b58e7d2bc5",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-004-c3d661f34487"
+    },
+    {
+      "task_id": "026",
+      "native_result_text": "0.7025\n",
+      "native_result_sha256": "c708f9b8a5fd0e49de211b6e70fe32867c4a4537f22fe3778136c5f67f853f51",
+      "evaluator_receipt_sha256": "9910a4f7d4f8842f98cd73ea0acb21358dad63b08c23e674dca5ad120f2fd947",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-005-037c967f0564"
+    },
+    {
+      "task_id": "027",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "346ea0526e81d4728efbbd793b9c9fd8b1fe810070beb9ed5fcd67e30149ceb9",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-30ef85160b4f"
+    },
+    {
+      "task_id": "028",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "9516f12e6a87e434374f5e1365b46e8c017cea3fa1a2da3d8228d035c6ca0dfc",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-ae77dc253dd4"
+    },
+    {
+      "task_id": "029",
+      "native_result_text": "0.7878787878787878\n",
+      "native_result_sha256": "739ee8fdf0287ce549ef59f7c03305e020be7acd7e82a5f23d38dda99089c9b1",
+      "evaluator_receipt_sha256": "49e4fd7aef622dcbce50b8f9dcf44c8f84d6d209f8dd3d6b57aef60d2d6a4af0",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-006-1242b82f919f"
+    },
+    {
+      "task_id": "030",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "380311b91567c0a300fc0e297dd4647de481a92fdeabc7c2f4a12302c224f3bc",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-76001af4a51a"
+    },
+    {
+      "task_id": "031",
+      "native_result_text": "0.7142857142857143\n",
+      "native_result_sha256": "c7ee30752ec3bcbabe5f359f80a1250cd2b0206605bef0ce05b8210973210961",
+      "evaluator_receipt_sha256": "4938399f49860e30f1cc64777e4e617e685808d865d8fd53e6f34e2a7ba0a181",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-f3a61f4830e5"
+    },
+    {
+      "task_id": "032",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "b91cb37a4ec2854ec8bfbcf42b97a704355211dab689f8ed0037fc9074801ec5",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-fedd5b55a4ea"
+    },
+    {
+      "task_id": "033",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "a6dc32873ecf22bdc8c81961bfb2a5510c615666968b2325af50cd5788bb7b09",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-de9a3dc05271"
+    },
+    {
+      "task_id": "034",
+      "native_result_text": "0.71875\n",
+      "native_result_sha256": "6c576c622101dc5763eeac6b171b151749de2753d5822af016aeadf76f5d6afd",
+      "evaluator_receipt_sha256": "4e4ccb34a0ffd0d4bd19600d5cc40ea717f48e5811e62827c72d77fb404e86fa",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-50ec9933dcef"
+    },
+    {
+      "task_id": "035",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "48f1709c20ee6f6316a560a826749e8ff1dfbc6837aba2b3e22aa1718717822a",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-901ac6fc17b4"
+    },
+    {
+      "task_id": "036",
+      "native_result_text": "0.5792857142857143\n",
+      "native_result_sha256": "23674de09f9ee3521ae7fe4c47d8a85a2700194fa2e6ca0810161acca7045d6c",
+      "evaluator_receipt_sha256": "2fcd06aa28e31cd802eb28d56f19dba4476e9504507facb94e81f0a7e819e8c5",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-003-deac2e51c85c"
+    },
+    {
+      "task_id": "037",
+      "native_result_text": "0.2\n",
+      "native_result_sha256": "88930bd051d214a973581b9492a5ca110aea3fdd5dc65a68bc444b6173877bbd",
+      "evaluator_receipt_sha256": "d3b6008dfb1e6a31797afc3145f05f6cc85cea6f99e04a8cd4e1cc1a54016ea7",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-003-fa66377630e6"
+    },
+    {
+      "task_id": "038",
+      "native_result_text": "0.6517\n",
+      "native_result_sha256": "056ab778bc3069666d5dbe26c209389683514ec514c956caf8bb9ba098069648",
+      "evaluator_receipt_sha256": "c59bd7159bf311eaae89e1aacffaa2e6bc782e5083785608a3e4bd06e3af6623",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-529e9a01427d"
+    },
+    {
+      "task_id": "039",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "5f0f9f08831caad1b54def6315d4ddd6cf147b297fb0c857241e287912a4db80",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-47678d932c60"
+    },
+    {
+      "task_id": "040",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "6b894834079434f3f1f1321b270c8241d28fbd2ba2436fb603c0111151f36adc",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-dbf5544be83c"
+    },
+    {
+      "task_id": "041",
+      "native_result_text": "0.8457\n",
+      "native_result_sha256": "4d0fa2c2d7b2357f44d20a7581980077d096ca6ed4910d99afd7567a8a63f535",
+      "evaluator_receipt_sha256": "fdad0c55a0f49c7a53d2eb96bdcfbd72b643a8853478c022a8f25bba7139a8c1",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-c74010a5f239"
+    },
+    {
+      "task_id": "042",
+      "native_result_text": "0.64\n",
+      "native_result_sha256": "75eed4b08b0da90bb84160ecc7920c9de8e7ed00399efb211e4be02896436493",
+      "evaluator_receipt_sha256": "264c529ad03fb5dcfa7207e92c11c29638392dc4563f0e474a303e791a7a032a",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-d227c08e4233"
+    },
+    {
+      "task_id": "043",
+      "native_result_text": "0.6875\n",
+      "native_result_sha256": "43b247dc9fb249a4f1c258c2797cd819a869d45b4d14bb14f1297c6cca5b718f",
+      "evaluator_receipt_sha256": "97ebb8ca6555c8c18dac507cd93e60361e61614f1b0fdb9cdfb64575410c4235",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-c56b0ae745e6"
+    },
+    {
+      "task_id": "044",
+      "native_result_text": "0.6000000000000001\n",
+      "native_result_sha256": "2c5f034bf4136fb01c92c3abfee136a1f756704c6d6bdad27cb2f7c5cf27f03e",
+      "evaluator_receipt_sha256": "fc46d39cef2012b8e1f3c1195552670e20bc633e89aecb21ff7e7c6387913bb2",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-c293f564e56c"
+    },
+    {
+      "task_id": "045",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "bad0ae8a53350ead2bd7db8dccbf2b86575e0a9ae94ebe26daf05f18289b23c8",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-5ffa34716830"
+    },
+    {
+      "task_id": "046",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "e5c6e99df24e91cde765065e0fb6c26e92127d77d95903f441e5134faf74f078",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-67d17539e187"
+    },
+    {
+      "task_id": "047",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "d3383c10777612ce160f3ef9b739a0100fca2176ecae592ced7f3e66080f8204",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-8b5a78e5530e"
+    },
+    {
+      "task_id": "048",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "1860b9591ce6dad325d2bb47bc3a15d26041597712f2d887c27879f246c27556",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-003-9d12fe06b78e"
+    },
+    {
+      "task_id": "049",
+      "native_result_text": "0.8\n",
+      "native_result_sha256": "fdf276f0183c71742823b061f7342d581e56de0af10648339b525249e26ee94f",
+      "evaluator_receipt_sha256": "6fd238125b613ab1e61441ea0c9d8e6c72d7df024cd70214b6a4ac65c32b043d",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-3e09c0b4eca2"
+    },
+    {
+      "task_id": "050",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "e0860fd72ed259c2e47ca390c61d4c00551b1b6e516c327e2fbaea160766bc6f",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-3e27c45323b2"
+    },
+    {
+      "task_id": "051",
+      "native_result_text": "0.8\n",
+      "native_result_sha256": "fdf276f0183c71742823b061f7342d581e56de0af10648339b525249e26ee94f",
+      "evaluator_receipt_sha256": "6ed6a93b44b95a91e22865b5ad4dfa8836147da28a89e0f4387d1f408f56e2e1",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-ce659c8dbf58"
+    },
+    {
+      "task_id": "052",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "a014919549b5e3c66fd100aeb2d8b3c66ea664b78ea0ca2f52fbf0a6e094b928",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-305b54b6685e"
+    },
+    {
+      "task_id": "053",
+      "native_result_text": "0.7504580128350945\n",
+      "native_result_sha256": "98525d0f8fdd627e8bd19e81abb76837aa3c9c5e62a59f62ed04524284525fb3",
+      "evaluator_receipt_sha256": "4ed5b901a061d99ede72c34995af3cbe3cccb94b28358c5d27795e810fe772a3",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-e0b2eed2bcbb"
+    },
+    {
+      "task_id": "054",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "2c399880d46c7773337747b61fec9bbfae8d958c5da79bf3e7f4f4e82de1317b",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-fa2ee8b9a9b0"
+    },
+    {
+      "task_id": "055",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "8e1af104875044895291e0e168925bdc92c3e9c587457edcfbedc7b4b97a672c",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-0fa4b4a468d4"
+    },
+    {
+      "task_id": "056",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "005c4e3af8df7cdf59cd11642d098197cfbb5fa3785308c175e3ae0ad5fc2e6e",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-6061c20506b3"
+    },
+    {
+      "task_id": "057",
+      "native_result_text": "0.6301\n",
+      "native_result_sha256": "c58d8f981a9766a0d13c117d074e569419decd36f675f2049e0a7f483ef09506",
+      "evaluator_receipt_sha256": "d4e091714b0042b0eb689c802420f8d6fe2882e85cf04202481fc54f40b11c4c",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-006-7e637d3ee70e"
+    },
+    {
+      "task_id": "058",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "913091e0c7c210de021ba502d6118e1ec5224541f849f4fd850acafba5b8d420",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-ffba23bc1430"
+    },
+    {
+      "task_id": "059",
+      "native_result_text": "0.2\n",
+      "native_result_sha256": "88930bd051d214a973581b9492a5ca110aea3fdd5dc65a68bc444b6173877bbd",
+      "evaluator_receipt_sha256": "dea2ef5a07f03d3481f15c1534fbef7e08dc5da47ccaad78efb60c5ec06caaa1",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-39a6032ba2a2"
+    },
+    {
+      "task_id": "060",
+      "native_result_text": "0.1\n",
+      "native_result_sha256": "a6311009c6c322ca8ac2e620cff5204f0c3af23115d403293a0cb5be36796688",
+      "evaluator_receipt_sha256": "bd188a3904d7b05b059385a0c7eea7afd81750bb2e6f3b670c53a8948ca1e715",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-de814dfc450e"
+    },
+    {
+      "task_id": "061",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "31494c63572c182bfb5b8bf5647e8363e12a4606f5e934e1a64fa5c8b3ec9406",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-e7efdcfcd6da"
+    },
+    {
+      "task_id": "062",
+      "native_result_text": "0.38574236860650574\n",
+      "native_result_sha256": "28b0fb39e3dc23f848da1afaeb6f22b37de711f77c4bf2a5f3b0a97c65271066",
+      "evaluator_receipt_sha256": "9987df19d9a7711e377859dd119bff1e08c249228ff287ff1debc529144c5989",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-328f4dccf6d1"
+    },
+    {
+      "task_id": "063",
+      "native_result_text": "0.6\n",
+      "native_result_sha256": "aad816ea07062223f75fb606f5c0d42dfaa51388c7f56625c3109025bb90112f",
+      "evaluator_receipt_sha256": "edea6da8648867d64184309499990cd812e67d7c9dc1fcdb442debe9b1613a42",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-3a94d131279f"
+    },
+    {
+      "task_id": "064",
+      "native_result_text": "0.5\n",
+      "native_result_sha256": "8d5c1b5a87c51f970807fc0c2057b3ab3aaf11638ab667dc5956edc8f5bcf138",
+      "evaluator_receipt_sha256": "f96a43914b0c2c5d0ea769cfd3d321be6e85c2095235fc09ef32d3b738acf4a8",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-c56f43cfefbe"
+    },
+    {
+      "task_id": "065",
+      "native_result_text": "0.2\n",
+      "native_result_sha256": "88930bd051d214a973581b9492a5ca110aea3fdd5dc65a68bc444b6173877bbd",
+      "evaluator_receipt_sha256": "aea889de4a5288b332a19c6f056d70cd5e5da4340cd5cdcf05d60118bab557f0",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-bb0324a59ce2"
+    },
+    {
+      "task_id": "066",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "e9f132fec03b40c9a5ea2270bb2fe90fa734e9e1e8a0680ec919be024b1e93c4",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-397e0b851daa"
+    },
+    {
+      "task_id": "067",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "45246fb15fbb3bde7af5979c18fdfe01db29dbac2bfd5c88c47d803a94f39daa",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-a3478fabd581"
+    },
+    {
+      "task_id": "068",
+      "native_result_text": "0.16\n",
+      "native_result_sha256": "29d707027ad99264288617ab4835a3704d6c95f9398523c5494206c942be6f11",
+      "evaluator_receipt_sha256": "9e0211b6eedf2531143c7f9e331852b74bb8df9278fd9c36e0074022d056f144",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-003-93703b9a4edf"
+    },
+    {
+      "task_id": "069",
+      "native_result_text": "0.4\n",
+      "native_result_sha256": "c36fdbcf57ed3348e59da37beebc5c3696b3e451b7ffe16f2ebb6c9b5ee5916b",
+      "evaluator_receipt_sha256": "b9f0297140140863a9d622898bd665c1b3aeebcb9c06c9e8de6cbf291435485d",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-003-6e4f8a85db84"
+    },
+    {
+      "task_id": "070",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "680c92b0c69e1fb396d4fe26a032f83b1b9271af991270ac0bfe0ae4cebeab98",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-cb5d3547b706"
+    },
+    {
+      "task_id": "071",
+      "native_result_text": "0.625\n",
+      "native_result_sha256": "6107bf3d791f587a8ccf5dcf45318a8efd7c175a5cd54c05e19f47985f3fe884",
+      "evaluator_receipt_sha256": "6f7ad63d0e278b6925b8b847126ca04abe342e8f97cffa1127183355dd1fd2be",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-044ce6ec0b6f"
+    },
+    {
+      "task_id": "072",
+      "native_result_text": "0.91\n",
+      "native_result_sha256": "72cc8b9781a2712dea5ae984bdcdbe5312b861d8ce900cd0a8b9e7e49b0d5a6e",
+      "evaluator_receipt_sha256": "6a1fe171c645975efc8d4eacee59af7048c5d3788aa8d8ba3743a3062885c810",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-7b7aaae2ea14"
+    },
+    {
+      "task_id": "073",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "6f550d06019e8693ecfe76fa3b892605eff98dbe99f37d263e2f99e6a0681ead",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-61b37996963c"
+    },
+    {
+      "task_id": "074",
+      "native_result_text": "0.7055\n",
+      "native_result_sha256": "4b8e57f31444447230f02629e86a836763ec33b81ca7f56cb4ccf3549c8114be",
+      "evaluator_receipt_sha256": "dcdab36ad3748df133366896d69259654f9ebe7dde364bd41e6a65bc131210f1",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-1a76e2accf3c"
+    },
+    {
+      "task_id": "075",
+      "native_result_text": "0.9999999999999999\n",
+      "native_result_sha256": "8a23042c5857c893c49c77dae410cc94468a710d9e790dfcbcfdd973d276be90",
+      "evaluator_receipt_sha256": "9f2f3e5151de31e8b36851ea6d8f85d04dacde4e5828887ccf73ffe41ed4f2f4",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-a8d5bf887e0b"
+    },
+    {
+      "task_id": "076",
+      "native_result_text": "0.9999999999999999\n",
+      "native_result_sha256": "8a23042c5857c893c49c77dae410cc94468a710d9e790dfcbcfdd973d276be90",
+      "evaluator_receipt_sha256": "1faf852b19c96b6bad16f45215958504ce6f4ee5c06b89414cdf6072cca1924f",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-903e5f727a08"
+    },
+    {
+      "task_id": "077",
+      "native_result_text": "0.37515000000000004\n",
+      "native_result_sha256": "caf8ec52bab3eee487137d5ffea106a57f6e252786b0947b41b3844fdb7da03a",
+      "evaluator_receipt_sha256": "91527490321f569dd5bcc3e74c338515f6d94cbca8616dd4db3fd205c0e1f685",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-2604d90aff64"
+    },
+    {
+      "task_id": "078",
+      "native_result_text": "0.7\n",
+      "native_result_sha256": "3b1add489f8961560bc1562f10cabcf762bce961623cca362f0128522fe1ed29",
+      "evaluator_receipt_sha256": "0168f395dd01297799bd30f358634d0e406fd3f7507cdae26aa10991b22d0c78",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-b8be1768a970"
+    },
+    {
+      "task_id": "079",
+      "native_result_text": "0.19\n",
+      "native_result_sha256": "26a1edee71c45dffe252a167381a0bdcae26bc0802ff2e907f418d02febb2f4d",
+      "evaluator_receipt_sha256": "91feda2db11c318de32b7944f7f47230be49056ab29e7e8e05da525a7e37de82",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-2e410be5405e"
+    },
+    {
+      "task_id": "080",
+      "native_result_text": "0.9143146417445482\n",
+      "native_result_sha256": "8e0e4c969d774d864f251772fc69720dffbf6f6fde1b2639a4d1b63ab85574b0",
+      "evaluator_receipt_sha256": "2b2ea5f83df930da19c0c92f1aedfc80993d40dc8ccb790827bcaae15537b93c",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-0a7cabbcd4fa"
+    },
+    {
+      "task_id": "081",
+      "native_result_text": "0.65\n",
+      "native_result_sha256": "ecc415608f496aa4312f4a24122d0b7f242f909cce14eedeb4eea40e1cdb1ffa",
+      "evaluator_receipt_sha256": "07747273fc220772052aea6484e3015b59ba2780c10e6b61af41373d7a614d1f",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-7a2f63c5195b"
+    },
+    {
+      "task_id": "082",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "2473db87157df8e7e052b0e89a9ae36c4263f8f0a72ac86a09ae435ba85ab5f3",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-009-c7273c4ff979"
+    },
+    {
+      "task_id": "083",
+      "native_result_text": "0.9900000000000001\n",
+      "native_result_sha256": "9826d522c0c6bd4f6b2e01c035453efb3d9f4b1eaca8a67bbce359cf464049cf",
+      "evaluator_receipt_sha256": "e09c6ce51b43c0c431775a62ea56f86ac7b4efc043b6d811d88141a2343ce7ee",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-6fbc18fdeaf7"
+    },
+    {
+      "task_id": "084",
+      "native_result_text": "0.9999898000000003\n",
+      "native_result_sha256": "d7a864883819bbadc398382a8f42e2afb7f5d33ebe1b3c5b9df0c58f36fdfc74",
+      "evaluator_receipt_sha256": "349c90808ae598b0a9531fcde4b9849884c4a44dcd9f634e9f4166f67e2dbb52",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-94d4b3e02a78"
+    },
+    {
+      "task_id": "085",
+      "native_result_text": "0.68\n",
+      "native_result_sha256": "169852cff133d1aefba9f39ac6e62f1de550c21f5b9e23f5cf5b430702a20012",
+      "evaluator_receipt_sha256": "3e021f9bce9d17e46cb45d6d42521857ea7d411743b01ae3d0416295079de780",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-feb14f41d499"
+    },
+    {
+      "task_id": "086",
+      "native_result_text": "0.2\n",
+      "native_result_sha256": "88930bd051d214a973581b9492a5ca110aea3fdd5dc65a68bc444b6173877bbd",
+      "evaluator_receipt_sha256": "26f500aab41d8dbb439fbb7a4be03b637656d03825b099980aaeae941e670173",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-e7e4c1e92a17"
+    },
+    {
+      "task_id": "087",
+      "native_result_text": "0.645\n",
+      "native_result_sha256": "93b1dde51befaeeded506b1d0cb0e52bfe464a3284f895e1727503b2fdddacf2",
+      "evaluator_receipt_sha256": "8d022ede11f46de4744f0dbd21d5e886286828dac76d2694d9b1356bfe0ec0a2",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-3a19a68a50ec"
+    },
+    {
+      "task_id": "088",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "81a4f38dc864d0cf0e57acc286f7cd056f0f1f54d32bdcf0eb26a432ecb0d17d",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-af3c832fc236"
+    },
+    {
+      "task_id": "089",
+      "native_result_text": "0.39\n",
+      "native_result_sha256": "6e716944a37478a3abecebd10460577aacbaa7f3ee9b75328e1e6a00d1df6f02",
+      "evaluator_receipt_sha256": "f3c06520e876b3aa8e1cf88cad7492b8e03d13de33755613a5051ef2b48ba7e6",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-1879e2f9cc1c"
+    },
+    {
+      "task_id": "090",
+      "native_result_text": "0.3416666666666666\n",
+      "native_result_sha256": "969bbe38032a1d2af41685bd70a18d3d484a6e9ca9469cd42d1dbd4ac6389a5c",
+      "evaluator_receipt_sha256": "4250eb3c6b96819c68fcc954830f7fd9aadd37147553eb7cdb57537f67041aa7",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-d456a111745c"
+    },
+    {
+      "task_id": "091",
+      "native_result_text": "0.8763208871420551\n",
+      "native_result_sha256": "95d56fdf8ff2ddc5f5b057fe1dee929058cb7cffb752d8c7bd6e8dbac6212eda",
+      "evaluator_receipt_sha256": "db487b857ecdcacc38a46be6dc3c31408ddec127b304a0dbceccfb93dfa18e49",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-bb076c576452"
+    },
+    {
+      "task_id": "092",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "9245ddd668d5128554d83d9d3cba0f7b88d55f1b85de403bc8ebb2fffa576dc6",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-ea5576675e36"
+    },
+    {
+      "task_id": "093",
+      "native_result_text": "0.5\n",
+      "native_result_sha256": "8d5c1b5a87c51f970807fc0c2057b3ab3aaf11638ab667dc5956edc8f5bcf138",
+      "evaluator_receipt_sha256": "cda12a1e1a01e7c8d0bc00d683c4746b1e3b7afdde7900e09c064a787dab1a91",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-007-992ab61dd67b"
+    },
+    {
+      "task_id": "094",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "7e6a5e60e9d13c03e7c2d73fbe4b8a86fb6873a23b0e2807cfdedc57392a9f3a",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-140de7a8c7e9"
+    },
+    {
+      "task_id": "095",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "f8e928614c3bd3912a98d45a834e457a42d09a225ac409f75105a1e491ccdff2",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-11971a56cc02"
+    },
+    {
+      "task_id": "096",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "1bcb040729173780aa64921b2655559a706969c8a860c9c3f928e1718f38cd29",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-d6467ce3ce06"
+    },
+    {
+      "task_id": "097",
+      "native_result_text": "0.4\n",
+      "native_result_sha256": "c36fdbcf57ed3348e59da37beebc5c3696b3e451b7ffe16f2ebb6c9b5ee5916b",
+      "evaluator_receipt_sha256": "3fb496ee84e182f62d4ba2dc570f8253271ad4504e39ea983641f7d956bac5a9",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-b2b48c3bd6f7"
+    },
+    {
+      "task_id": "098",
+      "native_result_text": "0.0\n",
+      "native_result_sha256": "51ff0d2f0d3a5d61edec31785532ea0d570f8c348d58b15b94ff9c2ca6e926a4",
+      "evaluator_receipt_sha256": "e9cbe26bb0cd35f6ab421bb8696c34ff2a5eeca99860b473ba4da91da53325af",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-006-2cc8f7436689"
+    },
+    {
+      "task_id": "099",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "da64e2ebe98fe9fb254d8b35215c49b36def74f41aacf8c4c57be3d330f7dc4a",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-f8cb3f479dc5"
+    },
+    {
+      "task_id": "100",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "7123b3ca38b466ad5e681e67fe359384ff047ffd2175e6b712b63279c8654d5f",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-5ff29777ccd6"
+    },
+    {
+      "task_id": "101",
+      "native_result_text": "0.25\n",
+      "native_result_sha256": "7747240b40ef7064f499d4ddd256767cba251ce7c2cc4b26faf542d9a2c5c104",
+      "evaluator_receipt_sha256": "ba648d568ba8e278e9cfcc3b14189cb8dfc321b0e1a266b6b8668589dfc9c129",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-2e83c533401d"
+    },
+    {
+      "task_id": "102",
+      "native_result_text": "0.2\n",
+      "native_result_sha256": "88930bd051d214a973581b9492a5ca110aea3fdd5dc65a68bc444b6173877bbd",
+      "evaluator_receipt_sha256": "17864f3fc5f7883325b5bed577d5c38fdcb1709527a223c557baa82ba2cce8b1",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-b37e9c68be91"
+    },
+    {
+      "task_id": "103",
+      "native_result_text": "0.7291031636852895\n",
+      "native_result_sha256": "6e06194aea49b5f04d04414e72fa187b99af6c7fbb2f4b4edd5680e49f4dc1cd",
+      "evaluator_receipt_sha256": "5a2dcd14b8ec19977dd23ac782fa3f8644a9558c9d9381e1e8c4017f94235dc5",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-a1ab0d6d99d5"
+    },
+    {
+      "task_id": "104",
+      "native_result_text": "0.9086838370327227\n",
+      "native_result_sha256": "59762e84c85db7e7167749a3c6c9136d217d046cc040323379bac710fec2783d",
+      "evaluator_receipt_sha256": "37090f146617da95aba629ca5b33aad4f61fdc2cf6ce41bc6a756e3c48f85ba4",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-002-a5eab55d5d9d"
+    },
+    {
+      "task_id": "105",
+      "native_result_text": "1.0\n",
+      "native_result_sha256": "5717e7c840171019a4eeab5b79a7f894a4986eaff93d04ec5b12c9a189f594bf",
+      "evaluator_receipt_sha256": "fb81da521af32dc107319e6af5f8b9d8940b3c6c7d92f8a3835ce216b49b9420",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-5ca2210b802a"
+    },
+    {
+      "task_id": "106",
+      "native_result_text": "0.3381\n",
+      "native_result_sha256": "ac936924f575b6ad2ae272118e2533837e503b383737ac68c3bdeb2336b40af6",
+      "evaluator_receipt_sha256": "fafa548f596668a215d7da1748ff2c95e889293ce4433fcef0f7ca3263213674",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-928ec8a1168f"
+    },
+    {
+      "task_id": "107",
+      "native_result_text": "0.47460317460317464\n",
+      "native_result_sha256": "a06f01bdf94f3163563359b0f583808b42836b42f5cdf86bca2ef590917ef0f6",
+      "evaluator_receipt_sha256": "5b08c6246080e949d5d711e38c6735e04a68662c38cceae5c73bf14d0fd01cb3",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-255fe145c5be"
+    },
+    {
+      "task_id": "108",
+      "native_result_text": "0.618966\n",
+      "native_result_sha256": "fb7e7dec5cb1abf1108ef1487cf427c7a5782860e7a35189fd32da590e32843f",
+      "evaluator_receipt_sha256": "ffe32fe41fcf7aa92204119de0e94f5cac923707703f7f1dedfbabe1fd131fd1",
+      "scoring_authority": "official task-class evaluate via DesktopEnv.evaluate",
+      "selected_attempt_id": "attempt-001-d229ff4314a7"
+    }
+  ]
+}
