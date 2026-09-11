@@ -5,11 +5,11 @@ description: Perform AutoAssist's mandatory first-use setup or repair an incompl
 
 # AutoAssist First Time
 
-Establish a safe, usable local AutoAssist installation without taking over authentication, macOS consent, or external accounts.
+Establish a safe, usable local AutoAssist installation without taking over authentication, macOS consent, or external accounts. Base installation, privacy-zone initialization, doctor, repair, and uninstall do not require Node or a ChatGPT sign-in. Advanced objective, evidence, and scheduler operations require a discovered Node 22 or newer runtime.
 
 ## First-use gate
 
-1. Resolve the AutoAssist root from `AUTOASSIST_HOME` or the current project. Never search protected folders to find it.
+1. Resolve the AutoAssist root from the current local project or an explicit `--root`. Never search protected folders to find it. The installed project-local copy is `<root>/.agents/skills/first-time`; an unrelated global skill is not installation evidence.
 2. If `.install-state/first-time-complete` exists, run `skills/first-time/scripts/validate-setup.sh --root <root> --account-home <account-home>`. If it passes and the user did not request reconfiguration, run `skills/first-time/scripts/write-status.sh --root <root> --account-home <account-home> --state complete` to repair any stale generated status, report that setup is healthy, and return to the original task.
 3. Otherwise, complete this skill before substantive AutoAssist work. Read [references/setup-workflow.md](references/setup-workflow.md) before changing local setup state.
 
@@ -51,8 +51,8 @@ Configure external actions as fail-closed first-party rendered writes, connector
 
 ## Verification and finish
 
-1. Run `AUTOASSIST_ACCOUNT_HOME=<account-home> <root>/runtime/bin/autoassist doctor --quiet`, scoping that variable to the doctor process only. Separate repairable local failures from sign-in or permission steps that only the user can complete.
-2. Run `skills/first-time/scripts/validate-setup.sh --root <root> --account-home <account-home> --smoke`. The smoke creates one local objective, exercises all five ordered stages with distinct producer and validator labels, and performs no external mutation. Genuine reviewer independence remains a host-provenance and operating-contract requirement; unequal caller-supplied labels alone do not prove it.
+1. Run `AUTOASSIST_ACCOUNT_HOME=<account-home> <root>/runtime/bin/autoassist doctor --quiet`, scoping that variable to the doctor process only. A healthy base installation with `runtime-unavailable` is a valid distinct state. Do not configure a scheduler until runtime status is `available`.
+2. When runtime is available, run `skills/first-time/scripts/validate-setup.sh --root <root> --account-home <account-home> --smoke`. The smoke creates one local objective, exercises all five ordered stages with distinct producer and validator labels, and performs no external mutation. If runtime is unavailable, leave advanced setup incomplete and report the Node 22+ prerequisite without downloading or changing a shared Node installation. Genuine reviewer independence remains a host-provenance and operating-contract requirement; unequal caller-supplied labels alone do not prove it.
 3. Run `skills/first-time/scripts/write-status.sh --root <root> --account-home <account-home> --state pending`, then have a separate read-only agent or validator inspect the configuration, doctor result, smoke objective, file modes, and absence of secrets or raw messages. A producer may not certify its own setup.
 4. Only after that pass, atomically write `.install-state/first-time-complete` with the setup version, completion time, validator label, setup-config hash, and smoke-objective ID. Use mode `600`.
 5. Rerun `validate-setup.sh --root <root> --account-home <account-home> --require-marker`, then run `write-status.sh --root <root> --account-home <account-home> --state complete`. The status writer validates the current marker again and atomically reconciles only the generated first-time status file and its one command-center entry.
