@@ -57,13 +57,16 @@ skills/first-time/SKILL.md
 skills/first-time/agents/openai.yaml
 skills/first-time/references/configuration.md
 skills/first-time/references/macos-and-sign-in.md
+skills/first-time/references/operator-walkthrough.md
 skills/first-time/references/privacy-and-communications.md
 skills/first-time/references/setup-workflow.md
 skills/first-time/scripts/validate-setup.sh
+skills/first-time/scripts/walkthrough-progress.sh
 skills/first-time/scripts/write-status.sh
 tests/run-all.sh
 tests/test-core.mjs
 tests/test-first-time-status.sh
+tests/test-first-time-walkthrough.sh
 tests/test-install-interruption.sh
 tests/test-install-security.sh
 tests/test-install-upgrade.sh
