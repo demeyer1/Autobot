@@ -4,7 +4,7 @@
 
 Autobot with GPT-5.6 Sol Max fully completed **35 tasks** in our final combined OSWorld 2.0 result, using an open-source harness with batch tools.
 
-![OSWorld 2.0 leaderboard comparison: Autobot scores 32.41% binary accuracy and 64.28% partial accuracy](leaderboard-comparison.jpg)
+![OSWorld 2.0 leaderboard comparison: Autobot scores 32.41% binary accuracy and 64.28% partial accuracy](../../docs/benchmark-charts/osworld-2.0-highlighted.png)
 
 ## Result and method
 
