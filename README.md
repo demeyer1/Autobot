@@ -1,6 +1,6 @@
 # Autobot
 
-**AutoBot: a self-improving agent runtime that makes frontier AI better at finishing complex work.**
+**AutoBot: a self-improving agentic harness that makes frontier AI better at finishing complex knowledge work.**
 
 AutoBot achieved **18.5% higher task completion than the published OpenAI Sol Max baseline**, surpassing **Anthropic’s Claude Opus 5 Max** on OSWorld 2.0, a benchmark of long, multi-application workflows. It also reached **#1 on the official AssistantBench hidden-test leaderboard**. [Results and methodology](https://github.com/demeyer1/Autobot/tree/main/benchmarks)
 
