@@ -16,8 +16,21 @@ Open source. Native ChatGPT on your Mac. Built by [Autonomous Production](https:
 
 ## Benchmarks
 
-- [AssistantBench](benchmarks/assistantbench/): results, verification details, and leaderboard evidence.
-- [OSWorld 2.0](benchmarks/osworld-2.0/): benchmark documentation and artifact location.
+### AssistantBench
+
+**#1 on the recorded official hidden-test leaderboard: 50.70% accuracy across 181 tasks.**
+
+[![AssistantBench leaderboard with AutoBot’s result highlighted in red](docs/benchmark-charts/assistantbench-highlighted.png)](benchmarks/assistantbench/)
+
+[Results and verification](benchmarks/assistantbench/)
+
+### OSWorld 2.0
+
+**32.41% binary accuracy and 64.28% partial accuracy across 108 tasks.** Final best-valid-per-task aggregate, compared with the published September 10, 2026 leaderboard snapshot.
+
+[![OSWorld 2.0 comparison with AutoBot’s result highlighted in red](docs/benchmark-charts/osworld-2.0-highlighted.png)](benchmarks/osworld-2.0/)
+
+[Results and methodology](benchmarks/osworld-2.0/)
 
 ## What it changes
 
