@@ -668,7 +668,7 @@ if [[ "$ROLLBACK" -eq 1 && -f "$SOURCE_ROOT/.install-state/installed-manifest.sh
 else
   aa_generate_manifest "$SOURCE_ROOT" "$ALLOWLIST" "$STAGE/.install-state/installed-manifest.sha256"
 fi
-for executable in Install.command install.sh uninstall.sh runtime/bin/autoassist runtime/lib/common.sh runtime/lib/install-common.sh runtime/lib/install-doctor.sh skills/first-time/scripts/validate-setup.sh skills/first-time/scripts/write-status.sh; do
+for executable in Install.command install.sh uninstall.sh runtime/bin/autoassist runtime/lib/common.sh runtime/lib/install-common.sh runtime/lib/install-doctor.sh skills/first-time/scripts/validate-setup.sh skills/first-time/scripts/walkthrough-progress.sh skills/first-time/scripts/write-status.sh; do
   [[ ! -f "$STAGE/$executable" ]] || /bin/chmod 700 "$STAGE/$executable"
 done
 
