@@ -22,6 +22,8 @@ Open source. Native ChatGPT on your Mac. Built by [Autonomous Production](https:
 
 [![AssistantBench leaderboard with AutoBot’s result highlighted in red](docs/benchmark-charts/assistantbench-highlighted.png)](benchmarks/assistantbench/)
 
+<sub>AutoAssist was the harness's previous brand name, changed to AutoBot two weeks after this screenshot.</sub>
+
 [Results and verification](benchmarks/assistantbench/)
 
 ### OSWorld 2.0
