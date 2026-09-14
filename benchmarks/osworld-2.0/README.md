@@ -8,7 +8,7 @@ Autobot with GPT-5.6 Sol Max fully completed **35 tasks** in our final combined 
 
 ## Result and method
 
-This is our **best-valid-per-task aggregate**, finalized September 10, 2026, on release `osworld-v2-2026.08.08`. It combines 92 retained results with the highest valid native score for each of 16 rerun tasks across R9 and R10. Equal scores retain the earliest eligible attempt.
+This is our **best-valid-per-task aggregate**, finalized September 10, 2026, on release `osworld-v2-2026.08.08`. It combines 92 retained results with the highest valid native score for each of 16 rerun tasks across R9 and R10. Equal scores retain the earliest eligible attempt. The 16 tasks were rerun because a bug was found which allowed the harness to use Astra for those 16 tasks (Astra was released mid benchmark run). The impact of Astra corrupted the results for those 16 tasks, and thus the score could not be used. We then re-ran those 16 tasks using only Sol-Max, to preserve the integrity of the benchmarking task scores. The R9 and R10 reference revisions made to ensure no Astra was used. R9 was successful for nearly all 16 tasks, but an infrastructure bug was found which led to the use of the R10 harness. The R10 harness had its own issues, and so for the sake of expediency, we used the highest of the two scores. Neither R9 nor R10 used Astra. 
 
 Scores come from the benchmark's native task evaluator. Binary accuracy counts exact `1.0` results: `35 / 108 × 100 = 32.41%`. Partial accuracy averages the native rewards: `69.42029134083895352 / 108 × 100 = 64.28%`.
 
