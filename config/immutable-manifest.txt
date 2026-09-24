@@ -8,6 +8,7 @@
 03_OUTPUTS/README.md
 AGENTS.md
 CHANGELOG.md
+INSTALL_FOR_AI.md
 Install.command
 LICENSE
 PRIVACY.md
@@ -34,6 +35,8 @@ docs/COMPARISON.md
 docs/INSTALL.md
 docs/PERMISSIONS.md
 docs/TROUBLESHOOTING.md
+docs/benchmark-charts/assistantbench-highlighted.png
+docs/benchmark-charts/osworld-2.0-highlighted.png
 install.sh
 runtime/bin/autoassist
 runtime/core/cli.mjs
@@ -61,6 +64,7 @@ skills/first-time/scripts/validate-setup.sh
 skills/first-time/scripts/walkthrough-progress.sh
 skills/first-time/scripts/write-status.sh
 tests/run-all.sh
+tests/test-actual-node-absent.sh
 tests/test-core.mjs
 tests/test-first-time-status.sh
 tests/test-first-time-walkthrough.sh
@@ -68,7 +72,9 @@ tests/test-install-interruption.sh
 tests/test-install-security.sh
 tests/test-install-upgrade.sh
 tests/test-install.sh
+tests/test-prior-release-upgrades.sh
 tests/test-privacy-scan.sh
 tests/test-publication-scan.mjs
 tests/test-runtime.sh
+tests/test-supported-node-install.sh
 uninstall.sh
