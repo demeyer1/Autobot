@@ -9,6 +9,7 @@ APP="$TEST_ROOT/account home/Autobot Workspace"
 /bin/cp -R "$SOURCE_ROOT/runtime/bin" "$SOURCE_ROOT/runtime/core" "$APP/runtime/"
 /bin/cp "$SOURCE_ROOT/VERSION" "$SOURCE_ROOT/AGENTS.md" "$APP/"
 CLI="$APP/runtime/bin/autoassist"
+/bin/chmod 755 "$CLI" # Release ZIP canonicalizes the CLI mode; git source does not.
 "$CLI" help >/dev/null
 "$CLI" version >/dev/null
 [[ ! -e "$APP/state" ]]

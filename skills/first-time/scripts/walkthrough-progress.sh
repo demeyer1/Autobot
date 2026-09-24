@@ -18,6 +18,27 @@ Usage: walkthrough-progress.sh --root ROOT --account-home HOME show
        walkthrough-progress.sh --root ROOT --account-home HOME record \
          --stage STAGE --status STATUS --gate GATE --evidence EVIDENCE \
          [--smoke-objective ID]
+
+record accepts only these exact values:
+  STAGE:    installed | project-primary | local-configuration | native-capabilities | local-smoke | independent-review | complete
+  STATUS:   active | waiting-user | pending-capability | ready-for-review | complete
+  GATE:     none | sign-in | project-primary | computer-use-install | target-app-approval | microphone | screen-recording | accessibility | automation | protected-files | security-consent | node-unavailable
+  EVIDENCE: none | installed-receipt | primary-project-readback | local-config-readback | native-capability-readback | fresh-readable-gate | fresh-post-gate-readback | capability-unavailable | doctor-readback | local-smoke-readback | independent-acceptance | marker-readback
+
+Examples:
+  walkthrough-progress.sh --root ROOT --account-home HOME show
+  walkthrough-progress.sh --root ROOT --account-home HOME record \
+    --stage local-smoke --status active --gate none --evidence doctor-readback
+  walkthrough-progress.sh --root ROOT --account-home HOME record \
+    --stage independent-review --status ready-for-review --gate none \
+    --evidence local-smoke-readback --smoke-objective SMOKE_ID
+
+The checkpoint is resume metadata only. It cannot create or replace the
+first-time completion marker. Read references/setup-workflow.md before writing
+the marker and use its exact schema and readback sequence. A
+ready-for-review cursor is accepted only while objective-status is complete
+and all five smoke evidence files still bind their objective and stage with
+external_mutation=false; show rejects stale or missing smoke evidence.
 EOF
 }
 
@@ -127,6 +148,51 @@ stage_rank() {
   case "$1" in installed) print 1;; project-primary) print 2;; local-configuration) print 3;; native-capabilities) print 4;; local-smoke) print 5;; independent-review) print 6;; complete) print 7;; esac
 }
 
+smoke_objective_readback_valid() {
+  local objective_id="$1"
+  local evidence_dir="$ROOT/03_OUTPUTS/.first-time-smoke/$objective_id"
+  local status_file=""
+  local stage
+  local evidence
+  local readiness
+  local -a smoke_stages
+  smoke_stages=(research_complete draft_complete destination_updated save_confirmed rendered_readback_verified)
+
+  [[ "$objective_id" =~ '^[a-z0-9][a-z0-9-]{2,63}$' ]] || return 1
+  [[ -d "$evidence_dir" && ! -L "$evidence_dir" \
+    && "$(/usr/bin/stat -f '%u' "$evidence_dir")" == "$(/usr/bin/id -u)" \
+    && "$(/usr/bin/stat -f '%Lp' "$evidence_dir")" == 700 ]] || return 1
+  RUNTIME="$ROOT/runtime/bin/autoassist"
+  [[ -f "$RUNTIME" && ! -L "$RUNTIME" && -x "$RUNTIME" ]] || return 1
+  status_file="$(/usr/bin/mktemp "${TMPDIR:-/tmp}/autoassist-first-time-progress.XXXXXX")" || return 1
+  if ! "$RUNTIME" objective-status "$objective_id" > "$status_file" 2>/dev/null; then
+    /bin/rm -f -- "$status_file"
+    return 1
+  fi
+  readiness="$(/usr/bin/plutil -extract result.readiness.complete raw -o - "$status_file" 2>/dev/null || true)"
+  if [[ "$readiness" != true ]]; then
+    /bin/rm -f -- "$status_file"
+    return 1
+  fi
+  for stage in "${smoke_stages[@]}"; do
+    evidence="$evidence_dir/$stage.txt"
+    if [[ ! -f "$evidence" || -L "$evidence" \
+      || "$(/usr/bin/stat -f '%u' "$evidence")" != "$(/usr/bin/id -u)" \
+      || "$(/usr/bin/stat -f '%Lp' "$evidence")" != 600 ]]; then
+      /bin/rm -f -- "$status_file"
+      return 1
+    fi
+    if ! /usr/bin/grep -F -x -q "objective_id=$objective_id" "$evidence" \
+      || ! /usr/bin/grep -F -x -q "stage=$stage" "$evidence" \
+      || ! /usr/bin/grep -F -x -q 'external_mutation=false' "$evidence"; then
+      /bin/rm -f -- "$status_file"
+      return 1
+    fi
+  done
+  /bin/rm -f -- "$status_file"
+  return 0
+}
+
 read_record() {
   local key="$1"
   [[ -f "$STATE" && ! -L "$STATE" ]] || return 1
@@ -163,6 +229,7 @@ load_and_validate_record() {
   fi
   if [[ "$saved_status" == ready-for-review ]]; then
     [[ "$saved_stage" == independent-review && "$saved_evidence" == local-smoke-readback && "$saved_smoke" != none ]] || aa_die "walkthrough review readiness is invalid"
+    smoke_objective_readback_valid "$saved_smoke" || aa_die "walkthrough review smoke evidence is stale"
   fi
 }
 
@@ -201,6 +268,7 @@ fi
 if [[ "$STATUS" == ready-for-review ]]; then
   [[ "$STAGE" == independent-review && "$EVIDENCE" == local-smoke-readback && "$SMOKE_OBJECTIVE_ID" != none ]] || aa_usage_die "review readiness requires the validated local smoke"
   [[ -f "$ROOT/config/first-time.conf" && ! -L "$ROOT/config/first-time.conf" ]] || aa_die "review readiness requires current setup configuration"
+  smoke_objective_readback_valid "$SMOKE_OBJECTIVE_ID" || aa_die "review readiness requires current smoke status and evidence"
 fi
 if [[ "$STATUS" == complete ]]; then
   [[ "$STAGE" == complete && "$GATE" == none && "$EVIDENCE" == marker-readback ]] || aa_usage_die "walkthrough completion requires marker readback"

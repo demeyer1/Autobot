@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0 (prerelease)
+
+The local runtime now records a terminal attestation that binds every validated stage, its evidence, requirements, content and runtime build. Completion is rechecked against current bytes, so an attestation cannot substitute for a fresh external destination review.
+
+Heartbeat evaluation now reports bounded quiescence and explicit pause reasons without starting a model or scheduler. Owner history and sequenced checkpoints improve recovery, while uncertain foreground handoffs retain a no-retry state until independent readback. Scoped memory can bind an installation-local source file to its SHA-256 digest.
+
+The release package includes the public AI installation guide and benchmark charts, with reproducible archives and a financial-data publication scan. Existing user data remains private and outside the distributable package.
+
+Fresh installations leave the optional local liveness service off until explicitly enabled. An existing configured service is retained on upgrade when Node remains available unless explicitly disabled; its logs are owner-only when enabled.
+
 ## 0.3.0
 
 First-time setup is now an active, resumable foreground walkthrough. It applies private local defaults, skips already verified work, preserves the earliest unresolved user or capability gate, and binds completion to the existing independent smoke, marker and status checks. Native Project, account, Computer Use and permission availability are reported separately; missing optional access never becomes a fabricated setup claim.

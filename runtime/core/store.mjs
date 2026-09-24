@@ -6,6 +6,10 @@ export const MAX_STORE_BYTES = 16 * 1024 * 1024;
 export const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 export const canonical = value => JSON.stringify(value, (_, v) => v && !Array.isArray(v) && typeof v === 'object' ? Object.fromEntries(Object.entries(v).sort(([a],[b]) => a.localeCompare(b))) : v);
 export const fail = (code, message = code) => { const e = new Error(message); e.code = code; throw e; };
+// The product only knows a generic protected-context marker.  It does not
+// embed any maintainer/private path names in the public runtime.
+const PROTECTED_SEGMENT = 'protected_context';
+const SHA256 = /^[a-f0-9]{64}$/;
 export function text(value, name = 'text', max = 4000) {
   if (typeof value !== 'string' || !value.trim() || value.length > max || value.includes('\0')) fail('invalid_input', `Invalid ${name}`);
   return value.trim();
@@ -17,6 +21,7 @@ export function confined(root, value, { exists = true, directory = false } = {})
   if (rel.startsWith('..') || path.isAbsolute(rel)) fail('path_outside_installation');
   let part = path.parse(p).root;
   for (const name of p.split(path.sep).filter(Boolean)) {
+    if (name.toLowerCase() === PROTECTED_SEGMENT) fail('protected_path_rejected');
     part = path.join(part, name);
     if (!fs.existsSync(part)) { if (exists) fail('path_missing'); else continue; }
     const s = fs.lstatSync(part);
@@ -29,6 +34,28 @@ export function confined(root, value, { exists = true, directory = false } = {})
   }
   return p;
 }
+
+// Memory and context references are installation-relative.  This keeps a
+// durable record useful after relocation while preventing traversal, symlink
+// escape, and accidental access to protected source trees.
+export function scopedFile(root, relative, { allowMissing = false } = {}) {
+  if (typeof relative !== 'string' || !relative.trim() || path.isAbsolute(relative)
+    || relative.includes('\\') || relative.split('/').some(part => !part || part === '.' || part === '..'
+      || part.toLowerCase() === PROTECTED_SEGMENT || part.includes('\0'))) {
+    fail('unsafe_scoped_path');
+  }
+  const absolute = path.resolve(root, relative);
+  const normalized = path.relative(root, absolute);
+  if (!normalized || normalized.startsWith('..') || path.isAbsolute(normalized)) fail('unsafe_scoped_path');
+  return confined(root, absolute, { exists: !allowMissing });
+}
+
+export function validSha256(value) { return typeof value === 'string' && SHA256.test(value); }
+
+export function fileDigest(root, relative) {
+  const file = scopedFile(root, relative);
+  return sha(fs.readFileSync(file));
+}
 export function validateRoot(value) {
   const root = path.resolve(text(value, 'root'));
   if (!path.isAbsolute(value) || root === path.parse(root).root) fail('invalid_root');
@@ -40,6 +67,9 @@ export function emptyStore() { return { schema:2, revision:0, roots:{}, memory:{
 export function validateStore(s) {
   if (!s || s.schema !== 2 || !Number.isSafeInteger(s.revision) || s.revision < 0) fail('unsupported_state_schema');
   for (const k of ['roots','memory','sessions','issues','queue','outbox','legacy_imports']) if (!s[k] || typeof s[k] !== 'object' || Array.isArray(s[k])) fail('invalid_store');
+  if (s.orphan_history !== undefined && (!s.orphan_history || typeof s.orphan_history !== 'object' || Array.isArray(s.orphan_history))) fail('invalid_store');
+  if (s.time_zone !== undefined && typeof s.time_zone !== 'string') fail('invalid_store');
+  if (s.last_tick !== null && s.last_tick !== undefined && typeof s.last_tick !== 'string') fail('invalid_store');
   return s;
 }
 export function readStore(root) {
@@ -47,7 +77,9 @@ export function readStore(root) {
   if (!fs.existsSync(file)) return emptyStore();
   confined(root,file);
   if (fs.statSync(file).size > MAX_STORE_BYTES) fail('store_too_large');
-  return validateStore(JSON.parse(fs.readFileSync(file,'utf8')));
+  let value;
+  try { value = JSON.parse(fs.readFileSync(file,'utf8')); } catch { fail('invalid_store_json'); }
+  return validateStore(value);
 }
 export function atomicWrite(file, value) {
   const data = Buffer.from(JSON.stringify(value,null,2)+'\n');

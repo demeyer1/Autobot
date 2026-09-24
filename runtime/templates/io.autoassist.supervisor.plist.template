@@ -19,6 +19,8 @@
   <string>__AUTOASSIST_HOME__</string>
   <key>RunAtLoad</key>
   <true/>
+  <key>Umask</key>
+  <integer>63</integer>
   <key>StartInterval</key>
   <integer>60</integer>
   <key>StandardOutPath</key>

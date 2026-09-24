@@ -5,21 +5,23 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ScanError, reject, LIMITS, hash, crc32, safeRelative, safeAbsolute, readBounded, parseAllowlist, scanEntries, scanTree, readMediaReviews } from './publication-scan.mjs';
 const ZIP_LIMIT = 72 * 1024 * 1024;
+const SOURCE_MODES = new Set([0o600, 0o644, 0o700, 0o755]);
 const comparePath = (a,b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
 const ROOT = 'AutoAssist/';
-// GitHub web commits may record all source files as nonexecutable. The archive
-// has its own deterministic, name-based policy; passive benchmark files stay 644.
+// Private release staging is owner-only; GitHub web commits may record source
+// files as nonexecutable. The ZIP has its own deterministic, name-based mode
+// policy; passive benchmark files stay 644 in the distributable archive.
 export function canonicalArchiveMode(relative) {
   if (!safeRelative(relative)) reject('zip_path');
   if (relative.startsWith('benchmarks/')) return 0o644;
   return /\.(?:sh|command)$/i.test(relative) || relative === 'runtime/bin/autoassist' ? 0o755 : 0o644;
 }
 export function makeZip(input) {
-  if (!Array.isArray(input) || input.some(e => ![0o644,0o755].includes(e.mode) || (e.path.startsWith('benchmarks/') && e.mode!==0o644))) reject('source_mode');
+  if (!Array.isArray(input) || input.some(e => !SOURCE_MODES.has(e.mode) || (e.path.startsWith('benchmarks/') && ![0o600,0o644].includes(e.mode)))) reject('source_mode');
   const entries = input.map(e => ({ ...e, mode: canonicalArchiveMode(e.path) })).sort(comparePath); const locals = []; const central = []; let offset = 0;
   if (!entries.length || entries.length > LIMITS.files || new Set(entries.map(x=>x.path)).size !== entries.length) reject('zip_entries');
   for (const e of entries) {
-    if (!safeRelative(e.path) || !Buffer.isBuffer(e.bytes) || ![0o644,0o755].includes(e.mode) || e.bytes.length > LIMITS.file) reject('zip_entry');
+    if (!safeRelative(e.path) || !Buffer.isBuffer(e.bytes) || !SOURCE_MODES.has(e.mode) || e.bytes.length > LIMITS.file) reject('zip_entry');
     const name = Buffer.from(ROOT + e.path); const crc = crc32(e.bytes); const local = Buffer.alloc(30);
     local.writeUInt32LE(0x04034b50,0); local.writeUInt16LE(20,4); local.writeUInt16LE(0x0800,6); local.writeUInt16LE(0,8); local.writeUInt16LE(0,10); local.writeUInt16LE(33,12);
     local.writeUInt32LE(crc,14); local.writeUInt32LE(e.bytes.length,18); local.writeUInt32LE(e.bytes.length,22); local.writeUInt16LE(name.length,26);

@@ -10,7 +10,8 @@ DESTINATION=""
 DESTINATION_EXPLICIT=0
 INSTANCE_ID=""
 INSTANCE_ID_EXPLICIT=0
-SKIP_LAUNCH_AGENT=0
+SKIP_LAUNCH_AGENT=1
+LAUNCH_AGENT_CHOICE_EXPLICIT=0
 ROLLBACK=0
 TARGET_QUIESCENT=0
 TEST_MODE=0
@@ -38,7 +39,8 @@ Usage: ./install.sh [options]
   --destination PATH      Install into PATH. Default: <home-root>/AutoAssist
   --home-root PATH        Bind user-scoped files without changing HOME.
   --instance-id TOKEN     Stable instance name (derived from destination by default).
-  --skip-launch-agent     Do not install or activate a LaunchAgent.
+  --enable-launch-agent   Opt in to the local LaunchAgent (requires Node 22+).
+  --skip-launch-agent     Leave the LaunchAgent inactive, including on upgrade.
   --repair                Reconcile a managed installation transactionally.
   --rollback              Restore receipt-bound previous code, preserving current state.
   --target-quiescent      Assert all writers for an existing target are stopped.
@@ -55,7 +57,8 @@ while [[ $# -gt 0 ]]; do
     --destination) need_value "$@"; DESTINATION="$2"; DESTINATION_EXPLICIT=1; shift 2 ;;
     --home-root) need_value "$@"; ACCOUNT_HOME="$2"; shift 2 ;;
     --instance-id) need_value "$@"; INSTANCE_ID="$2"; INSTANCE_ID_EXPLICIT=1; shift 2 ;;
-    --skip-launch-agent) SKIP_LAUNCH_AGENT=1; shift ;;
+    --enable-launch-agent) SKIP_LAUNCH_AGENT=0; LAUNCH_AGENT_CHOICE_EXPLICIT=1; shift ;;
+    --skip-launch-agent) SKIP_LAUNCH_AGENT=1; LAUNCH_AGENT_CHOICE_EXPLICIT=1; shift ;;
     --repair) shift ;; # Explicit spelling; reconciliation is always transactional.
     --rollback) ROLLBACK=1; shift ;;
     --target-quiescent) TARGET_QUIESCENT=1; shift ;;
@@ -462,6 +465,7 @@ if [[ "$ROLLBACK" -eq 1 ]]; then
   SOURCE_ROOT="$rollback_source"
   TARGET_QUIESCENT=1
   SKIP_LAUNCH_AGENT=1
+  LAUNCH_AGENT_CHOICE_EXPLICIT=1
   [[ -x "$SOURCE_ROOT/runtime/lib/install-doctor.sh" ]] || LEGACY_ROLLBACK=1
 fi
 
@@ -524,6 +528,10 @@ if [[ -e "$DESTINATION" ]]; then
       aa_service_is_absent "$legacy_label" || aa_die "legacy service is active without an owned projection"
     fi
   fi
+fi
+
+if [[ "$INSTALL_MODE" == update && "$OLD_SERVICE_CONFIGURED" -eq 1 && "$LAUNCH_AGENT_CHOICE_EXPLICIT" -eq 0 ]]; then
+  SKIP_LAUNCH_AGENT=0
 fi
 
 if [[ "$INSTALL_MODE" == update ]]; then

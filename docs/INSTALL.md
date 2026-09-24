@@ -6,15 +6,15 @@ The default folder is `~/AutoAssist`. The product is called Autobot; keeping the
 
 The base installer uses macOS's zsh and standard local tools. It requires no administrator account, API key, sign-in, Node installation or new privacy permission. Advanced task/context/evidence commands require Node.js 22 or later. The installer diagnoses runtime availability and does not download or change your shared toolchain.
 
-The current release is tested on the macOS/CPU/runtime listed in its validation report. Intel Macs and other macOS versions are not implied to be tested by an Apple-silicon run. Native app support is separate: check the [current ChatGPT desktop requirements](https://learn.chatgpt.com/docs/app), available local Project features and your account's access.
+The release page attaches **AutoAssist-v0.4.0-validation.md** with the exact tested macOS, CPU, runtime and archive hash. Intel Macs and other macOS versions are not implied to be tested by an Apple-silicon run. Native app support is separate: check the [current ChatGPT desktop requirements](https://learn.chatgpt.com/docs/app), available local Project features and your account's access.
 
 Keep enough space for the package plus a staged copy and recoverable backup of an existing installation. The installer checks space before a transaction. Large user workspaces need more room than a fresh install. Back up important data before upgrading pre-release software.
 
 ## Download and install
 
-1. Download the versioned ZIP and matching checksum from this repository's Releases page. Use the release asset, not GitHub's automatic source-code ZIP.
-2. In the folder containing both files, run `shasum -a 256 -c AutoAssist-v0.3.0.zip.sha256`. Continue only if it reports `OK`. If the matching checksum companion is missing, retrieve it from the same official release and stop before installation if verification is not possible.
-3. Extract the ZIP, open the extracted folder and double-click `Install.command`. You can also run `./install.sh` from Terminal.
+1. Download the versioned ZIP, matching checksum and manifest companions from this repository's Releases page. Use the release asset, not GitHub's automatic source-code ZIP.
+2. In the folder containing both files, run `shasum -a 256 -c AutoAssist-v0.4.0.zip.sha256`. Continue only if it reports `OK`. If the matching checksum companion is missing, retrieve it from the same official release and stop before installation if verification is not possible.
+3. Extract the ZIP. From the extracted `AutoAssist` folder run `shasum -a 256 -c ../AutoAssist-v0.4.0.manifest.sha256` and require every entry to report `OK`. Then double-click `Install.command`, or run `./install.sh` from Terminal.
 4. If macOS blocks opening the file, inspect its origin and use the standard Finder/System Settings opening flow. Do not disable Gatekeeper or strip security attributes as an installation shortcut.
 5. Read the reported installation path and doctor result. An installed folder and an available advanced runtime are separate results.
 
@@ -74,7 +74,7 @@ To repair product-file or permission drift, use `./install.sh --repair --target-
 
 ## Local liveness
 
-The optional service is scoped to one installation. It records local liveness and pending work; it does not run a model or control desktop apps. `--skip-launch-agent` leaves it inactive. An unavailable runtime cannot arm it.
+The optional service is off by default. It is scoped to one installation and records local liveness and pending work; it does not run a model or control desktop apps. Use `--enable-launch-agent` to opt in after Node 22+ is available. An update retains an already configured service unless `--skip-launch-agent` explicitly disables it. An unavailable runtime cannot arm it.
 
 Native scheduled reasoning is configured separately through supported app controls. It requires the app, computer and local files to remain available. Verify an actual run before relying on it. [Scheduled tasks](https://learn.chatgpt.com/docs/automations)
 
@@ -84,4 +84,4 @@ Run the installed `uninstall.sh` with its exact destination and account home whe
 
 ## Test boundary
 
-Read the release validation report for actual tested bytes and commands. An isolated folder under the same macOS user proves path/state isolation; it is not a fresh macOS account, reset TCC database or VM. This release does not claim that existing host permissions prove every new Mac's permission behavior.
+Read **AutoAssist-v0.4.0-validation.md** on the release page for actual tested bytes and commands. An isolated folder under the same macOS user proves path/state isolation; it is not a fresh macOS account, reset TCC database or VM. This release does not claim that existing host permissions prove every new Mac's permission behavior.

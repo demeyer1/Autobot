@@ -74,6 +74,7 @@ STATUS_DIR="$AUTOASSIST_ROOT/01_PROJECTS/first-time"
 STATUS_FILE="$STATUS_DIR/STATUS.md"
 MARKER="$AUTOASSIST_ROOT/.install-state/first-time-complete"
 VALIDATOR="$AUTOASSIST_ROOT/skills/first-time/scripts/validate-setup.sh"
+PROGRESS_HELPER="$AUTOASSIST_ROOT/skills/first-time/scripts/walkthrough-progress.sh"
 
 if [[ ! -f "$PROJECTS_FILE" || -L "$PROJECTS_FILE" ]]; then
   /bin/echo "PROJECTS.md must be a regular non-symlink file" >&2
@@ -95,6 +96,28 @@ if [[ "$STATE" == "pending" ]]; then
   fi
   TARGET_HEADER="## Active"
   MANAGED_LINE="- [First-time setup](01_PROJECTS/first-time/STATUS.md): setup is incomplete; independent validation and the completion marker are pending."
+
+  PENDING_CURRENT_STATUS="Setup is incomplete. Independent validation and .install-state/first-time-complete are pending."
+  PENDING_NEXT_ACTION_1="Complete the local setup smoke objective."
+  PENDING_NEXT_ACTION_2="Obtain independent read-only validation."
+  PENDING_NEXT_ACTION_3="Write and validate the owner-only completion marker."
+  PENDING_BLOCKERS="Independent validation and the completion marker remain pending."
+  PENDING_REVIEW_READY=0
+  if [[ -x "$PROGRESS_HELPER" && ! -L "$PROGRESS_HELPER" ]]; then
+    progress_json="$("$PROGRESS_HELPER" --root "$AUTOASSIST_ROOT" --account-home "$ACCOUNT_HOME" show 2>/dev/null || true)"
+    progress_smoke="$(/usr/bin/printf '%s\n' "$progress_json" | /usr/bin/sed -n 's/.*"smoke_objective_id":"\([a-z0-9][a-z0-9-]*\)".*/\1/p')"
+    if [[ "$progress_json" == *'"status":"ready-for-review"'* \
+      && "$progress_json" == *'"stage":"independent-review"'* \
+      && "$progress_json" == *'"evidence":"local-smoke-readback"'* \
+      && -n "$progress_smoke" && "$progress_smoke" != none ]]; then
+      PENDING_CURRENT_STATUS="The local setup smoke is complete and its checkpoint is ready for independent read-only validation. The owner-only .install-state/first-time-complete marker remains pending."
+      PENDING_NEXT_ACTION_1="Obtain independent read-only validation of the current configuration, doctor result, smoke objective $progress_smoke, file modes, and absence of secrets or raw messages."
+      PENDING_NEXT_ACTION_2="After independent acceptance, write and validate the owner-only completion marker."
+      PENDING_NEXT_ACTION_3="Read back both generated status surfaces, then resume the original task."
+      PENDING_BLOCKERS="Independent read-only validation and the completion marker remain pending. Do not repeat the smoke unless checkpoint revalidation finds the recorded objective stale."
+      PENDING_REVIEW_READY=1
+    fi
+  fi
 else
   if [[ ! -x "$VALIDATOR" ]]; then
     /bin/echo "First-time setup validator is missing or not executable" >&2
@@ -195,7 +218,7 @@ STATUS_TEMP="$(/usr/bin/mktemp "$STATUS_FILE.tmp.XXXXXX")"
 ' "$PROJECTS_FILE" > "$PROJECTS_TEMP"
 
 if [[ "$STATE" == "pending" ]]; then
-  /bin/cat > "$STATUS_TEMP" <<'EOF'
+  /bin/cat > "$STATUS_TEMP" <<EOF
 # First-time setup
 
 ## Objective
@@ -204,17 +227,17 @@ Configure and independently validate this AutoAssist installation without extern
 
 ## Current status
 
-Setup is incomplete. Independent validation and `.install-state/first-time-complete` are pending.
+$PENDING_CURRENT_STATUS
 
 ## Next actions
 
-1. Complete the local setup smoke objective.
-2. Obtain independent read-only validation.
-3. Write and validate the owner-only completion marker.
+1. $PENDING_NEXT_ACTION_1
+2. $PENDING_NEXT_ACTION_2
+3. $PENDING_NEXT_ACTION_3
 
 ## Blockers
 
-Independent validation and the completion marker remain pending.
+$PENDING_BLOCKERS
 
 ## Decisions needed
 
@@ -222,7 +245,7 @@ None.
 
 ## Completion gate
 
-Independent validation must bind the current configuration and smoke objective, followed by a mode-`600` marker and successful `--require-marker` readback.
+Independent validation must bind the current configuration and smoke objective, followed by a mode-600 marker and successful --require-marker readback.
 EOF
 else
   /bin/cat > "$STATUS_TEMP" <<'EOF'
@@ -272,8 +295,18 @@ if [[ "$(/usr/bin/awk 'index($0, "](01_PROJECTS/first-time/STATUS.md):") > 0 { c
 fi
 if [[ "$STATE" == "pending" ]]; then
   /usr/bin/grep -F -q 'setup is incomplete' "$PROJECTS_FILE"
-  /usr/bin/grep -F -q 'Setup is incomplete.' "$STATUS_FILE"
-  /usr/bin/grep -F -q 'completion marker remain pending' "$STATUS_FILE"
+  if [[ "$PENDING_REVIEW_READY" == 1 ]]; then
+    /usr/bin/grep -F -q 'The local setup smoke is complete' "$STATUS_FILE"
+    /usr/bin/grep -F -q 'independent read-only validation' "$STATUS_FILE"
+    /usr/bin/grep -F -q 'Do not repeat the smoke unless checkpoint revalidation finds the recorded objective stale.' "$STATUS_FILE"
+    if /usr/bin/grep -F -q 'Complete the local setup smoke objective.' "$STATUS_FILE"; then
+      /bin/echo "pending first-time status retained stale smoke-first language" >&2
+      exit 1
+    fi
+  else
+    /usr/bin/grep -F -q 'Setup is incomplete.' "$STATUS_FILE"
+    /usr/bin/grep -F -q 'completion marker remain pending' "$STATUS_FILE"
+  fi
 else
   /usr/bin/grep -F -q 'setup validation passed' "$PROJECTS_FILE"
   /usr/bin/grep -F -q 'Setup validation passed.' "$STATUS_FILE"

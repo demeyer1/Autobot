@@ -22,26 +22,32 @@ For an update or repair, use a separate accessible setup folder outside the inst
 
 ## 2 Download and verify the release
 
-Run this block with the local shell tool using /bin/zsh, from the separate setup folder selected above. It downloads the packaged v0.3.0 release, checks its checksum, extracts it and prints the source folder to use next.
+Run this block with the local shell tool using /bin/zsh, from the separate setup folder selected above. It downloads the packaged v0.4.0 release, checks its checksum, extracts it and prints the source folder to use next.
 
 ```zsh
 set -euo pipefail
 umask 077
 AUTOBOT_STAGE="$(mktemp -d "$PWD/.autobot-install.XXXXXX")"
 cd "$AUTOBOT_STAGE"
-AUTOBOT_RELEASE="https://github.com/demeyer1/Autobot/releases/download/v0.3.0"
+AUTOBOT_RELEASE="https://github.com/demeyer1/Autobot/releases/download/v0.4.0"
 curl --fail --location --show-error \
-  "$AUTOBOT_RELEASE/AutoAssist-v0.3.0.zip" \
-  --output AutoAssist-v0.3.0.zip
+  "$AUTOBOT_RELEASE/AutoAssist-v0.4.0.zip" \
+  --output AutoAssist-v0.4.0.zip
 curl --fail --location --show-error \
-  "$AUTOBOT_RELEASE/AutoAssist-v0.3.0.zip.sha256" \
-  --output AutoAssist-v0.3.0.zip.sha256
-shasum -a 256 -c AutoAssist-v0.3.0.zip.sha256
-ditto -x -k AutoAssist-v0.3.0.zip .
+  "$AUTOBOT_RELEASE/AutoAssist-v0.4.0.zip.sha256" \
+  --output AutoAssist-v0.4.0.zip.sha256
+curl --fail --location --show-error \
+  "$AUTOBOT_RELEASE/AutoAssist-v0.4.0.manifest.sha256" \
+  --output AutoAssist-v0.4.0.manifest.sha256
+shasum -a 256 -c AutoAssist-v0.4.0.zip.sha256
+ditto -x -k AutoAssist-v0.4.0.zip .
+cd AutoAssist
+shasum -a 256 -c ../AutoAssist-v0.4.0.manifest.sha256
+cd ..
 printf 'Release source: %s/AutoAssist\n' "$AUTOBOT_STAGE"
 ```
 
-Continue after the checksum reports OK; if it fails, retrieve a fresh matching ZIP and checksum before running the installer. Use the release asset, not GitHub's automatic source-code ZIP; keep the verified download for a restart or retry.
+Continue after the ZIP checksum and every extracted manifest entry report OK; if either fails, retrieve fresh matching release assets before running the installer. Use the release asset, not GitHub's automatic source-code ZIP; keep the verified download for a restart or retry.
 
 ## 3 Read the installer and install
 
@@ -62,6 +68,8 @@ fi
 ```
 
 Read the receipt at .install-state/receipt.json in the installed folder and confirm its root, account_home and version match this installation. A healthy base install and an available advanced runtime are separate results; Node.js 22 or newer is needed for advanced commands and the setup smoke test.
+
+The optional local LaunchAgent is off on a fresh installation. Do not enable it as part of first-time setup unless the user requests local background liveness. See [Local liveness](docs/INSTALL.md#local-liveness).
 
 If Node is missing, use an available supported local runtime or guide installation from the official Node.js distribution, then rerun doctor. Keep the completed base installation and resume from it.
 
@@ -104,7 +112,7 @@ Finish with the installed folder and version, the checks that passed, any remain
 
 ## Existing installation or interrupted setup
 
-If the destination is already managed, read its receipt and run doctor before deciding whether it needs setup, repair or an update. Resume a healthy installation; use instructions matching an installed version newer than v0.3.0, and preserve an unrelated existing folder while resolving a different destination with the user.
+If the destination is already managed, read its receipt and run doctor before deciding whether it needs setup, repair or an update. Resume a healthy installation; use instructions matching an installed version newer than v0.4.0, and preserve an unrelated existing folder while resolving a different destination with the user.
 
 For an intended update, first finish or stop writers in that AutoBot installation, then run the command below from the newly verified release source outside the installed root. The flag asserts that the target is idle; it does not stop running work for you.
 
@@ -116,4 +124,4 @@ Use --repair with the same verified release for a repair, or the documented --ro
 
 ## Source references
 
-[AutoBot v0.3.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.3.0), [installation guide](https://github.com/demeyer1/Autobot/blob/v0.3.0/docs/INSTALL.md), [first-time skill](https://github.com/demeyer1/Autobot/blob/v0.3.0/skills/first-time/SKILL.md), [local projects](https://learn.chatgpt.com/docs/projects), and [official Node.js download](https://nodejs.org/en/download).
+[AutoBot v0.4.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.4.0), [installation guide](https://github.com/demeyer1/Autobot/blob/v0.4.0/docs/INSTALL.md), [first-time skill](https://github.com/demeyer1/Autobot/blob/v0.4.0/skills/first-time/SKILL.md), [local projects](https://learn.chatgpt.com/docs/projects), and [official Node.js download](https://nodejs.org/en/download).

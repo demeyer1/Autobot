@@ -21,12 +21,12 @@ if "$SOURCE_ROOT/install.sh" --home-root "$ACCOUNT_HOME" --destination "$ACCOUNT
 SERVICE_HOME="$TEST_ROOT/service-home"
 /bin/mkdir -p "$SERVICE_HOME/Library/LaunchAgents"
 /usr/bin/printf 'unowned\n' > "$SERVICE_HOME/Library/LaunchAgents/io.autoprod.autobot.collision.plist"
-if "$SOURCE_ROOT/install.sh" --home-root "$SERVICE_HOME" --destination "$SERVICE_HOME/AutoAssist" --instance-id collision --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/plist-collision.log" 2>&1; then /bin/echo "unowned same-instance plist was replaced" >&2; exit 1; fi
+if "$SOURCE_ROOT/install.sh" --home-root "$SERVICE_HOME" --destination "$SERVICE_HOME/AutoAssist" --instance-id collision --enable-launch-agent --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/plist-collision.log" 2>&1; then /bin/echo "unowned same-instance plist was replaced" >&2; exit 1; fi
 [[ ! -e "$SERVICE_HOME/AutoAssist" ]]
 SYMLINK_HOME="$TEST_ROOT/symlink-home"
 /bin/mkdir -p "$SYMLINK_HOME"
 /bin/ln -s "$TEST_ROOT" "$SYMLINK_HOME/Library"
-if "$SOURCE_ROOT/install.sh" --home-root "$SYMLINK_HOME" --destination "$SYMLINK_HOME/AutoAssist" --instance-id ancestor --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/launchagent-ancestor.log" 2>&1; then /bin/echo "symlinked LaunchAgents ancestor was accepted" >&2; exit 1; fi
+if "$SOURCE_ROOT/install.sh" --home-root "$SYMLINK_HOME" --destination "$SYMLINK_HOME/AutoAssist" --instance-id ancestor --enable-launch-agent --test-mode --test-root "$TEST_ROOT" > "$TEST_ROOT/launchagent-ancestor.log" 2>&1; then /bin/echo "symlinked LaunchAgents ancestor was accepted" >&2; exit 1; fi
 [[ ! -e "$SYMLINK_HOME/AutoAssist" ]]
 FIXTURE="$TEST_ROOT/release"
 /bin/cp -Rp "$SOURCE_ROOT" "$FIXTURE"

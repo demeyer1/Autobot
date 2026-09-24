@@ -18,7 +18,7 @@ flowchart TD
 
 ## One local work store
 
-The v0.2 runtime uses a product-local store with roots, outputs, attempts, requirement dependencies and intent revisions. A correction invalidates incompatible old support. A completed child cannot complete an unfinished root. Legacy v0.1 objective data is imported through a defined compatibility path rather than left as a competing writable ledger.
+The local runtime uses a product-local store with roots, outputs, attempts, requirement dependencies and intent revisions. A correction invalidates incompatible old support. A completed child cannot complete an unfinished root. Legacy v0.1 objective data is imported through a defined compatibility path rather than left as a competing writable ledger.
 
 State writes use exclusive ownership and atomic persistence. Checkpoints contain concrete progress and a resume point. Repeated unchanged failures require a new hypothesis; they cannot create an endless retry loop or a made-up user gate.
 
@@ -28,17 +28,19 @@ The five stages remain research, draft, destination update, persistence and rend
 
 Producer and validator labels must differ, but labels are not cryptographic identities. The coordinator must arrange a truly separate reviewer and fresh authoritative destination inspection. The CLI enforces local consistency. It does not automatically intercept all native assistant responses or prove that a reviewer exercised sound judgment.
 
+A terminal attestation binds validated stages, evidence, requirements, current content and runtime bytes. The status check recomputes those bindings and invalidates stale completion. It remains a local consistency record, not proof that an external action occurred.
+
 Local proof reuse is for unchanged local research or drafts. It never replaces fresh external delivery/readback evidence.
 
 ## Context and privacy
 
-The workspace retains a compact memory map and four purpose-specific zones. Memory records carry provenance, retention and assignment. Corrections supersede old active facts. Compact context is derived from scoped sources and falls back safely when stale or invalid.
+The workspace retains a compact memory map and four purpose-specific zones. Memory records carry provenance, retention and assignment, and can bind an installation-local source file to its current digest. Corrections supersede old active facts. Compact context is derived from scoped sources and falls back safely when stale or invalid.
 
 Zones are operating-policy boundaries within one trusted macOS account. They are not separate encrypted vaults or OS users. The package starts with empty user stores and has no inherited accounts, recipients, schedules or spending permissions.
 
 ## Recovery and optional scheduling
 
-A local tick can retain liveness, missing-owner and pending-handoff state. It never launches a model, controls the UI or sends a message. Foreground work uses one owner; an uncertain outcome requires destination reconciliation before retry. Outbound targets are unset by default.
+A local tick can retain liveness, missing-owner and pending-handoff state. Bounded heartbeat evaluation reports explicit pause reasons and does not arm a scheduler, launch a model, control the UI or send a message. Foreground work uses one owner with durable owner history and sequenced checkpoints; an uncertain outcome records no-retry until independent destination reconciliation. Outbound targets are unset by default.
 
 Native Goals and schedules remain optional app capabilities with their own account, availability, usage and machine requirements. Discover and test them instead of assuming them from a configuration flag. [Native schedules](https://learn.chatgpt.com/docs/automations)
 
