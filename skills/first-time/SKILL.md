@@ -11,7 +11,7 @@ On a new Mac, the user first completes the minimal bootstrap in the install guid
 
 ## First-use gate
 
-1. State the short plan and keep the user's original task as the final phase. Resolve the exact release source or managed installation from the current working context or explicit root. Never search protected folders. Read [the active operator walkthrough](references/operator-walkthrough.md).
+1. State the short plan and keep the user's original task as the final phase. Resolve the exact release source or managed installation from the current working context or explicit root. Never search protected folders. Read [the active operator walkthrough](references/operator-walkthrough.md) and [the first-use workflow](references/setup-workflow.md) before changing setup state. The latter defines the completion-marker schema and marker readback sequence.
 2. For a managed installation, run the progress helper's `show`, doctor, and completion validation. If the marker validates and reconfiguration was not requested, reconcile generated status once and return to the original task without asking setup questions.
 3. For release media, require and verify the matching checksum companion from the same official release before running `Install.command` or `install.sh` through the local shell execution tool. A missing companion blocks installation. Do not pretend Computer Use can control Terminal or ChatGPT/Codex. If the installed folder must become the primary local Project, persist the exact manual handoff and resume in a fresh task there.
 4. On resume, revalidate the root, receipt, current project, configuration hash and claimed output for the recorded stage. Skip only actions whose current evidence still matches. Resume the earliest unfinished phase without duplicating installation, configuration or smoke objectives.
@@ -44,7 +44,7 @@ Initialize the four zone folders with:
 <root>/runtime/bin/autoassist initialize-zones
 ```
 
-Use `scripts/walkthrough-progress.sh` after each observed transition. It stores only typed resume metadata and cannot certify setup. For a user-only gate, record `waiting-user` only after a fresh readable prompt identifies the exact action. For an unavailable optional feature, record `pending-capability` and continue every safe local phase.
+Use `scripts/walkthrough-progress.sh --root <root> --account-home <account-home> show` at entry and `record` after each observed transition. Its accepted enums and exact command examples are printed by `walkthrough-progress.sh --help`; use `independent-review/ready-for-review/local-smoke-readback` only after the smoke objective is freshly read back. It stores only typed resume metadata and cannot certify setup. For a user-only gate, record `waiting-user` only after a fresh readable prompt identifies the exact action. For an unavailable optional feature, record `pending-capability` and continue every safe local phase.
 
 The checkpoint is the earliest unresolved cursor. Later local work may be recovered from its validated artifacts, but it must not overwrite an earlier user or capability gate. Clear that cursor only after fresh readback at the blocked phase.
 
@@ -53,7 +53,7 @@ The checkpoint is the earliest unresolved cursor. Later local work may be recove
 1. Run doctor with the explicit account home. A healthy base with unavailable runtime is useful but cannot run the advanced smoke or scheduler.
 2. Validate local configuration. With Node 22 or newer, run `validate-setup.sh --smoke` once and checkpoint its objective ID. Without Node, preserve a precise runtime prerequisite without downloading or changing a shared toolchain.
 3. Write pending generated status and obtain a separate read-only review of current files, doctor output, smoke state, modes and absence of secrets/raw messages. Producer labels or self-review do not qualify.
-4. After independent acceptance, write the existing `.install-state/first-time-complete` marker atomically with mode `600`. Rerun validation with `--require-marker`, reconcile complete status, and read both generated surfaces.
+4. After independent acceptance, read [the marker schema and seal sequence](references/setup-workflow.md#5-seal-and-reread), then write the existing `.install-state/first-time-complete` marker atomically with mode `600`. Rerun validation with `--require-marker`, reconcile complete status, and read both generated surfaces.
 5. Record walkthrough `complete` only with `marker-readback`. Report basic and advanced readiness, observed native capabilities, permission states, unresolved manual steps and the first harmless local result. Then return to the user's original task.
 
 Do not claim first-time setup complete while doctor, deterministic validation, independent review, or marker readback remains pending.
