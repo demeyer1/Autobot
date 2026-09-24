@@ -24,13 +24,29 @@ At every phase, inspect the expected output before recording a checkpoint. If an
 
 The progress file is one earliest-unresolved cursor. Finishing a later local action must not erase an earlier project, identity, permission, or capability gate. Revalidate local artifacts to skip work already done, then clear the earlier cursor only after fresh post-gate readback at that phase. A later smoke or review cannot make an unresolved earlier gate complete.
 
+Use the helper's exact command contract. At entry run:
+
+```bash
+skills/first-time/scripts/walkthrough-progress.sh --root <root> --account-home <account-home> show
+```
+
+After a verified transition run `record` with these exact enums: `STAGE` is `installed`, `project-primary`, `local-configuration`, `native-capabilities`, `local-smoke`, `independent-review`, or `complete`; `STATUS` is `active`, `waiting-user`, `pending-capability`, `ready-for-review`, or `complete`; `GATE` is `none`, `sign-in`, `project-primary`, `computer-use-install`, `target-app-approval`, `microphone`, `screen-recording`, `accessibility`, `automation`, `protected-files`, `security-consent`, or `node-unavailable`; and `EVIDENCE` is `none`, `installed-receipt`, `primary-project-readback`, `local-config-readback`, `native-capability-readback`, `fresh-readable-gate`, `fresh-post-gate-readback`, `capability-unavailable`, `doctor-readback`, `local-smoke-readback`, `independent-acceptance`, or `marker-readback`. The smoke-to-review transition is:
+
+```bash
+skills/first-time/scripts/walkthrough-progress.sh --root <root> --account-home <account-home> record \
+  --stage independent-review --status ready-for-review --gate none \
+  --evidence local-smoke-readback --smoke-objective <smoke-objective-id>
+```
+
+The helper's `--help` output is authoritative and rejects unsupported values. A checkpoint is resume metadata, not setup acceptance.
+
 1. **Installed:** run the installer through local shell execution, then verify the exact receipt, root and doctor result. Record `installed-receipt`.
 2. **Primary local Project:** Revalidate the bootstrap Project binding. Computer Use cannot automate ChatGPT or Codex. If the installed folder is not already the primary folder, leave a `project-primary` user gate with fresh readable evidence and give one exact handoff: in the Project menu choose **Edit project**, **Add folder**, select the installed folder, and **Make primary**. After the user opens a fresh task in that Project, resolve the current working directory and read back `AGENTS.md` plus the project-local first-time skill before recording `primary-project-readback`.
 3. **Local configuration:** inspect existing configuration first. Preserve valid user choices and unrelated files. For a new setup use `not-configured` for an unknown ChatGPT account; preserve independently observed browser/profile labels and use `not-configured` only when those fields are also unknown. Never invent identity. Default to the `PRIVATE` zone only, `SHARED` off, tone learning off, connectors read-only, external writes fail-closed, and no optional accounts or capabilities. Initialize zones and atomically write only the documented fixed-schema configuration.
 4. **Native capabilities:** use a supported callable capability to inspect only the current foreground target app. Computer Use may operate supported target apps and Finder when authorized; it cannot operate ChatGPT/Codex, Terminal, authentication dialogs, administrator controls or macOS security/privacy prompts. Record observed native availability separately from access evidence. A fresh successful supported invocation in the same project/profile/process/target context may record `observed-effective` without asking the user to restate a permission; saved configuration or a shell probe cannot. Skip optional capabilities that were not requested.
 5. **Local smoke:** run doctor. With Node 22 or newer, validate configuration and run the existing local no-external-mutation smoke once. Persist its objective ID in the walkthrough checkpoint. If Node is unavailable, retain `pending-capability/node-unavailable`; do not download a runtime, create another ledger or arm a scheduler.
 6. **Independent review:** write pending generated status, checkpoint `ready-for-review`, and provide the current config hash, doctor output and smoke ID to a separate read-only validator. Producer labels and progress records are not acceptance.
-7. **Complete:** after genuine independent acceptance, write the existing completion marker, validate it with `--require-marker`, reconcile generated status, read back both status surfaces, then record `complete/marker-readback`. Return to the user's original task and, when safe, perform its first harmless local output through the ordinary AutoAssist objective flow.
+7. **Complete:** after genuine independent acceptance, read [`references/setup-workflow.md`](setup-workflow.md#5-seal-and-reread) for the exact completion-marker schema and seal sequence, write the existing completion marker, validate it with `--require-marker`, reconcile generated status, read back both status surfaces, then record `complete/marker-readback`. Return to the user's original task and, when safe, perform its first harmless local output through the ordinary AutoAssist objective flow.
 
 Use `scripts/walkthrough-progress.sh --root <root> --account-home <account-home> show` at entry and `record` after verified transitions. This state contains only typed nonsecret resume metadata. It cannot create or replace the completion marker.
 
