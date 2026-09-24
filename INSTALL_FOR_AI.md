@@ -1,12 +1,12 @@
 # AutoBot installation instructions for AI
 
-**Everything in this file is intended for ChatGPT or another AI to automate installation. The short human guide is at the end of the [README](README.md#setup-and-installation).**
+**This is the agent checklist for the [three-step guided setup](README.md#setup-and-installation). The person's first finish line is one saved local task. Phone access, Computer Use, app connections and local liveness can be added later.**
 
-Use this guide when the user gives you the repository URL and asks to install AutoBot in a new project. Work through installation, project setup and verification, carrying forward the user's original request.
+Use this guide when the user gives you the repository URL and asks to install AutoBot in a new local Project. Work through package verification, installation, project setup and one local result, carrying forward the user's original request.
 
 ## Prompt to start installation
 
-“Go to https://github.com/demeyer1/Autobot and install AutoBot in a new local project, following INSTALL_FOR_AI.md. Run installation and first-time setup, including required support software from official sources, and bring me in for choices or app steps that need me.”
+“Install AutoBot from https://github.com/demeyer1/Autobot, following INSTALL_FOR_AI.md. Verify the v0.4.0 release ZIP and its manifest, install it, and guide me through selecting the installed folder as my local Project's primary folder. Include support software needed for first-time setup from official sources. Bring me in for any Mac or account step I need to do.”
 
 ## 1 Use the right environment
 
@@ -14,7 +14,7 @@ Confirm that you have local filesystem and shell access on the user's Mac. If yo
 
 If the user already created an AutoBot local project for this installation, use it. Otherwise, create a separate setup folder in an accessible location, then create a local project called AutoBot through supported project controls when available, or guide the user to create it and select that setup folder.
 
-A folder on disk is not by itself a native project. Confirm the selected local project and working folder before continuing; keep unrelated projects and the eventual installed folder separate.
+A folder on disk is not by itself a native Project. Confirm the selected local Project and working folder before continuing; keep unrelated Projects and the eventual installed folder separate.
 
 For a fresh installation, use the setup project as the download workspace and the user's home-folder AutoAssist as the default installation destination. Let the installer create the destination.
 
@@ -69,15 +69,15 @@ fi
 
 Read the receipt at .install-state/receipt.json in the installed folder and confirm its root, account_home and version match this installation. A healthy base install and an available advanced runtime are separate results; Node.js 22 or newer is needed for advanced commands and the setup smoke test.
 
-The optional local LaunchAgent is off on a fresh installation. Do not enable it as part of first-time setup unless the user requests local background liveness. See [Local liveness](docs/INSTALL.md#local-liveness).
+The optional local LaunchAgent is off on a fresh installation. Leave it off during the basic path unless the user requests local background liveness. See [Local liveness](docs/INSTALL.md#local-liveness).
 
-If Node is missing, use an available supported local runtime or guide installation from the official Node.js distribution, then rerun doctor. Keep the completed base installation and resume from it.
+If Node is missing, use an available supported local runtime or, as the user's prompt requests, install it from the official Node.js distribution, then rerun doctor. Keep the completed base installation and resume from it. Do not use an unofficial runtime source or silently change another Project's toolchain.
 
 ## 4 Continue inside the installed project
 
 Give the user this handoff: “Choose Edit project > Add folder, select AutoAssist in your home folder, and choose Make primary. Start a fresh task there and paste the prompt below.”
 
-“Run first-time setup for this installed AutoBot folder using its project-local first-time skill. Continue from verified progress, test the setup, and tell me what's ready and what still needs me.”
+“Run first-time setup for this installed folder. Then make and save a sample checklist, and open it for me.”
 
 In that fresh task, confirm the working folder, read its AGENTS.md and .agents/skills/first-time/SKILL.md, and follow the skill's referenced walkthrough and configuration instructions. Use the installed skill to configure and resume setup; the commands below are checkpoints, not a replacement for that workflow.
 
@@ -106,9 +106,9 @@ Complete the skill's independent review and completion-marker steps, then verify
   --root "$PWD" --account-home "$HOME" --require-marker
 ```
 
-Guide the user through the Mac permissions, Codex settings, phone pairing, Chrome extension and chosen app connections in the [README setup guide](README.md#setup-and-installation), and verify each requested feature separately. Let the user handle account sign-ins, permission grants and app restarts, save the resume point, and continue when they return.
+Create the requested sample checklist in the installed local Project, save it, reopen it, and show the user where it is. Use the installed first-time skill's completion checks for the local setup. Finish with the installed folder and version, the checks that passed, any remaining user step, and the saved local result.
 
-Finish with the installed folder and version, the checks that passed, any remaining user step, and one saved local result the user can open. A successful install command does not by itself prove phone access, app connections or first-time setup is finished.
+Treat [phone access](https://learn.chatgpt.com/docs/remote-connections), [Computer Use and Mac permissions](docs/PERMISSIONS.md), [app connections](docs/CAPABILITIES.md) and local liveness as later opt-ins. If the user asks for one, guide and verify that capability separately. Let the user handle account sign-ins, permission grants and app restarts, saving a resume point when needed. Keep authentication and recovery codes on a separate device.
 
 ## Existing installation or interrupted setup
 
@@ -120,8 +120,8 @@ For an intended update, first finish or stop writers in that AutoBot installatio
 ./install.sh --destination "$HOME/AutoAssist" --target-quiescent
 ```
 
-Use --repair with the same verified release for a repair, or the documented --rollback path when restoring a retained version is the user's intended action. Preserve user files, customization conflicts and recovery journals, then rerun doctor and the setup validation that applies.
+Use `--repair` with the same verified release for a repair, or the documented `--rollback` path when restoring a retained version is the user's intended action. For a nondefault installation, pass the receipt-bound `--destination` and `--home-root` to every update, repair, rollback or uninstall; never let a default command create or act on a different folder. Preserve user files, customization conflicts and recovery journals, then rerun doctor and the setup validation that applies.
 
 ## Source references
 
-[AutoBot v0.4.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.4.0), [installation guide](https://github.com/demeyer1/Autobot/blob/v0.4.0/docs/INSTALL.md), [first-time skill](https://github.com/demeyer1/Autobot/blob/v0.4.0/skills/first-time/SKILL.md), [local projects](https://learn.chatgpt.com/docs/projects), and [official Node.js download](https://nodejs.org/en/download).
+[AutoBot v0.4.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.4.0), [current installation guide](docs/INSTALL.md), [v0.4.0 first-time skill](https://github.com/demeyer1/Autobot/blob/v0.4.0/skills/first-time/SKILL.md), [local Projects](https://learn.chatgpt.com/docs/projects), and [official Node.js download](https://nodejs.org/en/download).

@@ -148,95 +148,21 @@ Autobot is available under the [MIT License](LICENSE). Copyright (c) 2026 Autobo
 
 ## Setup and installation
 
-Set up AutoBot on your MacBook, then use it from your phone.
+Start with one useful local task on your Mac. Add phone access and app connections whenever you're ready.
 
-For a local-only first task, use the [minimal installation path](docs/INSTALL.md#start-a-local-project). Computer Use, Mac permissions, phone access and connected apps in the steps below are optional enhancements, not prerequisites for local work.
+1. **Open Codex on your Mac.** [Get the desktop app](https://learn.chatgpt.com/docs/app), sign in, and start a local Project called AutoBot in an empty setup folder.
+2. **Ask Codex to install AutoBot.** Paste this prompt:
 
-### 1 Get the Mac app for Codex
+   > Install AutoBot from https://github.com/demeyer1/Autobot, following INSTALL_FOR_AI.md. Verify the v0.4.0 release ZIP and its manifest, install it, and guide me through selecting the installed folder as my local Project's primary folder. Include support software needed for first-time setup from official sources. Bring me in for any Mac or account step I need to do.
 
-On your MacBook, [download OpenAI's desktop app](https://learn.chatgpt.com/docs/app), sign in, and select **Codex**. The download is called **ChatGPT**, with Codex inside it.
+3. **Try it locally.** When prompted, choose **Edit project > Add folder**, select `AutoAssist` in your Mac's home folder, and choose **Make primary**. Start a fresh task there: “Run first-time setup for this installed folder. Then make and save a sample checklist, and open it for me.”
 
-### 2 Choose your plan
+The `AutoAssist` folder name is retained so existing local Projects keep their path. Codex handles the download and verification in the guided route. If you prefer to do that yourself, use the [manual installation guide](docs/INSTALL.md).
 
-AutoBot is free, but regular use will likely need a [paid ChatGPT plan](https://learn.chatgpt.com/docs/pricing); choose one that fits your needs.
+### Add more when you're ready
 
-### 3 Let it use your Mac
+- **Use it from your phone:** set up [Remote](https://learn.chatgpt.com/docs/remote-connections) after your local task works.
+- **Work in apps:** add [Computer Use and app permissions](docs/PERMISSIONS.md) for the apps you choose.
+- **Connect your accounts:** add email, calendar or other [available capabilities](docs/CAPABILITIES.md) one at a time.
 
-In **Plugins > Computer Use**, choose **Install** or **Enable** and turn on its server and skill switches. In your Mac's **System Settings > Privacy & Security**, enable the named OpenAI app or helper for:
-
-- **Screen Recording** or **Screen & System Audio Recording** to see your screen.
-- **Accessibility** to click and type.
-- **Microphone** to talk with you.
-- **Automation**, when requested, to work with the named app.
-- **Files and Folders**, when requested, to use the folders you select.
-
-Stay at your MacBook and plan for at least three permission-related app restarts during first setup; the number varies. Reopen the app after each prompt and continue.
-
-### 4 Set your everyday preferences
-
-Open **Settings** with **Command + comma** and choose these [preferences](https://learn.chatgpt.com/docs/reference/settings):
-
-- **General > Prevent sleep while running: On.** Keep the MacBook plugged in, online, and open for remote work.
-- **Notifications: On** for finished tasks and questions.
-- **General > Permissions:** enable your choice, then select it below the message box. **Full access** allows broad file and internet actions; **Approve for me** (Auto-review) reviews requests automatically; **Ask for approval** brings requests to you.
-- **Computer Use:** choose your apps; **Always allow** lets it reuse them.
-- **Model menu:** try **Sol**, **Max** reasoning, and **Fast off**; change these anytime.
-
-### 5 Download AutoBot
-
-Open the [AutoBot release](https://github.com/demeyer1/Autobot/releases/tag/v0.4.0) and download **AutoAssist-v0.4.0.zip**, **AutoAssist-v0.4.0.zip.sha256**, and **AutoAssist-v0.4.0.manifest.sha256**. Keep them together and double-click the ZIP to open the download. The [install guide](docs/INSTALL.md#download-and-install) shows both verification commands.
-
-### 6 Start inside a project
-
-Create a **local project** called **AutoBot** in Codex, choose the downloaded **AutoAssist** folder, and start a task there. Paste: “Install AutoBot from https://github.com/demeyer1/Autobot using INSTALL_FOR_AI.md, including required support software from official sources, then guide setup.”
-
-### 7 Point the project at your installed AutoBot
-
-After installation, choose **Edit project > Add folder**, select **AutoAssist** in your Mac's home folder, and choose **Make primary**. Start a fresh task there: “Run first-time setup for this installed folder.”
-
-### 8 Connect your phone
-
-Install the **ChatGPT mobile app**, sign in to the same account and workspace, and on your Mac open **Settings > Connections > Control this Mac or PC > Set up**. Scan the QR code, finish verification, and open **Remote** on your phone.
-
-### 9 Add Chrome
-
-Open **Settings > Computer Use > Chrome > Install** and add the [ChatGPT extension](https://learn.chatgpt.com/docs/chrome-extension) to your chosen Chrome profile. Return to settings and check for **Manage**.
-
-### 10 Connect your everyday apps
-
-Tell AutoBot, “Connect and test my email, calendar, Slack, and iMessage,” then sign in to your chosen accounts, including **Messages on your Mac**. Use available plugins for reading and Computer Use in the signed-in apps for sending.
-
-### 11 Try your first task
-
-On your phone, open **Remote > AutoBot** and ask, “Make and save tomorrow's to-do list.” Open the result, then try voice.
-
-### Three tips and tricks
-
-1. **Give it a useful Chrome profile.** Choose one with the logins, passwords, and autofill you want it to use, and ask it to connect your usual apps.
-2. **Teach it how you sound.** Share a few example messages, correct its drafts, and save separate styles for customers, teammates, and friends.
-3. **Explain your boundaries.** Explain what belongs to work, personal life, or both, which accounts to use, and when each tone applies.
-
-### Privacy and safety
-
-- **Keep sensitive work in your hands.** Require your approval for private or sensitive access, sharing, and changes, plus a standalone third-party authenticator app on a separate device AutoBot cannot access, mirror, or sync; SMS or iMessage alone doesn't meet that boundary.
-- **Make the challenge real.** A saved login can bypass a new sign-in challenge, and AutoBot doesn't add one to every action; use services that require fresh verification for sensitive actions, or keep those accounts disconnected and handle them yourself.
-- **Choose what stays separate.** Keep highly sensitive files and accounts outside AutoBot's connected folders and Chrome profile, and store recovery codes on the separate device or offline.
-- **Choose where your data goes.** Review ChatGPT's data controls and connected services before adding private material, and keep a backup of your workspace; a local folder doesn't mean every request stays on your Mac.
-
-### If you need a hand later
-
-- **Setup paused:** reopen the same project and say, “Continue first-time setup from where we left off.”
-- **Something isn't working:** say, “Check my AutoBot setup and help me fix what's missing.”
-- **Remote is missing:** update both apps and check that your phone and Mac use the same account and workspace.
-- **Update or remove it:** say, “Help me update AutoBot,” or “Remove AutoBot and keep my files recoverable.”
-
-Setup references: [Mac permissions](https://learn.chatgpt.com/docs/computer-use), [permission choices](https://learn.chatgpt.com/docs/permission-modes), [phone pairing](https://learn.chatgpt.com/docs/remote-connections), and [MFA guidance](https://www.cisa.gov/audiences/small-and-medium-businesses/secure-your-business/require-multifactor-authentication).
-
-<details>
-<summary>For ChatGPT: automated installation</summary>
-
-If the user asks you to install this repository, read [INSTALL_FOR_AI.md](INSTALL_FOR_AI.md) first. It contains the commands, local project setup, verification and resume instructions.
-
-The user can start with: “Go to https://github.com/demeyer1/Autobot and install AutoBot in a new local project, following INSTALL_FOR_AI.md.”
-
-</details>
+Review [privacy](PRIVACY.md) and [security](SECURITY.md) before connecting sensitive accounts. Keep authentication and recovery codes on a separate device. For upgrades, repair, removal or a paused setup, use the [installation guide](docs/INSTALL.md) or ask AutoBot to continue first-time setup from its saved progress.

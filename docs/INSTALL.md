@@ -1,76 +1,60 @@
 # Install Autobot
 
-The default folder is `~/AutoAssist`. The product is called Autobot; keeping the folder name preserves existing local Project paths.
+The easiest route is the [three-step guided setup](../README.md#setup-and-installation). This page covers manual installation, upgrades, repair and removal. The default folder is `~/AutoAssist`; that folder name preserves existing local Project paths.
 
-## Before you start
+## Manual install
 
-The base installer uses macOS's zsh and standard local tools. It requires no administrator account, API key, sign-in, Node installation or new privacy permission. Advanced task/context/evidence commands require Node.js 22 or later. The installer diagnoses runtime availability and does not download or change your shared toolchain.
+1. From the [v0.4.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.4.0), download `AutoAssist-v0.4.0.zip` and its matching `.zip.sha256` and `.manifest.sha256` files. Choose the attached release ZIP, not GitHub's automatic source-code ZIP.
+2. In the download folder, run `shasum -a 256 -c AutoAssist-v0.4.0.zip.sha256`. Extract the ZIP, open the extracted `AutoAssist` folder, then run `shasum -a 256 -c ../AutoAssist-v0.4.0.manifest.sha256`. Continue only when the ZIP and every manifest entry report `OK`.
+3. Double-click `Install.command`, or run `./install.sh` from that extracted folder. Note the installed path and doctor result.
 
-The release page attaches **AutoAssist-v0.4.0-validation.md** with the exact tested macOS, CPU, runtime and archive hash. Intel Macs and other macOS versions are not implied to be tested by an Apple-silicon run. Native app support is separate: check the [current ChatGPT desktop requirements](https://learn.chatgpt.com/docs/app), available local Project features and your account's access.
+If macOS blocks opening the installer, inspect its origin and use the standard Finder/System Settings opening flow. Keep Gatekeeper enabled. The installer checks available space before making changes.
 
-Keep enough space for the package plus a staged copy and recoverable backup of an existing installation. The installer checks space before a transaction. Large user workspaces need more room than a fresh install. Back up important data before upgrading pre-release software.
+The base install uses macOS's local tools without Node.js, an administrator account, API key or new privacy permission. Completing first-time setup's local smoke check and using advanced runtime commands require [Node.js 22 or newer](https://nodejs.org/en/download). The installer reports runtime availability without changing your shared toolchain. The [v0.4.0 validation report](https://github.com/demeyer1/Autobot/releases/download/v0.4.0/AutoAssist-v0.4.0-validation.md) records tests on macOS 15.7.4, Apple silicon and Node.js 22.23.3. Check the [current desktop app requirements](https://learn.chatgpt.com/docs/app) for your Mac.
 
-## Download and install
+### Choose another folder
 
-1. Download the versioned ZIP, matching checksum and manifest companions from this repository's Releases page. Use the release asset, not GitHub's automatic source-code ZIP.
-2. In the folder containing both files, run `shasum -a 256 -c AutoAssist-v0.4.0.zip.sha256`. Continue only if it reports `OK`. If the matching checksum companion is missing, retrieve it from the same official release and stop before installation if verification is not possible.
-3. Extract the ZIP. From the extracted `AutoAssist` folder run `shasum -a 256 -c ../AutoAssist-v0.4.0.manifest.sha256` and require every entry to report `OK`. Then double-click `Install.command`, or run `./install.sh` from Terminal.
-4. If macOS blocks opening the file, inspect its origin and use the standard Finder/System Settings opening flow. Do not disable Gatekeeper or strip security attributes as an installation shortcut.
-5. Read the reported installation path and doctor result. An installed folder and an available advanced runtime are separate results.
-
-A different destination can be selected explicitly:
+From the extracted release folder:
 
 ```zsh
 ./install.sh --destination "$HOME/Autobot Workspace"
 ```
 
-`--home-root` is for an explicitly selected account root or isolated test environment. It does not change the process's HOME or Codex configuration root. Installation refuses broad, unsafe or unmanaged destinations.
+`--home-root` selects an account root for an explicit alternate account or isolated test. It does not change the shell's HOME or Codex configuration. The installer rejects broad or unmanaged destinations.
 
-## Start a local Project
+## Start using it
 
-First complete this minimal bootstrap. It does not require Computer Use:
+1. In the Codex desktop app, create a local Project called AutoBot, or open your existing local Project. Choose **Edit project > Add folder**, select the installed `AutoAssist` folder and choose **Make primary**.
+2. Start a fresh task in that Project: “Run first-time setup for this installed folder. Then make and save a sample checklist, and open it for me.”
 
-1. Download the release ZIP and checksum companion, verify the checksum, extract them and open `Install.command` as described above.
-2. Open ChatGPT or Codex and create or edit a local Project.
-3. Choose **Edit project > Add folder**, select the installed `AutoAssist` folder and choose **Make primary**.
-4. Start a fresh task in that Project and ask: “Run the first-time skill for this installed folder.”
+The project-local first-time skill checks the installation, applies local defaults, validates setup and resumes from saved progress after an interruption. You choose accounts and permissions only for workflows you want. If native Project controls are unavailable to the agent, make the folder selection yourself; an uploaded web project does not directly expose a Mac folder. [Local Projects](https://learn.chatgpt.com/docs/projects)
 
-An uploaded web project is a different environment and does not directly expose the folder. [Local Projects](https://learn.chatgpt.com/docs/projects)
-
-At that point the project-local skill takes over. It avoids replacing an unrelated global skill. Ask it to show what works locally and which optional capabilities are unavailable.
-
-The first-time agent now works through the setup in the foreground. It checks the exact installation, creates empty privacy-zone indexes, applies local/private defaults, runs local verification when supported and reports native capabilities. It resumes from validated files after an interruption and asks only at a freshly visible credential, security, permission, consent or manual Project step. You choose accounts and permissions only for workflows you want. No contact, notification recipient, recurring task or spending authority is inherited from the maintainer.
-
-Computer Use cannot operate ChatGPT/Codex itself or Terminal. If native controls are unavailable, use **Edit project > Add folder**, choose the installed folder, and **Make primary**. Start a fresh task in that local Project and ask the agent to read back its working folder, `AGENTS.md` and project-local first-time skill. An explicitly resolved command-line/current-root setup can remain local-only without claiming a native Project selection.
-
-A useful first task is a small local plan with two outputs, such as a checklist and a short summary. Ask the agent to register both outputs, write them locally, and have a separate reviewer reopen and check them. Use `./runtime/bin/autoassist help` for the installed command interface.
-
-## Diagnose readiness
+For a quick manual check in the installed folder:
 
 ```zsh
 ./runtime/bin/autoassist doctor
 ./runtime/bin/autoassist version
 ```
 
-Installation integrity covers the local files, path binding and permissions. Missing Node means the advanced runtime is unavailable; it is not permission to download a runtime or activate a broken service. Install a supported Node version through the [official distribution](https://nodejs.org/en/download) if you want those commands, then rerun doctor.
-
-Native app, Voice, Goals, Computer Use, connectors and reasoning schedules are optional. Verify each separately. No terminal hook is installed to intercept every assistant response. See [Capabilities](CAPABILITIES.md).
+After the first local task works, add [phone access](https://learn.chatgpt.com/docs/remote-connections), [Computer Use and permissions](PERMISSIONS.md), or [app connections](CAPABILITIES.md) as needed. Review [privacy](../PRIVACY.md) and [security](../SECURITY.md) before connecting sensitive accounts.
 
 ## Upgrade an existing installation
 
-Close or finish work in the target Autobot Project before upgrading. Quiesce that installation only; other Projects do not need to stop. An old runtime or editor cannot be made safe by a new lock it does not recognize.
+Close or finish work in the target Autobot Project before upgrading. Quiesce that installation only; other Projects do not need to stop. Keep room for a staged copy and recoverable backup. The installer checks free space before changing the target.
 
 Extract the new official package and run:
 
 ```zsh
-./install.sh --target-quiescent
+./install.sh --destination "$HOME/AutoAssist" --target-quiescent
 ```
 
 The installer recognizes the published old receipt and compares original product files, your installed bytes and the new version. It preserves user files and detects conflicting custom instructions or policies before replacing them. Resolve a reported conflict using the staged guidance; do not delete your customization just to make an update pass.
 
 The transaction preserves state, checks for concurrent changes and retains recoverable evidence. An interruption is recovered through the same installer. Do not manually delete a transaction journal or move swap directories while recovery is pending.
 
-To repair product-file or permission drift, use `./install.sh --repair --target-quiescent` from the same release. To restore a retained earlier code version, use `./install.sh --rollback --target-quiescent`. Rollback preserves current user state and refuses an incompatible schema; it does not silently discard newer data.
+To repair product-file or permission drift from the same release, use `./install.sh --destination "$HOME/AutoAssist" --repair --target-quiescent`. To restore a retained earlier code version, use `./install.sh --destination "$HOME/AutoAssist" --rollback --target-quiescent`. Rollback preserves current user state and refuses an incompatible schema.
+
+If you installed elsewhere, replace `"$HOME/AutoAssist"` in every upgrade, repair and rollback command with your exact installed path. Supply the same `--home-root` used at installation when it was nondefault. For example, an upgrade of the alternate folder above is `./install.sh --destination "$HOME/Autobot Workspace" --home-root "$HOME" --target-quiescent`.
 
 ## Local liveness
 
@@ -80,8 +64,10 @@ Native scheduled reasoning is configured separately through supported app contro
 
 ## Remove the installation
 
-Run the installed `uninstall.sh` with its exact destination and account home when nondefault. The reversible path stops only the receipt-bound service, removes only owned projections and moves the folder to recoverable Trash. It does not delete user data or an unrelated global skill. Conflicting ownership is reported instead of guessed.
+Finish work in the target Project, then run this from the installed folder:
 
-## Test boundary
+```zsh
+./uninstall.sh --destination "$HOME/AutoAssist" --target-quiescent
+```
 
-Read **AutoAssist-v0.4.0-validation.md** on the release page for actual tested bytes and commands. An isolated folder under the same macOS user proves path/state isolation; it is not a fresh macOS account, reset TCC database or VM. This release does not claim that existing host permissions prove every new Mac's permission behavior.
+For another folder or account root, provide both exact values, for example `./uninstall.sh --destination "$HOME/Autobot Workspace" --home-root "$HOME" --target-quiescent`. The reversible path stops only the receipt-bound service, removes only owned projections and moves the folder to recoverable Trash. It preserves user data and unrelated global skills.
