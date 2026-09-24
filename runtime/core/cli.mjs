@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {execute,STAGES} from './core.mjs';
 import {fail,sha} from './store.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-export const ACTIONS=['read','status','capabilities','root-create','deliverable-add','claim','checkpoint','requirements','correct','content','evidence-add','review','failure','recover','retry','tick','orphans','settings','legacy-import','memory-put','memory-list','session-record','issue-record','issue-update','issue-list','issue-verify','notification-configure','queue-enqueue','queue-claim','queue-transition','queue-archive','queue-list','outbox-enqueue','outbox-claim','outbox-transition','outbox-archive','outbox-list','context','proof-record','proof-check','export','recover-lock'];
+export const ACTIONS=['read','status','capabilities','heartbeat','root-create','deliverable-add','claim','checkpoint','requirements','correct','content','evidence-add','review','failure','recover','retry','tick','orphans','settings','legacy-import','memory-put','memory-list','session-record','issue-record','issue-update','issue-list','issue-verify','notification-configure','queue-enqueue','queue-claim','queue-transition','queue-archive','queue-list','outbox-enqueue','outbox-claim','outbox-transition','outbox-archive','outbox-list','context','proof-record','proof-check','export','recover-lock'];
 function readInput(){const chunks=[];let size=0;while(true){const b=Buffer.alloc(16384),n=fs.readSync(0,b,0,b.length,null);if(!n)break;size+=n;if(size>1024*1024)fail('input_too_large');chunks.push(b.subarray(0,n));}const bytes=Buffer.concat(chunks);return bytes.length?JSON.parse(bytes.toString('utf8')):{};}
 function legacy(cmd,args){
   if(cmd==='objective-status'){
