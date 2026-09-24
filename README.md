@@ -159,7 +159,7 @@ Start with one useful local task on your Mac. Add phone access and app connectio
 
 The `AutoAssist` folder name is retained so existing local Projects keep their path. Codex handles the download and verification in the guided route. If you prefer to do that yourself, use the [manual installation guide](docs/INSTALL.md).
 
-### Add more when you're ready
+### Supercharge Autobot
 
 - **Use it from your phone:** set up [Remote](https://learn.chatgpt.com/docs/remote-connections) after your local task works.
 - **Work in apps:** add [Computer Use and app permissions](docs/PERMISSIONS.md) for the apps you choose.
