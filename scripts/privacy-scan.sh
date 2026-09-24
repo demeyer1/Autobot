@@ -90,6 +90,7 @@ archive_magic_rule() {
     (526172211a0700*|526172211a070100*) REPLY="archive_rar" ;;
     (53514c69746520666f726d61742033*) REPLY="database_sqlite" ;;
     (25504446*) REPLY="document_pdf" ;;
+    (89504e47*|ffd8ff*|47494638*|52494646*) REPLY="opaque_media" ;;
     (7f454c46*|feedface*|feedfacf*|cefaedfe*|cffaedfe*) REPLY="native_executable" ;;
     (*) REPLY="" ;;
   esac
@@ -141,7 +142,7 @@ allowlist_reference() {
 # Signatures are deliberately assembled so the scanner source does not contain
 # live examples of the values it rejects.
 email_pattern='[A-Za-z0-9][A-Za-z0-9._%+-]{0,63}[@][A-Za-z0-9][A-Za-z0-9.-]{0,190}[.][A-Za-z]{2,24}'
-phone_pattern='(^|[^0-9])([+]?[0-9]{1,3}[ .()-]+)?[2-9][0-9]{2}[ .()-]+[0-9]{3}[ .-]+[0-9]{4}([^0-9]|$)|(^|[^0-9])[+]?1?[2-9][0-9]{9}([^0-9]|$)'
+phone_pattern='(^|[^[:alnum:]_])([+]?[0-9]{1,3}[ .()-]+)?[2-9][0-9]{2}[ .()-]+[0-9]{3}[ .-]+[0-9]{4}([^[:alnum:]_]|$)|(^|[^[:alnum:]_])[+]?1?[2-9][0-9]{9}([^[:alnum:]_]|$)'
 international_phone_pattern='(^|[^0-9])[+][0-9][0-9 .()-]{7,20}[0-9]([^0-9]|$)'
 mac_home_pattern='(^|[^[:alnum:]_])[/]us[e]rs[/][a-z0-9._-]{1,64}([/]|$)'
 linux_home_pattern='(^|[^[:alnum:]_])[/]ho[m]e[/][a-z0-9._-]{1,64}([/]|$)'
@@ -158,6 +159,216 @@ credential_url_pattern='[A-Za-z][A-Za-z0-9+.-]*://[^/@:[:space:]]+:[^/@[:space:]
 scaffold_pattern='\[''TODO:|TODO_''AUTOASSIST|REPLACE_''WITH_REAL'
 sha256_pattern='^[0-9a-f]{64}$'
 checksum_path_pattern='^[A-Za-z0-9._+@ -]+(/[A-Za-z0-9._+@ -]+)*$'
+
+# Financial detector signatures are intentionally bounded. Every valid-Luhn
+# run is rejected, including non-issuer-shaped runs. The only public numeric
+# controls are exact baseline lines bound to the full source path and file
+# hash below; a benchmark path or field label alone never disables the check.
+cvv_pattern='(^|[^[:alnum:]_])(cvv|cvc|cvv2|cvc2|cvn|cvn2|cid|card[ _-]*identification([ _-]*number)?|security[ _-]+code)([ _-]+(number|code))?[- _*"]*[:=#-]?[- _*"]*[0-9]{3,4}([^0-9]|$)'
+pin_pattern='(^|[^[:alnum:]_])(pin|pin[ _-]+code|passcode|security[ _-]+pin)([ _-]+(number|code))?[- _*"]*[:=#-]?[- _*"]*[0-9]{4,8}([^0-9]|$)'
+pin_block_pattern='(^|[^[:alnum:]_])((encrypted[ _-]*)?pin[ _-]*block)[- _*"]*[:=#-]?[- _*"]*[0-9a-f]{8,}([^0-9a-f]|$)'
+routing_pattern='(^|[^[:alnum:]_])(routing|routing[ _-]+number|aba|aba[ _-]+routing|transit[ _-]+number|institution[ _-]+number)[- _*"]*([:=#-][- _*"]*|[- _*"]+)[0-9]([-0-9 _*"]{7,14}[0-9])?([^0-9]|$)'
+account_pattern='(^|[^[:alnum:]_])(bank[ _-]+account|account[ _-]+number|checking[ _-]+account|savings[ _-]+account)[- _*"]*([:=#-][- _*"]*|[- _*"]+)[0-9]([-0-9 _*"]{2,32}[0-9])?([^0-9]|$)'
+iban_pattern='(^|[^[:alnum:]_])iban[ _-]*[:=#-]?[- _*"]*[a-z]{2}[0-9a-z]([-0-9a-z _*"]{12,32}[0-9a-z])?([^0-9a-z]|$)'
+expiry_pattern='(^|[^[:alnum:]_])(expiry|expiration|exp[ _-]*(iry|iration)|valid[ _-]*(thru|through)|card[ _-]*expiry)([ _-]*(date|month|year))?[- _*"]*[:=#-]?[- _*"]*[0-9]{1,4}([[:space:]./-]+[0-9]{2,4})?([^0-9]|$)'
+payment_token_pattern='(^|[^[:alnum:]_])(((payment|card|billing|network|source)[ _-]*(token|method[ _-]*id))|tokenized[ _-]*pan)[- _*"]*[:=][- _*"]*[a-z0-9_-]{8,}([^a-z0-9_-]|$)|(^|[^[:alnum:]_])tok_[a-z0-9_-]{8,}([^a-z0-9_-]|$)'
+payment_token_placeholder_pattern='(^|[^[:alnum:]_])(((payment|card|billing|network|source)[ _-]*(token|method[ _-]*id))|tokenized[ _-]*pan)[- _*"]*[:=][- _*"]*(redacted|placeholder|synthetic|example|none|null|unknown|masked|n/?a)([^a-z0-9_-]|$)'
+masked_card_pattern='(^|[^[:alnum:]_])(card|credit[ _-]*card|debit[ _-]*card|pan|billing[ _-]*card)[- _*":=]*([*xX#•·][- _*.]*)([*xX#•·][- _*.]*)[0-9]{4}([^0-9]|$)'
+masked_card_number_pattern='(^|[^[:alnum:]_])(card|credit[ _-]*card|debit[ _-]*card|pan|billing[ _-]*card)[ _-]*number[- _*":=]*([*xX#•·][- _*.]*)([*xX#•·][- _*.]*)[0-9]{4}([^0-9]|$)'
+service_code_pattern='(^|[^[:alnum:]_])service[ _-]*code[- _*"]*[:=#-]?[- _*"]*[0-9]{3,4}([^0-9]|$)'
+track_one_pattern='(^|[[:space:]])%B[0-9]{12,19}[\^][^[:space:]\^]{1,64}[\^][0-9]{4,6}[?]'
+track_two_pattern='(^|[^0-9])[;][0-9]{12,19}=[0-9]{4,6}[?]([^0-9]|$)'
+track_one_fragment_pattern='(^|[[:space:]])%B[0-9 ./-]{4,}'
+track_two_fragment_pattern='(^|[^0-9])[;][0-9 ./-]{4,}(=|$)'
+labelled_track_pattern='(^|[^[:alnum:]_])track[ _-]*(1|2|one|two)[ _*"`-]*[:=#-][ _*"`-]*[0-9]{4,19}='
+context_card_pattern='(^|[^[:alnum:]])(card|credit[ _-]+card|debit[ _-]+card|pan|primary[ _-]+account|billing([ _-]+(card|account|payment|number))?)([^[:alnum:]]|$)'
+MAX_FINANCIAL_CANDIDATES_PER_LINE=256
+
+financial_tail=""
+
+decode_numeric_entities() {
+  local value="$1"
+  if [[ "$value" == *'&#'* && -x /usr/bin/perl ]]; then
+    REPLY="$(/usr/bin/perl -CS -pe 's/&#x([0-9a-fA-F]{1,6});/chr(hex($1))/ge; s/&#([0-9]{1,7});/chr($1)/ge' <<< "$value")"
+  else
+    REPLY="$value"
+  fi
+}
+
+normalize_decimal_digits() {
+  local value="$1"
+  local decoded
+  decode_numeric_entities "$value"
+  decoded="$REPLY"
+  if [[ "$decoded" == *[![:ascii:]]* && -x /usr/bin/perl ]]; then
+    REPLY="$(/usr/bin/perl -MUnicode::UCD -CS -pe 's/(\p{Nd})/Unicode::UCD::charinfo(ord($1))->{digit}/ge' <<< "$decoded")"
+  else
+    REPLY="$decoded"
+  fi
+}
+
+luhn_valid() {
+  local digits="$1"
+  [[ "$digits" =~ '^[0-9]{12,19}$' ]] || return 1
+  integer sum=0 alternate=0 index value digit
+  for ((index=${#digits}; index > 0; index--)); do
+    digit="${digits[index]}"
+    value=$digit
+    if (( alternate )); then
+      value=$((value * 2))
+      if (( value > 9 )); then value=$((value - 9)); fi
+    fi
+    sum=$((sum + value))
+    alternate=$((1 - alternate))
+  done
+  (( sum % 10 == 0 ))
+}
+
+card_issuer_length_context() {
+  local digits="$1"
+  integer length=${#digits} first_two first_three first_four
+  first_two=$((10#${digits[1,2]}))
+  first_three=$((10#${digits[1,3]}))
+  first_four=$((10#${digits[1,4]}))
+  if [[ "$digits[1]" == '4' ]]; then
+    [[ "$length" == 13 || "$length" == 16 || "$length" == 19 ]]
+  elif (( first_two == 34 || first_two == 37 )); then
+    (( length == 15 ))
+  elif (( (first_two >= 51 && first_two <= 55) || (first_four >= 2221 && first_four <= 2720) )); then
+    (( length == 16 ))
+  elif [[ "$digits" == 6011* ]] || (( first_two == 65 || (first_three >= 644 && first_three <= 649) )); then
+    [[ "$length" == 16 || "$length" == 19 ]]
+  elif (( first_four >= 3528 && first_four <= 3589 )); then
+    (( length >= 16 && length <= 19 ))
+  elif (( first_two == 62 )); then
+    (( length >= 16 && length <= 19 ))
+  elif (( (first_three >= 300 && first_three <= 305) || first_two == 36 || first_two == 38 )); then
+    (( length == 14 ))
+  else
+    return 1
+  fi
+}
+
+is_explicit_placeholder() {
+  local value="${1:l}"
+  case "$value" in
+    redacted|placeholder|synthetic|example|none|null|unknown|masked|n/a|na|card_number|card-number|'card number') return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+scan_payment_tokens() {
+  local value="$1"
+  local token
+  while IFS= read -r token; do
+    [[ -n "$token" ]] || continue
+    is_explicit_placeholder "$token" || { record_finding "payment_token" "$2" "$3" "$4"; return; }
+  done < <(/usr/bin/perl -CS -ne 'while(/(?<![A-Za-z0-9_])(?:(?:(?:payment|card|billing|network|source)[ _-]*(?:token|method[ _-]*id)|tokenized[ _-]*pan)[\s"\x27`_-]*[:=#-][\s"\x27`_-]*([A-Za-z0-9_-]+)|((?:tok_)[A-Za-z0-9_-]+))(?![A-Za-z0-9_-])/ig){print(($1 // $2), "\n")}' <<< "$value")
+}
+
+scan_named_text_fields() {
+  local value="$1"
+  local rule field_value
+  while IFS=$'\t' read -r rule field_value; do
+    [[ -n "$field_value" ]] || continue
+    is_explicit_placeholder "$field_value" || { record_finding "$rule" "$2" "$3" "$4"; return; }
+  done < <(/usr/bin/perl -CS -ne 'while(/(?<![A-Za-z0-9_])((?:billing[ _-]*address|card[ _-]*holder(?:[ _-]*name)?)[\s"\x27`_-]*[:=#-][\s_-]*(?:"([^"\r\n]*)"|\x27([^\x27\r\n]*)\x27|([^\s,;}]+)))/ig){my $v=defined($2)?$2:(defined($3)?$3:($4 // ""));my $r=$1 =~ /billing/i ? "billing_field" : "cardholder_name";print "$r\t$v\n"}' <<< "$value")
+}
+
+current_relative=""
+current_source_sha256=""
+current_line_raw=""
+
+# The baseline rows below are public, unchanged benchmark bytes. A whole-line
+# SHA-256 plus the exact file SHA-256/path is the shell scanner's equivalent
+# of the Node scanner's run binding. No arbitrary metric-labelled text can
+# reach this allow path, and any changed byte falls through to rejection.
+benchmark_line_is_admitted() {
+  local line_number="$1"
+  local view="$2"
+  local line="$3"
+  local expected_line_sha256=""
+  if [[ "$view" == raw ]]; then
+    line="$3"
+  elif [[ "$view" == split ]]; then
+    line="$current_line_raw"
+  else
+    return 1
+  fi
+  case "$current_relative:$current_source_sha256:$line_number" in
+    (benchmarks/osworld-2.0/results.csv:ceaec4c2c4a668f2a4f37286bf5d95d329382b1a12a744ce2b826e9ebc1d6c7e:15) expected_line_sha256='4ab24b76abb2c16d6fcfb7d0c2bdb365de3b8cfee5876e50db029aa1d5d0a1ca' ;;
+    (benchmarks/osworld-2.0/results.csv:ceaec4c2c4a668f2a4f37286bf5d95d329382b1a12a744ce2b826e9ebc1d6c7e:39) expected_line_sha256='5e9d40b998c7a018a4543b17a3042ecbb0e60d983ee8ee3c6c43095ee0314aca' ;;
+    (benchmarks/osworld-2.0/results.csv:ceaec4c2c4a668f2a4f37286bf5d95d329382b1a12a744ce2b826e9ebc1d6c7e:40) expected_line_sha256='559b030ac606b191dad09696e4d6062248ed37358df48885374d6a93a5befbde' ;;
+    (benchmarks/osworld-2.0/results.csv:ceaec4c2c4a668f2a4f37286bf5d95d329382b1a12a744ce2b826e9ebc1d6c7e:54) expected_line_sha256='aca2cfe3271b3706d8a587037e7d2b371ab4123851370b74b8cc294083073490' ;;
+    (benchmarks/osworld-2.0/results.csv:ceaec4c2c4a668f2a4f37286bf5d95d329382b1a12a744ce2b826e9ebc1d6c7e:81) expected_line_sha256='3af888494f2e36f5737227528ef5d37bf28228e717ded9394da707c85b96b009' ;;
+    (benchmarks/osworld-2.0/results.csv:ceaec4c2c4a668f2a4f37286bf5d95d329382b1a12a744ce2b826e9ebc1d6c7e:90) expected_line_sha256='853db816e97c6aad313f45e8618ccef7862249730b6a2f8932e460818ab12323' ;;
+    (benchmarks/osworld-2.0/results.csv:ceaec4c2c4a668f2a4f37286bf5d95d329382b1a12a744ce2b826e9ebc1d6c7e:105) expected_line_sha256='8742f2cb189a5339a90322b8377068aea73678412001ea7a45b132f9790d2832' ;;
+    (benchmarks/osworld-2.0/results.csv:ceaec4c2c4a668f2a4f37286bf5d95d329382b1a12a744ce2b826e9ebc1d6c7e:107) expected_line_sha256='599f22c5e8eb447bb6b6589c2dfed6c2d6186aaf26a38bf6089af3d9edaf19db' ;;
+    (benchmarks/osworld-2.0/score-evidence.json:3a9ce372820b3382a8f37cc0f567b83f24f5a04adcce0b1c7bd9e0c2b5f5ace1:112) expected_line_sha256='38220e161f326262d266cf09be48646e4e754568904df36201b9f50d4febeebb' ;;
+    (benchmarks/osworld-2.0/score-evidence.json:3a9ce372820b3382a8f37cc0f567b83f24f5a04adcce0b1c7bd9e0c2b5f5ace1:305) expected_line_sha256='66c3d431cfb761dfdaf24638a77f8663813462110031a2552111da762e7ac390' ;;
+    (benchmarks/osworld-2.0/summary.json:dcdda182d4ec704e368f748779a113d1d53daf2b34d0e1a8e74ddefe7d9d6e27:15) expected_line_sha256='b975da3c077ec71224bfa2f73a4322c6637dc84364e225997c4a4bba153ea0d9' ;;
+    (*) return 1 ;;
+  esac
+  local actual_line_sha256
+  actual_line_sha256="$(/usr/bin/printf '%s' "$line" | /usr/bin/shasum -a 256 2>/dev/null)" || return 1
+  actual_line_sha256="${actual_line_sha256%% *}"
+  [[ "$actual_line_sha256" == "$expected_line_sha256" ]]
+}
+
+scan_financial_value() {
+  local value="$1"
+  local file_id="$2"
+  local line_number="$3"
+  local view="$4"
+  local normalized lowered candidate digits
+  integer candidates=0
+
+  normalize_decimal_digits "$value"
+  normalized="$REPLY"
+  lowered="${normalized:l}"
+  scan_payment_tokens "$value" "$file_id" "$line_number" "$view"
+  scan_named_text_fields "$value" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $cvv_pattern ]] && record_finding "payment_cvv" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $pin_pattern ]] && record_finding "payment_pin" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $pin_block_pattern ]] && record_finding "pin_block" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $routing_pattern ]] && record_finding "bank_routing_number" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $account_pattern ]] && record_finding "bank_account_number" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $iban_pattern ]] && record_finding "bank_iban" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $expiry_pattern ]] && record_finding "payment_expiry" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $service_code_pattern ]] && record_finding "payment_service_code" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $masked_card_pattern ]] && record_finding "masked_card" "$file_id" "$line_number" "$view"
+  [[ "$lowered" =~ $masked_card_number_pattern ]] && record_finding "masked_card" "$file_id" "$line_number" "$view"
+  [[ "$normalized" =~ $track_one_pattern || "$normalized" =~ $track_two_pattern || "$normalized" =~ $track_one_fragment_pattern || "$normalized" =~ $track_two_fragment_pattern || "$lowered" =~ $labelled_track_pattern ]] && record_finding "track_data" "$file_id" "$line_number" "$view"
+
+  if [[ "$lowered" =~ $context_card_pattern && -x /usr/bin/perl ]]; then
+    while IFS= read -r candidate; do
+      [[ -z "$candidate" ]] && continue
+      digits="${candidate//[^0-9]/}"
+      if (( ${#digits} >= 12 && ${#digits} <= 19 )); then
+        record_finding "payment_card_pan" "$file_id" "$line_number" "$view"
+        break
+      fi
+    done < <(/usr/bin/perl -CS -ne 'while(/(?:card|credit[ _-]+card|debit[ _-]+card|pan|primary[ _-]+account|billing(?:[ _-]+(?:card|account|payment|number))?)[^0-9]{0,32}([0-9][0-9 .\/,"\x27\[\]\(\)+_=-]{10,}[0-9])/ig){print "$1\n"}' <<< "$lowered")
+  elif [[ "$lowered" =~ $context_card_pattern && "$lowered" =~ '[0-9]' && ! -x /usr/bin/perl ]]; then
+    record_finding "payment_card_context_unparsed" "$file_id" "$line_number" "$view"
+  fi
+
+  while IFS= read -r candidate; do
+    [[ -z "$candidate" ]] && continue
+    candidates=$((candidates + 1))
+    if (( candidates > MAX_FINANCIAL_CANDIDATES_PER_LINE )); then
+      record_finding "financial_candidate_limit" "$file_id" "$line_number" "$view"
+      break
+    fi
+    digits="${candidate//[^0-9]/}"
+    [[ ${#digits} -ge 12 && ${#digits} -le 19 ]] || continue
+    benchmark_line_is_admitted "$line_number" "$view" "$normalized" && continue
+    luhn_valid "$digits" || continue
+    # Valid-Luhn runs are rejected even without an issuer prefix. Labelled
+    # contextual fields above reject invalid check digits as well.
+    record_finding "payment_card_pan" "$file_id" "$line_number" "$view"
+  done < <(/usr/bin/perl -CS -ne 'while(/([0-9][0-9 .\/,"\x27\[\]\(\)+_=-]{10,}[0-9])/g){print "$1\n"}' <<< "$normalized")
+}
 
 typeset -a hidden_chars
 hidden_chars=(
@@ -194,6 +405,7 @@ scan_text_value() {
   [[ "$normalized" =~ $auth_header_pattern ]] && record_finding "authorization_header" "$file_id" "$line_number" "$view"
   [[ "$value" =~ $credential_url_pattern ]] && record_finding "credential_url" "$file_id" "$line_number" "$view"
   [[ "$value" =~ $scaffold_pattern ]] && record_finding "unfinished_scaffold" "$file_id" "$line_number" "$view"
+  scan_financial_value "$value" "$file_id" "$line_number" "$view"
   for hidden in "${hidden_chars[@]}"; do
     if [[ "$value" == *"$hidden"* ]]; then
       record_finding "hidden_unicode" "$file_id" "$line_number" "$view"
@@ -224,6 +436,7 @@ scan_decoded_file() {
   local file_id="$1"
   local source_line="$2"
   local view="$3"
+  integer decode_depth=${4:-0}
   local decoded_line
   integer decoded_line_number=0
   local size
@@ -242,6 +455,7 @@ scan_decoded_file() {
   while IFS= read -r decoded_line || [[ -n "$decoded_line" ]]; do
     decoded_line_number=$((decoded_line_number + 1))
     scan_text_value "$decoded_line" "$file_id" "$source_line" "$view"
+    scan_encoded_views "$decoded_line" "$file_id" "$source_line" 0 "$decode_depth"
   done < "$DECODED"
 }
 
@@ -251,6 +465,7 @@ scan_encoded_views() {
   local line_number="$3"
   local escaped candidate
   integer candidate_count_ref=$4
+  integer decode_depth=${5:-0}
 
   if [[ "$value" =~ '%[[:xdigit:]]{2}' || "$value" =~ '\\x[[:xdigit:]]{2}' || "$value" =~ '\\u[[:xdigit:]]{4}' ]]; then
     if (( ${#value} > MAX_DECODE_INPUT )); then
@@ -272,7 +487,7 @@ scan_encoded_views() {
     fi
   fi
 
-  if [[ "$value" =~ '[A-Za-z0-9+/_-]{24}' ]]; then
+  if [[ "$value" =~ '[A-Za-z0-9+/_-]{16}' ]]; then
     while IFS= read -r candidate; do
       [[ -z "$candidate" ]] && continue
       candidate_count_ref=$((candidate_count_ref + 1))
@@ -285,9 +500,13 @@ scan_encoded_views() {
         continue
       fi
       if decode_base64_to_file "$candidate"; then
-        scan_decoded_file "$file_id" "$line_number" "base64"
+        if (( decode_depth >= 4 )); then
+          record_finding "decode_depth" "$file_id" "$line_number" "base64"
+        else
+          scan_decoded_file "$file_id" "$line_number" "base64" "$((decode_depth + 1))"
+        fi
       fi
-    done < <(/usr/bin/printf '%s\n' "$value" | /usr/bin/grep -Eo '([A-Za-z0-9+/]{24,}={0,2}|[A-Za-z0-9_-]{24,})' 2>/dev/null || true)
+    done < <(/usr/bin/printf '%s\n' "$value" | /usr/bin/grep -Eo '([A-Za-z0-9+/]{16,}={0,2}|[A-Za-z0-9_-]{16,})' 2>/dev/null || true)
   fi
 
   REPLY="$candidate_count_ref"
@@ -360,10 +579,13 @@ integer file_sequence=0
 local_path=""
 for local_path in "${paths[@]}"; do
   relative="${local_path#$ROOT/}"
+  current_relative="$relative"
+  current_source_sha256=""
   file_sequence=$((file_sequence + 1))
   file_id="$(/usr/bin/printf 'item-%06d' "$file_sequence")"
   allowlist_reference "$relative" "$file_id"
   file_id="$REPLY"
+  financial_tail=""
   basename="${relative:t}"
   lower_basename="${basename:l}"
 
@@ -414,7 +636,10 @@ for local_path in "${paths[@]}"; do
     record_finding "metadata_invalid" "$file_id" 0 "metadata"
     continue
   fi
-  (( REPLY > 1 )) && record_finding "hardlinked_file" "$file_id" 0 "metadata"
+  if (( REPLY > 1 )); then
+    record_finding "hardlinked_file" "$file_id" 0 "metadata"
+    continue
+  fi
 
   file_size "$local_path" || {
     record_finding "metadata_unreadable" "$file_id" 0 "metadata"
@@ -428,6 +653,9 @@ for local_path in "${paths[@]}"; do
     record_finding "file_too_large" "$file_id" 0 "metadata"
     continue
   fi
+
+  source_digest="$(/usr/bin/shasum -a 256 -- "$local_path" 2>/dev/null || true)"
+  current_source_sha256="${source_digest%% *}"
 
   archive_magic_rule "$local_path"
   [[ -n "$REPLY" ]] && record_finding "$REPLY" "$file_id" 0 "magic"
@@ -451,9 +679,15 @@ for local_path in "${paths[@]}"; do
   line=""
   while IFS= read -r line || [[ -n "$line" ]]; do
     line_number=$((line_number + 1))
+    current_line_raw="$line"
     if (( ${#line} > MAX_LINE_BYTES )); then
       record_finding "line_too_large" "$file_id" "$line_number" "raw"
       continue
+    fi
+    if [[ -n "$financial_tail" ]]; then
+      # A space keeps the bounded candidate extractor on one line while
+      # retaining the fact that the PAN crossed a source-line boundary.
+      scan_financial_value "${financial_tail} ${line}" "$file_id" "$line_number" "split"
     fi
     if (( checksum_metadata )); then
       scan_checksum_line "$line" "$file_id" "$line_number" "$base64_candidates"
@@ -463,6 +697,8 @@ for local_path in "${paths[@]}"; do
       scan_encoded_views "$line" "$file_id" "$line_number" "$base64_candidates"
       base64_candidates="$REPLY"
     fi
+    normalize_decimal_digits "$line"
+    if (( ${#REPLY} > 64 )); then financial_tail="${REPLY[-64,-1]}"; else financial_tail="$REPLY"; fi
   done < "$local_path"
   if (( checksum_metadata && line_number == 0 )); then
     record_finding "checksum_manifest_empty" "$file_id" 0 "checksum"
