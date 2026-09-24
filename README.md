@@ -22,7 +22,7 @@ Open source. Native ChatGPT on your Mac. Built by [Autonomous Production](https:
 
 [![AssistantBench leaderboard with AutoBot’s result highlighted in red](docs/benchmark-charts/assistantbench-highlighted.png)](benchmarks/assistantbench/)
 
-<sub>AutoAssist was the harness's previous brand name, changed to AutoBot two weeks after this screenshot.</sub>
+<sub>AutoAssist was the harness's previous brand name, changed to AutoBot.</sub>
 
 [Results and verification](benchmarks/assistantbench/)
 
@@ -140,7 +140,7 @@ Run `./runtime/bin/autoassist help` for the complete local command list.
 
 ## Current status
 
-Autobot `0.3.0` is an early public release for a single user on a Mac. The package is not a multi-tenant service, an OS sandbox, a cryptographic privacy boundary, or a guarantee that every third-party action will succeed. Treat a downloadable ZIP as verified only when its checksum and manifest match the adjacent release artifacts and the packaged candidate passes the bundled release checks.
+Autobot `0.4.0` is an early public release for a single user on a Mac. The package is not a multi-tenant service, an OS sandbox, a cryptographic privacy boundary, or a guarantee that every third-party action will succeed. Treat a downloadable ZIP as verified only when its checksum and manifest match the adjacent release artifacts and the packaged candidate passes the bundled release checks.
 
 ## License
 
@@ -149,6 +149,8 @@ Autobot is available under the [MIT License](LICENSE). Copyright (c) 2026 Autobo
 ## Setup and installation
 
 Set up AutoBot on your MacBook, then use it from your phone.
+
+For a local-only first task, use the [minimal installation path](docs/INSTALL.md#start-a-local-project). Computer Use, Mac permissions, phone access and connected apps in the steps below are optional enhancements, not prerequisites for local work.
 
 ### 1 Get the Mac app for Codex
 
@@ -182,7 +184,7 @@ Open **Settings** with **Command + comma** and choose these [preferences](https:
 
 ### 5 Download AutoBot
 
-Open the [AutoBot release](https://github.com/demeyer1/Autobot/releases/tag/v0.3.0) and download **AutoAssist-v0.3.0.zip** plus **AutoAssist-v0.3.0.zip.sha256**. Keep them together and double-click the ZIP to open the download.
+Open the [AutoBot release](https://github.com/demeyer1/Autobot/releases/tag/v0.4.0) and download **AutoAssist-v0.4.0.zip**, **AutoAssist-v0.4.0.zip.sha256**, and **AutoAssist-v0.4.0.manifest.sha256**. Keep them together and double-click the ZIP to open the download. The [install guide](docs/INSTALL.md#download-and-install) shows both verification commands.
 
 ### 6 Start inside a project
 
