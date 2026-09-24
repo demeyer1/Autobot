@@ -1,4 +1,4 @@
-# Autobot
+# AutoBot
 
 **AutoBot: a self-improving agentic harness that makes frontier AI better at finishing complex knowledge work.**
 
