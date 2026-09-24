@@ -32,6 +32,7 @@ INSTALL_ROOT="${INSTALL_ROOT:A}"
 
 STATUS_WRITER="$INSTALL_ROOT/skills/first-time/scripts/write-status.sh"
 SETUP_VALIDATOR="$INSTALL_ROOT/skills/first-time/scripts/validate-setup.sh"
+PROGRESS="$INSTALL_ROOT/skills/first-time/scripts/walkthrough-progress.sh"
 PROJECTS_FILE="$INSTALL_ROOT/PROJECTS.md"
 STATUS_FILE="$INSTALL_ROOT/01_PROJECTS/first-time/STATUS.md"
 MARKER="$INSTALL_ROOT/.install-state/first-time-complete"
@@ -125,6 +126,51 @@ if [[ -z "$SMOKE_OBJECTIVE_ID" ]]; then
   /bin/echo "first-time status regression did not obtain a smoke objective ID" >&2
   exit 1
 fi
+
+"$PROGRESS" --root "$INSTALL_ROOT" --account-home "$TEST_HOME" record \
+  --stage independent-review --status ready-for-review --gate none \
+  --evidence local-smoke-readback --smoke-objective "$SMOKE_OBJECTIVE_ID" > "$OUTPUT_ROOT/review-ready.log"
+"$STATUS_WRITER" --root "$INSTALL_ROOT" --account-home "$TEST_HOME" --state pending > "$OUTPUT_ROOT/pending-after-smoke.log"
+/usr/bin/grep -F -q 'The local setup smoke is complete' "$STATUS_FILE"
+/usr/bin/grep -F -q 'independent read-only validation' "$STATUS_FILE"
+/usr/bin/grep -F -q "$SMOKE_OBJECTIVE_ID" "$STATUS_FILE"
+if /usr/bin/grep -F -q 'Complete the local setup smoke objective.' "$STATUS_FILE"; then
+  /bin/echo "pending first-time status told a resumed user to repeat a validated smoke" >&2
+  exit 1
+fi
+
+SMOKE_EVIDENCE_DIR="$INSTALL_ROOT/03_OUTPUTS/.first-time-smoke/$SMOKE_OBJECTIVE_ID"
+SMOKE_STAGE_EVIDENCE="$SMOKE_EVIDENCE_DIR/rendered_readback_verified.txt"
+/bin/mv "$SMOKE_STAGE_EVIDENCE" "$OUTPUT_ROOT/smoke-stage-missing.txt"
+if "$PROGRESS" --root "$INSTALL_ROOT" --account-home "$TEST_HOME" show > "$OUTPUT_ROOT/missing-smoke-show.log" 2>&1; then
+  /bin/echo "walkthrough reported review readiness after smoke evidence was removed" >&2
+  exit 1
+fi
+"$STATUS_WRITER" --root "$INSTALL_ROOT" --account-home "$TEST_HOME" --state pending > "$OUTPUT_ROOT/pending-after-missing-smoke.log"
+/usr/bin/grep -F -q 'Setup is incomplete.' "$STATUS_FILE"
+if /usr/bin/grep -F -q 'The local setup smoke is complete' "$STATUS_FILE"; then
+  /bin/echo "pending status claimed smoke completion after evidence was removed" >&2
+  exit 1
+fi
+/bin/mv "$OUTPUT_ROOT/smoke-stage-missing.txt" "$SMOKE_STAGE_EVIDENCE"
+
+/bin/cp -p "$SMOKE_STAGE_EVIDENCE" "$OUTPUT_ROOT/smoke-stage-original.txt"
+/usr/bin/printf '%s\n' \
+  "objective_id=$SMOKE_OBJECTIVE_ID" \
+  'stage=rendered_readback_verified' \
+  'external_mutation=true' > "$SMOKE_STAGE_EVIDENCE"
+/bin/chmod 600 "$SMOKE_STAGE_EVIDENCE"
+if "$PROGRESS" --root "$INSTALL_ROOT" --account-home "$TEST_HOME" show > "$OUTPUT_ROOT/corrupt-smoke-show.log" 2>&1; then
+  /bin/echo "walkthrough reported review readiness with corrupt smoke evidence" >&2
+  exit 1
+fi
+"$STATUS_WRITER" --root "$INSTALL_ROOT" --account-home "$TEST_HOME" --state pending > "$OUTPUT_ROOT/pending-after-corrupt-smoke.log"
+/usr/bin/grep -F -q 'Setup is incomplete.' "$STATUS_FILE"
+if /usr/bin/grep -F -q 'The local setup smoke is complete' "$STATUS_FILE"; then
+  /bin/echo "pending status claimed smoke completion with corrupt evidence" >&2
+  exit 1
+fi
+/bin/mv "$OUTPUT_ROOT/smoke-stage-original.txt" "$SMOKE_STAGE_EVIDENCE"
 
 SETUP_HASH="$(/usr/bin/shasum -a 256 "$INSTALL_ROOT/config/first-time.conf" | /usr/bin/awk '{print $1}')"
 /usr/bin/printf '%s\n' \

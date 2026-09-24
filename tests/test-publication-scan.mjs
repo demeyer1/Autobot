@@ -5,7 +5,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { hash, crc32, LIMITS, readBounded, inspectJpeg, scanText, scanEntries, scanTree, parseAllowlist } from '../scripts/publication-scan.mjs';
+import { hash, crc32, LIMITS, readBounded, inspectJpeg, luhnValid, scanText, scanEntries, scanTree, parseAllowlist } from '../scripts/publication-scan.mjs';
 import { makeZip, readZip, canonicalArchiveMode, manifestFor, buildRelease, verifyRelease, extractRelease } from '../scripts/package.mjs';
 const email = ['scanner-fixture', 'example.invalid'].join('@');
 const b64 = text => Buffer.from(text).toString('base64');
@@ -16,6 +16,15 @@ function seed(root) {
   put(root,'config/release-allowlist.txt',['LICENSE','VERSION','config/release-allowlist.txt','run.sh'].join('\n')+'\n');
 }
 const fixture = (name,bytes,mode=0o644) => [{path:name,bytes:Buffer.from(bytes),mode}];
+function syntheticPan(prefix, length) {
+  const body = prefix.padEnd(length - 1, '2').slice(0, length - 1);
+  for (let digit = 0; digit < 10; digit++) {
+    const candidate = `${body}${digit}`;
+    if (luhnValid(candidate)) return candidate;
+  }
+  throw new Error('synthetic PAN fixture construction failed');
+}
+const unicodeDigits = value => value.replace(/[0-9]/g, digit => String.fromCodePoint(0x660 + Number(digit)));
 function chunk(type,body) { const b=Buffer.alloc(12+body.length);b.writeUInt32BE(body.length);b.write(type,4);body.copy(b,8);b.writeUInt32BE(crc32(b.subarray(4,8+body.length)),8+body.length);return b; }
 function png(extra=[]) { const header=Buffer.alloc(13);header.writeUInt32BE(1);header.writeUInt32BE(1,4);header[8]=8;header[9]=2;return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',header),...extra,chunk('IDAT',Buffer.from([120,156,99,96,96,96,0,0,0,4,0,1])),chunk('IEND',Buffer.alloc(0))]); }
 
@@ -28,6 +37,88 @@ test('generic text controls and nested encoding',()=>{
   assert.throws(()=>scanText('x'.repeat(LIMITS.line+1)),/line_limit/);
   let encoded=email;for(let i=0;i<8;i++)encoded=b64(encoded);assert.throws(()=>scanText(encoded),/decode_depth/);
 });
+test('bounded payment and financial detector covers synthetic forms',()=>{
+  const visa = syntheticPan('4',16);
+  const mastercard = syntheticPan('51',16);
+  const amex = syntheticPan('37',15);
+  for (const value of [visa, mastercard, amex, `${visa.slice(0,4)}-${visa.slice(4,8)}-${visa.slice(8,12)}-${visa.slice(12)}`, unicodeDigits(visa)]) {
+    assert.throws(() => scanText(value), /payment_card_pan/);
+  }
+  assert.throws(() => scanText(Buffer.from(`card: ${visa}`).toString('base64')), /payment_card_pan/);
+  assert.throws(() => scanText('CVV: ' + '1'.repeat(3)), /payment_cvv/);
+  assert.throws(() => scanText('PIN=' + ['2', '4', '6', '8'].join('')), /payment_pin/);
+  assert.throws(() => scanText('routing number: ' + Array.from({length:9}, (_, i) => String((i + 3) % 10)).join('')), /bank_routing_number/);
+  assert.throws(() => scanText('bank account number: ' + Array.from({length:10}, (_, i) => String((i + 5) % 10)).join('')), /bank_account_number/);
+  assert.throws(() => scanText('IBAN: ' + ['D', 'E', '2', ...Array.from({length:14}, () => '0'), '0'].join('')), /bank_iban/);
+  assert.throws(() => scanText(`;${visa}=${['1', '2', '3', '4'].join('')}?`), /track_data/);
+  assert.throws(() => scanText(`%B${mastercard}^SYNTHETIC^${'1'.repeat(4)}?`), /track_data/);
+  const benchmark = 'score=0.' + '1'.repeat(16) + ', reward=0.' + '7'.repeat(15) + '1';
+  assert.throws(() => scanText(benchmark, { path: 'benchmarks/osworld-2.0/results.csv', benchmark: true }), /payment_card_pan/);
+  assert.equal(scanEntries(fixture('benchmarks/osworld-2.0/results.csv', visa), ['benchmarks/osworld-2.0/results.csv']).ok, false);
+  assert.equal(scanEntries(fixture('benchmarks/osworld-2.0/results.csv', `card: ${visa}`), ['benchmarks/osworld-2.0/results.csv']).ok, false);
+});
+test('financial context rejects structured and encoded synthetic bypasses',()=>{
+  const json = (key, value) => JSON.stringify({[key]: value});
+  const visa13 = syntheticPan('4',13);
+  const invalid = visa13.slice(0,-1) + ((Number(visa13.at(-1)) + 1) % 10);
+  const fragments = visa13.match(/.{1,4}/g);
+  const adjacent = 'const pan = ' + fragments.map(value => `'${value}'`).join(' + ');
+  const entities = visa13.split('').map(value => '&#' + value.charCodeAt(0) + ';').join('');
+  const shortBase64 = Buffer.from(visa13).toString('base64');
+  const nestedBase64 = Buffer.from(shortBase64).toString('base64');
+  const digitArray = JSON.stringify({pan: visa13.split('').map(Number)});
+  const masked = 'card: ' + '*'.repeat(4) + ' ' + '*'.repeat(4) + ' ' + '1234';
+  const pinBlock = 'ABCDEF' + '1'.repeat(10);
+  const trackFragment = '%B' + '4'.repeat(12);
+  const maskedNumber = ['card', 'number'].join('_') + ': ' + '*'.repeat(4) + ' ' + '*'.repeat(4) + ' ' + visa13.slice(-4);
+  const adjacentLiteral = 'const n = ' + JSON.stringify(visa13.slice(0, 8)) + ' + ' + JSON.stringify(visa13.slice(8));
+  const nonIssuer = syntheticPan('8', 16);
+  const billingKey = ['billing', 'address'].join('_');
+  const tokenKey = ['payment', 'token'].join('_');
+  const cardholderKey = ['cardholder', 'name'].join('_');
+  const cvnKey = 'cv' + 'n2';
+  const serviceKey = ['service', 'code'].join('_');
+  const trackKey = ['track', '2'].join('');
+  for (const [value, rule] of [
+    [json('card_number', invalid), 'payment_card_pan'],
+    [json('cvv', '123'), 'payment_cvv'],
+    [json('pin', '1234'), 'payment_pin'],
+    [json('account_number', Array.from({length:10}, (_, index) => String((index + 4) % 10)).join('')), 'bank_account_number'],
+    [json('expiry_date', '12/34'), 'payment_expiry'],
+    [json('payment_token', 'tok_' + 'x1'.repeat(8)), 'payment_token'],
+    [masked, 'masked_card'],
+    [adjacent, 'payment_card_pan'],
+    [digitArray, 'payment_card_pan'],
+    [fragments.join('.'), 'payment_card_pan'],
+    [fragments.join('/'), 'payment_card_pan'],
+    [entities, 'payment_card_pan'],
+    [shortBase64, 'payment_card_pan'],
+    [nestedBase64, 'payment_card_pan'],
+    [json('cid', '1234'), 'payment_cvv'],
+    [json('pin_block', pinBlock), 'pin_block'],
+    [json('billing', invalid), 'payment_card_pan'],
+    [trackFragment, 'track_data'],
+    [maskedNumber, 'masked_card'],
+    [adjacentLiteral, 'payment_card_pan'],
+    [json(billingKey, 'Synthetic Example'), 'billing_field'],
+    [`${trackKey}: ${visa13.slice(-4)}=`, 'track_data'],
+    [nonIssuer, 'payment_card_pan'],
+    [`${tokenKey}: REDACTED\n${tokenKey}: ${'opaque' + 'value'.repeat(4)}`, 'payment_token'],
+    [`${tokenKey}: abcd`, 'payment_token'],
+    [json(cardholderKey, 'Synthetic Example'), 'cardholder_name'],
+    [json(cvnKey, '123'), 'payment_cvv'],
+    [json(serviceKey, '123'), 'payment_service_code'],
+  ]) assert.throws(() => scanText(value), new RegExp(rule));
+  scanText(JSON.stringify({cvv:'', pin:'REDACTED', card_number:'REDACTED', payment_token:'placeholder'}));
+});
+test('unsupported opaque media is identified, while reviewed PNG remains admissible',()=>{
+  const opaque = scanEntries(fixture('art.gif', Buffer.from('GIF89a synthetic')), ['art.gif']);
+  assert.equal(opaque.ok, false);
+  assert.equal(opaque.findings[0].rule, 'unsupported_opaque_media');
+  const archive = scanEntries(fixture('payload.zip', Buffer.from('PK\x03\x04 synthetic')), ['payload.zip']);
+  assert.equal(archive.ok, false);
+  assert.equal(archive.findings[0].rule, 'unsupported_opaque_archive');
+});
 test('realistic checksum digest is data, but path is scanned',()=>{
   scanText('1234567890'+'a'.repeat(54)+'  safe.txt\n',{checksum:true});
   assert.throws(()=>scanText('a'.repeat(64)+'  '+email+'\n',{checksum:true}),/checksum_grammar/);
@@ -38,10 +129,13 @@ test('allowlist is sorted unique exact per-file schema',()=>{
   for(const value of ['a\na\n','A\na\n','a\na/b\n','b\na\n','../a\n','a','a\r\n','a b\n','/a\n'])assert.throws(()=>parseAllowlist(Buffer.from(value)));
 });
 test('text content, names, hidden paths and unsupported objects',()=>{
+  assert.equal(scanEntries(fixture('private.txt','safe',0o600),['private.txt']).ok,true);
+  assert.equal(scanEntries(fixture('private.command','safe',0o700),['private.command']).ok,true);
   for(const [name,bytes] of [['safe.txt',email],[email,'safe'],['.hidden','safe'],['dist/safe','safe'],['state/safe','safe'],['secret.log','safe'],['payload.txt',Buffer.from([0,1,2])],['payload.bin',Buffer.from([255,254])],['photo.jpg','printable unknown media'],['document.txt','%PDF-1.4'],['nested.zip','PK'],['symbolic.txt','safe']]) {
     const mode=name==='symbolic.txt'?0o777:0o644;
     assert.equal(scanEntries(fixture(name,bytes,mode),[name]).ok,false);
   }
+  assert.equal(scanEntries(fixture('unsafe.txt','safe',0o640),['unsafe.txt']).findings[0].rule,'unsafe_mode');
   assert.throws(()=>scanEntries(fixture('a','safe'),['b']),/inventory_mismatch/);
 });
 test('media requires exact reviewed hash and metadata-free PNG',()=>{
@@ -90,7 +184,26 @@ test('JPEG requires exact image and separately reviewed APP segment hashes',()=>
 });
 test('passive CSV Python and checksum names remain scanned text',()=>{
   for(const name of ['data.csv','reference.py']){assert.equal(scanEntries(fixture(name,'synthetic,public\n'),[name]).ok,true);assert.equal(scanEntries(fixture(name,email),[name]).ok,false);}
-  assert.equal(scanEntries(fixture('SHA256SUMS','a'.repeat(64)+'  safe.csv\n'),['SHA256SUMS']).ok,true);assert.equal(scanEntries(fixture('SHA256SUMS','a'.repeat(64)+'  ../private\n'),['SHA256SUMS']).ok,false);
+  const target=Buffer.from('safe,public\n');const digest=hash(target);const good=[...fixture('SHA256SUMS',digest+'  safe.csv\n'),...fixture('safe.csv',target)];assert.equal(scanEntries(good,['SHA256SUMS','safe.csv']).ok,true);
+  const wrong=(digest[0]==='0'?'1':'0')+digest.slice(1);const bad=[...fixture('SHA256SUMS',wrong+'  safe.csv\n'),...fixture('safe.csv',target)];assert.equal(scanEntries(bad,['SHA256SUMS','safe.csv']).findings[0].rule,'checksum_mismatch');
+  assert.equal(scanEntries(fixture('SHA256SUMS','a'.repeat(64)+'  ../private\n'),['SHA256SUMS']).ok,false);
+});
+test('legacy public checksum exception is exact-byte bound',()=>{
+  const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..','benchmarks','osworld-2.0');
+  const names=['README.md','SHA256SUMS','leaderboard-comparison.jpg','results.csv','score-evidence.json','summary.json','verify.py'];
+  const entries=names.map(name=>({path:`benchmarks/osworld-2.0/${name}`,mode:0o644,bytes:fs.readFileSync(path.join(root,name))})).sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
+  const allowlist=entries.map(entry=>entry.path);
+  const jpeg=entries.find(entry=>entry.path.endsWith('.jpg'));
+  const inspected=inspectJpeg(jpeg.bytes);
+  const mediaReviews=[{path:jpeg.path,sha256:hash(jpeg.bytes),kind:'jpeg',reviewed:true,reviewer:'synthetic-baseline-review',metadataReviewed:true,metadataReviewer:'synthetic-baseline-metadata-review',metadataSegments:inspected.metadataSegments}];
+  assert.equal(scanEntries(entries,allowlist,{mediaReviews}).ok,true);
+  const alteredReadme=entries.map(entry=>entry.path.endsWith('/README.md')?{...entry,bytes:Buffer.from(entry.bytes.map((value,index)=>index===0?value^1:value))}:entry);
+  assert.equal(scanEntries(alteredReadme,allowlist,{mediaReviews}).findings.some(finding=>finding.rule==='checksum_mismatch'),true);
+  const alteredChecksum=entries.map(entry=>{
+    if(!entry.path.endsWith('/SHA256SUMS')) return entry;
+    const bytes=Buffer.from(entry.bytes);bytes[0]=bytes[0]===0x32?0x33:0x32;return {...entry,bytes};
+  });
+  assert.equal(scanEntries(alteredChecksum,allowlist,{mediaReviews}).findings.some(finding=>finding.rule==='checksum_mismatch'),true);
 });
 
 
