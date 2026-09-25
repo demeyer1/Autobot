@@ -1,0 +1,4 @@
+interface:
+  display_name: "Messages Inbox Triage"
+  short_description: "Triage unread Messages by voice or text"
+  default_prompt: "Use $messages-inbox-triage to walk me through unread Messages conversations by voice or text."
