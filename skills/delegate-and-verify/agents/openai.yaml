@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delegate and Verify"
+  short_description: "Bounded parallel work with independent review"
+  default_prompt: "Use $delegate-and-verify to split this authorized task and independently check the result."
