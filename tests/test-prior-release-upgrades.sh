@@ -4,15 +4,16 @@ umask 077
 
 SOURCE_ROOT="${0:A:h:h}"
 CURRENT_VERSION="$(/bin/cat "$SOURCE_ROOT/VERSION")"
-[[ "$CURRENT_VERSION" == 0.4.0 ]] || { /bin/echo 'expected candidate v0.4.0' >&2; exit 1; }
+[[ "$CURRENT_VERSION" == 0.5.0 ]] || { /bin/echo 'expected candidate v0.5.0' >&2; exit 1; }
 
-for prior in 0.2.0 0.3.0; do
+for prior in 0.2.0 0.3.0 0.4.0; do
   zip_var="AUTOASSIST_V${prior//./}_ZIP"
   PRIOR_ZIP="${(P)zip_var:-}"
   [[ "$PRIOR_ZIP" == /* && -f "$PRIOR_ZIP" && ! -L "$PRIOR_ZIP" ]] || { /bin/echo "missing exact public v$prior ZIP" >&2; exit 2; }
   case "$prior" in
     0.2.0) expected=e960777bf34cdb96b18af16feb37973c4cf4db939df91e837841f71e1eedb144 ;;
     0.3.0) expected=f276fe82f549e2639eeecabbb66323971ab9ff4606029b6ca5fb89dd3fde59bb ;;
+    0.4.0) expected=b10df8e6748599ff82c57e63c687230ce1264b737e1cae78fc4fabe05263c443 ;;
   esac
   [[ "$(/usr/bin/shasum -a 256 "$PRIOR_ZIP" | /usr/bin/awk '{print $1}')" == "$expected" ]] || { /bin/echo "public v$prior ZIP hash mismatch" >&2; exit 1; }
 
