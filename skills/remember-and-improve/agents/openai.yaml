@@ -1,0 +1,4 @@
+interface:
+  display_name: "Remember and Improve"
+  short_description: "Scoped memory and source-grounded corrections"
+  default_prompt: "Use $remember-and-improve to save this lesson in the right scope and apply it to this task."
