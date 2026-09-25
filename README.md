@@ -110,7 +110,7 @@ Important limits:
 - Voice availability, usage, and rollout depend on the ChatGPT plan and workspace.
 - Only one voice chat can be active across desktop at a time.
 - Tasks started from Voice also use the Codex usage budget.
-- Enable **Keep this Mac awake** in Settings → Connections for phone access through Remote.
+
 - Starting a Goal does not broaden sandbox access or approval authority.
 
 ## Commands
