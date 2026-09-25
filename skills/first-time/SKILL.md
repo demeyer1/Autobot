@@ -34,6 +34,12 @@ Inspect existing configuration before asking anything. Preserve valid choices an
 
 Ask only when the user requested an option that cannot be inferred safely. Read [dedicated Mac, sign-in and permissions](references/macos-and-sign-in.md) before a user-present handoff and [privacy and communications](references/privacy-and-communications.md) before enabling another zone or tone profile. Optional features remain optional.
 
+### Phone and always-on Mac setup
+
+When the user chooses phone-first use, after the installed folder is the primary local Project, guide them to sign in to ChatGPT on the Mac with the same account and workspace as the phone. In ChatGPT desktop, go to **Settings → Connections → Control this Mac or PC → Set up/Add**, scan the QR code in the ChatGPT phone app, and enable **Keep this Mac awake**; leave the Mac plugged in and online. Then have them open [**Remote**](https://learn.chatgpt.com/docs/remote-connections) on the phone and start or continue the AutoBot Codex chat using [Voice](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex). Verify the host by asking from phone Voice for the first heading in the local Project's `PROJECTS.md`; compare the reply with the installed file and report pairing as verified when it matches.
+
+
+
 ## Local configuration
 
 Before writing configuration, read [references/configuration.md](references/configuration.md). Use a restrictive umask, atomic local writes, directory mode `700`, and sensitive file mode `600`. Store only documented labels and states. Record observed native availability separately from a permission state the user confirmed. A shell result, synthetic fixture, marker or receipt does not prove a native UI capability.
