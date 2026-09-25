@@ -30,6 +30,19 @@ OLD_PLIST_REMOVED=0
 INSTALL_MODE=""
 PREVIOUS_BACKUP=""
 
+# Project-local projections are selected from the release source, not from a
+# release-version assumption.  Keep first-time first in the list because its
+# receipt fields are part of the v0.4.0 compatibility contract.
+MANAGED_PROJECT_SKILLS=(
+  first-time
+  slack-inbox-triage
+  messages-inbox-triage
+  finish-the-mission
+  remember-and-improve
+  autobot-health-check
+  delegate-and-verify
+)
+
 source "$SOURCE_ROOT/runtime/lib/install-common.sh"
 
 usage() {
@@ -477,6 +490,29 @@ aa_validate_release_manifest "$SOURCE_ROOT" "$ALLOWLIST"
 VERSION="$(/bin/cat "$SOURCE_ROOT/VERSION")"
 [[ "$VERSION" =~ '^[0-9]+\.[0-9]+\.[0-9]+$' ]] || aa_die "release version is invalid"
 
+skill_source_is_selected() {
+  local skill="$1"
+  local skill_root="$SOURCE_ROOT/skills/$skill"
+  [[ -d "$skill_root" && ! -L "$skill_root" \
+    && -f "$skill_root/SKILL.md" && ! -L "$skill_root/SKILL.md" ]]
+}
+
+validate_source_project_skill() {
+  local skill="$1"
+  local skill_root="$SOURCE_ROOT/skills/$skill"
+  if [[ -L "$skill_root" || -e "$skill_root" ]]; then
+    [[ -d "$skill_root" && ! -L "$skill_root" ]] || aa_die "managed skill source is unsafe: $skill"
+    [[ -f "$skill_root/SKILL.md" && ! -L "$skill_root/SKILL.md" ]] \
+      || aa_die "managed skill source is missing SKILL.md: $skill"
+    aa_tree_has_unsafe_nodes "$skill_root" && aa_die "managed skill source contains unsafe nodes: $skill"
+  fi
+}
+
+for managed_skill in "${MANAGED_PROJECT_SKILLS[@]}"; do
+  validate_source_project_skill "$managed_skill"
+done
+skill_source_is_selected first-time || aa_die "release is missing required first-time skill"
+
 INSTALL_MODE=fresh
 OLD_MANIFEST=""
 if [[ -e "$DESTINATION" ]]; then
@@ -590,6 +626,82 @@ fingerprint_tree() {
   done) > "$output"
 }
 
+record_project_skill_conflict() {
+  /usr/bin/printf '%s\n' ".agents/skills/$1 ($2)" >> "$CONFLICTS"
+}
+
+validate_current_project_skill() {
+  local skill="$1"
+  local project="$DESTINATION/.agents/skills/$skill"
+  local marker="$project/.autoassist-skill"
+  local canonical="$DESTINATION/skills/$skill"
+  local owned=1
+  local projected_digest=""
+  local canonical_digest=""
+  local manifest_line=""
+  local manifest_path=""
+
+  if [[ ! -d "$project" || -L "$project" ]]; then
+    record_project_skill_conflict "$skill" "project-local projection is unsafe"
+    return 0
+  fi
+  [[ -f "$marker" && ! -L "$marker" ]] || owned=0
+  [[ "$owned" -eq 0 || $(/usr/bin/grep -F -x -c "managed-by=AutoAssist" "$marker" 2>/dev/null || true) -eq 1 ]] || owned=0
+  [[ "$owned" -eq 0 || $(/usr/bin/grep -F -x -c "root=$DESTINATION" "$marker" 2>/dev/null || true) -eq 1 ]] || owned=0
+  [[ "$owned" -eq 0 || $(/usr/bin/grep -F -x -c "instance_id=$INSTANCE_ID" "$marker" 2>/dev/null || true) -eq 1 ]] || owned=0
+  if [[ "$skill" != first-time ]]; then
+    [[ "$owned" -eq 0 || $(/usr/bin/grep -F -x -c "skill=$skill" "$marker" 2>/dev/null || true) -eq 1 ]] || owned=0
+  fi
+  if [[ "$owned" -eq 0 ]]; then
+    record_project_skill_conflict "$skill" "projection ownership mismatch"
+    return 0
+  fi
+  if [[ ! -d "$canonical" || -L "$canonical" ]]; then
+    record_project_skill_conflict "$skill" "canonical skill is missing"
+    return 0
+  fi
+  while IFS= read -r manifest_line; do
+    manifest_path="${manifest_line#*  }"
+    [[ "$manifest_path" == "skills/$skill/"* ]] || continue
+    aa_safe_manifest_entry "$manifest_path" || { record_project_skill_conflict "$skill" "unsafe old skill manifest"; return 0; }
+    if [[ ! -f "$DESTINATION/$manifest_path" || -L "$DESTINATION/$manifest_path" ]]; then
+      record_project_skill_conflict "$skill" "canonical skill file was removed"
+      return 0
+    fi
+  done < "$OLD_MANIFEST"
+  projected_digest="$(aa_tree_digest "$project" .autoassist-skill 2>/dev/null || true)"
+  canonical_digest="$(aa_tree_digest "$canonical" 2>/dev/null || true)"
+  [[ -n "$projected_digest" && "$projected_digest" == "$canonical_digest" ]] \
+    || record_project_skill_conflict "$skill" "project-local skill was customized"
+}
+
+canonical_skill_matches_old_manifest() {
+  local skill="$1"
+  local canonical="$DESTINATION/skills/$skill"
+  local path=""
+  local relative=""
+  local old_hash=""
+  local actual_hash=""
+  local line=""
+  local found=0
+  [[ -d "$canonical" && ! -L "$canonical" ]] || return 1
+  while IFS= read -r path; do
+    relative="${path#$DESTINATION/}"
+    old_hash="$(aa_manifest_hash_for "$OLD_MANIFEST" "$relative" 2>/dev/null || true)"
+    [[ -n "$old_hash" ]] || return 1
+    actual_hash="$(aa_sha256 "$path")"
+    [[ "$actual_hash" == "$old_hash" ]] || return 1
+    found=1
+  done < <(/usr/bin/find -P "$canonical" -type f -print | LC_ALL=C /usr/bin/sort)
+  while IFS= read -r line; do
+    relative="${line#*  }"
+    [[ "$relative" == "skills/$skill/"* ]] || continue
+    aa_safe_manifest_entry "$relative" || return 1
+    [[ -f "$DESTINATION/$relative" && ! -L "$DESTINATION/$relative" ]] || return 1
+  done < "$OLD_MANIFEST"
+  [[ "$found" -eq 1 ]]
+}
+
 if [[ "$INSTALL_MODE" == update ]]; then
   /usr/bin/printf 'instance_id=%s\npid=%s\n' "$INSTANCE_ID" "$$" > "$DESTINATION/.install-state/migration.lock"
   /bin/chmod 600 "$DESTINATION/.install-state/migration.lock"
@@ -631,19 +743,16 @@ if [[ "$INSTALL_MODE" == update ]]; then
       [[ "$(aa_sha256 "$DESTINATION/$entry")" != "$old_hash" ]] || /bin/rm -f -- "$STAGE/$entry"
     fi
   done < "$OLD_MANIFEST"
-  CURRENT_PROJECT_SKILL="$DESTINATION/.agents/skills/first-time"
-  if [[ -e "$CURRENT_PROJECT_SKILL" ]]; then
-    [[ -d "$CURRENT_PROJECT_SKILL" && ! -L "$CURRENT_PROJECT_SKILL" ]] || aa_die "project-local skill projection is unsafe"
-    skill_marker="$CURRENT_PROJECT_SKILL/.autoassist-skill"
-    [[ -f "$skill_marker" && ! -L "$skill_marker" ]] \
-      && /usr/bin/grep -F -x -q "root=$DESTINATION" "$skill_marker" \
-      && /usr/bin/grep -F -x -q "instance_id=$INSTANCE_ID" "$skill_marker" \
-      || /usr/bin/printf '%s\n' ".agents/skills/first-time (projection ownership mismatch)" >> "$CONFLICTS"
-    projected_digest="$(aa_tree_digest "$CURRENT_PROJECT_SKILL" .autoassist-skill 2>/dev/null || true)"
-    canonical_digest="$(aa_tree_digest "$DESTINATION/skills/first-time" 2>/dev/null || true)"
-    [[ -n "$projected_digest" && "$projected_digest" == "$canonical_digest" ]] \
-      || /usr/bin/printf '%s\n' ".agents/skills/first-time (project-local skill was customized)" >> "$CONFLICTS"
-  fi
+  for managed_skill in "${MANAGED_PROJECT_SKILLS[@]}"; do
+    CURRENT_PROJECT_SKILL="$DESTINATION/.agents/skills/$managed_skill"
+    if [[ -e "$CURRENT_PROJECT_SKILL" || -L "$CURRENT_PROJECT_SKILL" ]]; then
+      validate_current_project_skill "$managed_skill"
+      if ! skill_source_is_selected "$managed_skill" \
+        && ! canonical_skill_matches_old_manifest "$managed_skill"; then
+        record_project_skill_conflict "$managed_skill" "canonical skill was customized"
+      fi
+    fi
+  done
 fi
 if [[ -s "$CONFLICTS" ]]; then
   /bin/echo "AutoAssist update stopped before mutation. Resolve these three-way conflicts:" >&2
@@ -651,15 +760,37 @@ if [[ -s "$CONFLICTS" ]]; then
   aa_die "no target files were changed"
 fi
 
-/bin/rm -rf -- "$STAGE/.agents/skills/first-time"
 /bin/mkdir -p -- "$STAGE/.agents/skills"
-/bin/cp -Rp -- "$STAGE/skills/first-time" "$STAGE/.agents/skills/first-time"
-/usr/bin/printf 'managed-by=AutoAssist\nroot=%s\ninstance_id=%s\n' "$DESTINATION" "$INSTANCE_ID" > "$STAGE/.agents/skills/first-time/.autoassist-skill"
+for managed_skill in "${MANAGED_PROJECT_SKILLS[@]}"; do
+  if skill_source_is_selected "$managed_skill"; then
+    /bin/rm -rf -- "$STAGE/.agents/skills/$managed_skill"
+    [[ -d "$STAGE/skills/$managed_skill" && -f "$STAGE/skills/$managed_skill/SKILL.md" ]] \
+      || aa_die "selected release skill was not staged: $managed_skill"
+    /bin/cp -Rp -- "$STAGE/skills/$managed_skill" "$STAGE/.agents/skills/$managed_skill"
+    if [[ "$managed_skill" == first-time ]]; then
+      /usr/bin/printf 'managed-by=AutoAssist\nroot=%s\ninstance_id=%s\n' \
+        "$DESTINATION" "$INSTANCE_ID" > "$STAGE/.agents/skills/$managed_skill/.autoassist-skill"
+    else
+      /usr/bin/printf 'managed-by=AutoAssist\nroot=%s\ninstance_id=%s\nskill=%s\n' \
+        "$DESTINATION" "$INSTANCE_ID" "$managed_skill" > "$STAGE/.agents/skills/$managed_skill/.autoassist-skill"
+    fi
+  elif [[ "$INSTALL_MODE" == update && ( -e "$STAGE/.agents/skills/$managed_skill" || -L "$STAGE/.agents/skills/$managed_skill" ) ]]; then
+    # The preflight above proved both marker ownership and pristine canonical
+    # bytes before an omitted skill is removed (especially during rollback).
+    /bin/rm -rf -- "$STAGE/.agents/skills/$managed_skill"
+  fi
+done
 /bin/mkdir -p "$STAGE/.install-state" "$STAGE/00_CONTEXT" "$STAGE/01_PROJECTS" "$STAGE/02_INBOX" "$STAGE/03_OUTPUTS"
 /bin/chmod 700 "$STAGE" "$STAGE/.install-state" "$STAGE/.agents" "$STAGE/.agents/skills" "$STAGE/.agents/skills/first-time" "$STAGE/00_CONTEXT" "$STAGE/01_PROJECTS" "$STAGE/02_INBOX" "$STAGE/03_OUTPUTS"
 /usr/bin/printf '%s\n' 'managed-by=AutoAssist' > "$STAGE/.install-state/managed-by-autoassist"
 [[ "$TEST_MODE" -eq 0 ]] || /usr/bin/printf 'test_root=%s\n' "$TEST_ROOT" > "$STAGE/.install-state/test-mode"
-/bin/chmod 600 "$STAGE/.install-state/managed-by-autoassist" "$STAGE/.agents/skills/first-time/.autoassist-skill"
+/bin/chmod 600 "$STAGE/.install-state/managed-by-autoassist"
+for managed_skill in "${MANAGED_PROJECT_SKILLS[@]}"; do
+  if [[ -d "$STAGE/.agents/skills/$managed_skill" ]]; then
+    /bin/chmod 700 "$STAGE/.agents/skills/$managed_skill"
+    /bin/chmod 600 "$STAGE/.agents/skills/$managed_skill/.autoassist-skill"
+  fi
+done
 [[ ! -f "$STAGE/.install-state/test-mode" ]] || /bin/chmod 600 "$STAGE/.install-state/test-mode"
 [[ -f "$STAGE/config/profile.conf" ]] || aa_copy_file "$STAGE/config/profile.example.conf" "$STAGE/config/profile.conf"
 /bin/chmod 600 "$STAGE/config/profile.conf"
