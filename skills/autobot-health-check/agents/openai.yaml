@@ -1,0 +1,4 @@
+interface:
+  display_name: "Autobot Health Check"
+  short_description: "Check installation and runtime readiness"
+  default_prompt: "Use $autobot-health-check to check this installation and explain any actionable findings."
