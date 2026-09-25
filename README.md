@@ -168,3 +168,21 @@ On the Mac, open ChatGPT and sign in to the same account and workspace you use o
 - **Connect your accounts:** add email, calendar or other [available capabilities](docs/CAPABILITIES.md) one at a time.
 
 Review [privacy](PRIVACY.md) and [security](SECURITY.md) before connecting sensitive accounts. Keep authentication and recovery codes on a separate device. For upgrades, repair, removal or a paused setup, use the [installation guide](docs/INSTALL.md) or ask AutoBot to continue first-time setup from its saved progress.
+
+## First magic moments
+
+### Make Autobot sound like me
+
+**Step 0: Connect your messages once.** Tell AutoBot, “Connect my work email and Messages on this Mac.” Complete any sign-in or Mac permissions, then approve a few messages you wrote as examples.
+
+1. **Load AutoBot by voice.** On your phone, open **Remote**, choose your AutoBot chat, start Voice, and say: “Load AutoBot.”
+2. **Teach it your styles.** Say: “Learn how I write to colleagues and how I text friends. Keep the styles separate and show me how each sounds.”
+3. **Hear the difference.** Review the two short style summaries and sample drafts. Correct anything that sounds off, then approve the profiles. AutoBot stores compact, separate style patterns by default.
+
+### Connect my calendar and prep me for the day
+
+**Step 0: Connect your calendar once.** Tell AutoBot, “Install my work calendar connector.” Complete its sign-in and have AutoBot confirm it can see upcoming events.
+
+1. **Load AutoBot by voice.** On your phone, open **Remote**, choose your AutoBot chat, start Voice, and say: “Load AutoBot.”
+2. **Hand off the day.** Say: “Get me ready for my next workday, and keep working after I end Voice.”
+3. **Get on with your day.** Once AutoBot confirms a supported long-running task is active, end Voice. When it finishes, AutoBot brings you a brief with your meetings, open time, and what to prepare, with anything uncertain flagged.
