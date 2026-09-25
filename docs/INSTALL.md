@@ -36,7 +36,9 @@ For a quick manual check in the installed folder:
 ./runtime/bin/autoassist version
 ```
 
-After the first local task works, add [phone access](https://learn.chatgpt.com/docs/remote-connections), [Computer Use and permissions](PERMISSIONS.md), or [app connections](CAPABILITIES.md) as needed. Review [privacy](../PRIVACY.md) and [security](../SECURITY.md) before connecting sensitive accounts.
+### Phone and always-on Mac setup
+
+On the Mac, open ChatGPT and sign in to the same account and workspace you use on your phone. Go to **Settings → Connections → Control this Mac or PC → Set up/Add**, scan the QR code in the ChatGPT phone app, and enable **Keep this Mac awake**; leave the Mac plugged in and online. On your phone, open [**Remote**](https://learn.chatgpt.com/docs/remote-connections) and start or continue the AutoBot Codex chat using [Voice](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex). Ask a read-only question about a detail in the local Project to confirm the connection.
 
 ## Upgrade an existing installation
 
