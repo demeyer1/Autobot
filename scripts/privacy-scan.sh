@@ -13,7 +13,9 @@ ROOT_INPUT="${1:-${0:A:h:h}}"
 MAX_FILE_BYTES=$((2 * 1024 * 1024))
 MAX_LINE_BYTES=$((256 * 1024))
 MAX_DECODE_INPUT=16384
-MAX_BASE64_CANDIDATES_PER_FILE=256
+# Large code helpers contain many ordinary identifier-shaped tokens. Inspect
+# each candidate rather than silently skipping after the former small limit.
+MAX_BASE64_CANDIDATES_PER_FILE=8192
 MAX_PRINTED_FINDINGS=200
 
 if [[ -L "$ROOT_INPUT" || ! -d "$ROOT_INPUT" ]]; then
