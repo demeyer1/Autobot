@@ -110,7 +110,7 @@ Important limits:
 - Voice availability, usage, and rollout depend on the ChatGPT plan and workspace.
 - Only one voice chat can be active across desktop at a time.
 - Tasks started from Voice also use the Codex usage budget.
-- Local long-running work needs the Mac and workspace to remain available. Enable **Prevent sleep while running** when appropriate.
+
 - Starting a Goal does not broaden sandbox access or approval authority.
 
 ## Commands
@@ -148,7 +148,7 @@ Autobot is available under the [MIT License](LICENSE). Copyright (c) 2026 Autobo
 
 ## Setup and installation
 
-Start with one useful local task on your Mac. Add phone access and app connections whenever you're ready.
+Install AutoBot on the Mac that hosts your local Project, then continue from your phone with Remote and Voice.
 
 1. **Open Codex on your Mac.** [Get the desktop app](https://learn.chatgpt.com/docs/app), sign in, and start a local Project called AutoBot in an empty setup folder.
 2. **Ask Codex to install AutoBot.** Paste this prompt:
@@ -159,9 +159,11 @@ Start with one useful local task on your Mac. Add phone access and app connectio
 
 The `AutoAssist` folder name is retained so existing local Projects keep their path. Codex handles the download and verification in the guided route. If you prefer to do that yourself, use the [manual installation guide](docs/INSTALL.md).
 
-### Supercharge Autobot
+### Phone and always-on Mac setup
 
-- **Use it from your phone:** set up [Remote](https://learn.chatgpt.com/docs/remote-connections) after your local task works.
+On the Mac, open ChatGPT and sign in to the same account and workspace you use on your phone. Go to **Settings → Connections → Control this Mac or PC → Set up/Add**, scan the QR code in the ChatGPT phone app, and enable **Keep this Mac awake**; leave the Mac plugged in and online. On your phone, open [**Remote**](https://learn.chatgpt.com/docs/remote-connections) and start or continue the AutoBot Codex chat using [Voice](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex). Ask a read-only question about a detail in the local Project to confirm the connection.
+
+### Supercharge Autobot
 - **Work in apps:** add [Computer Use and app permissions](docs/PERMISSIONS.md) for the apps you choose.
 - **Connect your accounts:** add email, calendar or other [available capabilities](docs/CAPABILITIES.md) one at a time.
 

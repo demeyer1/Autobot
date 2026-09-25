@@ -1,6 +1,6 @@
 # AutoBot installation instructions for AI
 
-**This is the agent checklist for the [three-step guided setup](README.md#setup-and-installation). The person's first finish line is one saved local task. Phone access, Computer Use, app connections and local liveness can be added later.**
+**This is the agent checklist for the [three-step guided setup](README.md#setup-and-installation). The user's first finish line is one saved local task; for phone-first use, complete step 6 to pair the phone with Remote and Voice.**
 
 Use this guide when the user gives you the repository URL and asks to install AutoBot in a new local Project. Work through package verification, installation, project setup and one local result, carrying forward the user's original request.
 
@@ -108,7 +108,9 @@ Complete the skill's independent review and completion-marker steps, then verify
 
 Create the requested sample checklist in the installed local Project, save it, reopen it, and show the user where it is. Use the installed first-time skill's completion checks for the local setup. Finish with the installed folder and version, the checks that passed, any remaining user step, and the saved local result.
 
-Treat [phone access](https://learn.chatgpt.com/docs/remote-connections), [Computer Use and Mac permissions](docs/PERMISSIONS.md), [app connections](docs/CAPABILITIES.md) and local liveness as later opt-ins. If the user asks for one, guide and verify that capability separately. Let the user handle account sign-ins, permission grants and app restarts, saving a resume point when needed. Keep authentication and recovery codes on a separate device.
+## 6 Phone and always-on Mac setup
+
+When the user chooses phone-first use, guide them to open ChatGPT on the Mac using the same account and workspace as the phone. In ChatGPT desktop, go to **Settings → Connections → Control this Mac or PC → Set up/Add**, scan the QR code in the ChatGPT phone app, and enable **Keep this Mac awake**; leave the Mac plugged in and online. Have them open [**Remote**](https://learn.chatgpt.com/docs/remote-connections) on the phone and start or continue the AutoBot Codex chat using [Voice](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex). Verify the host with a read-only question about a detail in the local Project and compare the answer with the local file.
 
 ## Existing installation or interrupted setup
 
