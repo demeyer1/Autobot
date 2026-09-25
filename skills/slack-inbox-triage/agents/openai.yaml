@@ -1,0 +1,4 @@
+interface:
+  display_name: "Slack Inbox Triage"
+  short_description: "Triage unread Slack by voice or text"
+  default_prompt: "Use $slack-inbox-triage to walk me through every unread Slack message in voice or text."
