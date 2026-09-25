@@ -465,7 +465,7 @@ export function scanEntries(entries, allowlist, { mediaReviews = [] } = {}) {
         const extension = path.extname(e.path).toLowerCase();
         if (/\.(zip|tar|tgz|gz|bz2|xz|7z|rar|dmg|pkg|iso|jar|war)$/.test(extension)) reject('unsupported_opaque_archive');
         if (/\.(gif|webp|heic|avif|bmp|tif|tiff|ico|mp4|mov|mkv|wav|mp3|pdf)$/.test(extension)) reject('unsupported_opaque_media');
-        if (!['', '.md', '.mjs', '.js', '.sh', '.json', '.txt', '.conf', '.yaml', '.yml', '.template', '.command', '.map', '.sha256', '.csv', '.py'].includes(extension)) reject('unsupported_format');
+        if (!['', '.md', '.mjs', '.js', '.cjs', '.sh', '.json', '.txt', '.conf', '.yaml', '.yml', '.template', '.command', '.map', '.sha256', '.csv', '.py'].includes(extension)) reject('unsupported_format');
         let text; try { text = new TextDecoder('utf-8', { fatal: true }).decode(e.bytes); } catch { reject('unsupported_binary'); }
         if (/^(?:PK\x03\x04|%PDF-|SQLite format 3)/.test(text)) reject('opaque_container');
         const checksum = e.path.endsWith('.sha256') || path.basename(e.path) === 'SHA256SUMS';

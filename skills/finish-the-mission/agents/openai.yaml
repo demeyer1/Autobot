@@ -1,0 +1,4 @@
+interface:
+  display_name: "Finish the Mission"
+  short_description: "Durable follow-through with verified outcomes"
+  default_prompt: "Use $finish-the-mission to track this assignment and keep its next steps recoverable."

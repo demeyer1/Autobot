@@ -4,13 +4,13 @@ The easiest route is the [three-step guided setup](../README.md#setup-and-instal
 
 ## Manual install
 
-1. From the [v0.4.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.4.0), download `AutoAssist-v0.4.0.zip` and its matching `.zip.sha256` and `.manifest.sha256` files. Choose the attached release ZIP, not GitHub's automatic source-code ZIP.
-2. In the download folder, run `shasum -a 256 -c AutoAssist-v0.4.0.zip.sha256`. Extract the ZIP, open the extracted `AutoAssist` folder, then run `shasum -a 256 -c ../AutoAssist-v0.4.0.manifest.sha256`. Continue only when the ZIP and every manifest entry report `OK`.
+1. From the [v0.5.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.5.0), download `AutoAssist-v0.5.0.zip` and its matching `.zip.sha256` and `.manifest.sha256` files. Choose the attached release ZIP, not GitHub's automatic source-code ZIP.
+2. In the download folder, run `shasum -a 256 -c AutoAssist-v0.5.0.zip.sha256`. Extract the ZIP, open the extracted `AutoAssist` folder, then run `shasum -a 256 -c ../AutoAssist-v0.5.0.manifest.sha256`. Continue only when the ZIP and every manifest entry report `OK`.
 3. Double-click `Install.command`, or run `./install.sh` from that extracted folder. Note the installed path and doctor result.
 
 If macOS blocks opening the installer, inspect its origin and use the standard Finder/System Settings opening flow. Keep Gatekeeper enabled. The installer checks available space before making changes.
 
-The base install uses macOS's local tools without Node.js, an administrator account, API key or new privacy permission. Completing first-time setup's local smoke check and using advanced runtime commands require [Node.js 22 or newer](https://nodejs.org/en/download). The installer reports runtime availability without changing your shared toolchain. The [v0.4.0 validation report](https://github.com/demeyer1/Autobot/releases/download/v0.4.0/AutoAssist-v0.4.0-validation.md) records tests on macOS 15.7.4, Apple silicon and Node.js 22.23.3. Check the [current desktop app requirements](https://learn.chatgpt.com/docs/app) for your Mac.
+The base install uses macOS's local tools without Node.js, an administrator account, API key or new privacy permission. Completing first-time setup's local smoke check and using advanced runtime commands require [Node.js 22 or newer](https://nodejs.org/en/download). The installer reports runtime availability without changing your shared toolchain. The [v0.5.0 validation report](https://github.com/demeyer1/Autobot/releases/download/v0.5.0/AutoAssist-v0.5.0-validation.md) records tests on macOS 15.7.4, Apple silicon and Node.js 25.6.1. Check the [current desktop app requirements](https://learn.chatgpt.com/docs/app) for your Mac.
 
 ### Choose another folder
 

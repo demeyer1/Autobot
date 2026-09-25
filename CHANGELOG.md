@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (prerelease)
+
+Six portable skills are included with every installation: Slack inbox triage, Messages inbox triage, Finish the Mission, Remember and Improve, Autobot Health Check, and Delegate and Verify. The installer places them in the local Project alongside first-time setup.
+
+Slack and Messages triage combine fast next-card presentation with a single verified action lane, short-lived previews and body-free checkpoints. The workflow skills connect task follow-through, scoped memory, read-only health checks and independently reviewed delegation to the existing local runtime.
+
+Managed skill installation preserves user customizations and global skills, checks every project-local projection, and supports verified upgrade and rollback.
+
 ## 0.4.0 (prerelease)
 
 The local runtime now records a terminal attestation that binds every validated stage, its evidence, requirements, content and runtime build. Completion is rechecked against current bytes, so an attestation cannot substitute for a fresh external destination review.

@@ -22,6 +22,15 @@ SETUP_STATE="incomplete"
 SERVICE_STATE="not-configured"
 SKILL_STATE="missing"
 DETAIL=""
+MANAGED_PROJECT_SKILLS=(
+  first-time
+  slack-inbox-triage
+  messages-inbox-triage
+  finish-the-mission
+  remember-and-improve
+  autobot-health-check
+  delegate-and-verify
+)
 
 record_failure() {
   INTEGRITY="failed"
@@ -48,8 +57,47 @@ if [[ -f "$ROOT/.install-state/installed-manifest.sha256" ]]; then
   done < "$ROOT/.install-state/installed-manifest.sha256"
 fi
 
-if [[ -d "$ROOT/.agents/skills/first-time" && ! -L "$ROOT/.agents/skills/first-time" ]]; then
+EXPECTED_INSTANCE=""
+RECEIPT="$ROOT/.install-state/receipt.json"
+if [[ -f "$RECEIPT" && ! -L "$RECEIPT" ]]; then
+  EXPECTED_INSTANCE="$(/usr/bin/sed -n 's/.*"instance_id":"\([^"]*\)".*/\1/p' "$RECEIPT" | /usr/bin/head -1)"
+fi
+selected_skill_count=0
+projected_skill_count=0
+for managed_skill in "${MANAGED_PROJECT_SKILLS[@]}"; do
+  canonical="$ROOT/skills/$managed_skill"
+  project="$ROOT/.agents/skills/$managed_skill"
+  marker="$project/.autoassist-skill"
+  [[ -f "$canonical/SKILL.md" && ! -L "$canonical/SKILL.md" ]] || continue
+  selected_skill_count=$((selected_skill_count + 1))
+  if [[ ! -d "$project" || -L "$project" ]]; then
+    record_failure "project-local skill projection missing: $managed_skill"
+    continue
+  fi
+  projected_skill_count=$((projected_skill_count + 1))
+  marker_ok=1
+  [[ -f "$marker" && ! -L "$marker" ]] || marker_ok=0
+  [[ "$marker_ok" -eq 0 || $(/usr/bin/grep -F -x -c 'managed-by=AutoAssist' "$marker" 2>/dev/null || true) -eq 1 ]] || marker_ok=0
+  [[ "$marker_ok" -eq 0 || $(/usr/bin/grep -F -x -c "root=$ROOT" "$marker" 2>/dev/null || true) -eq 1 ]] || marker_ok=0
+  if [[ -n "$EXPECTED_INSTANCE" ]]; then
+    [[ "$marker_ok" -eq 0 || $(/usr/bin/grep -F -x -c "instance_id=$EXPECTED_INSTANCE" "$marker" 2>/dev/null || true) -eq 1 ]] || marker_ok=0
+  fi
+  if [[ "$managed_skill" != first-time ]]; then
+    [[ "$marker_ok" -eq 0 || $(/usr/bin/grep -F -x -c "skill=$managed_skill" "$marker" 2>/dev/null || true) -eq 1 ]] || marker_ok=0
+  fi
+  if [[ "$marker_ok" -eq 0 ]]; then
+    record_failure "project-local skill marker mismatch: $managed_skill"
+    continue
+  fi
+  projected_digest="$(aa_tree_digest "$project" .autoassist-skill 2>/dev/null || true)"
+  canonical_digest="$(aa_tree_digest "$canonical" 2>/dev/null || true)"
+  [[ -n "$projected_digest" && "$projected_digest" == "$canonical_digest" ]] \
+    || record_failure "project-local skill projection changed: $managed_skill"
+done
+if [[ "$selected_skill_count" -gt 0 && "$projected_skill_count" -eq "$selected_skill_count" ]]; then
   SKILL_STATE="project-local"
+elif [[ "$projected_skill_count" -gt 0 ]]; then
+  SKILL_STATE="partial"
 fi
 if [[ -f "$ROOT/.install-state/first-time-complete" && ! -L "$ROOT/.install-state/first-time-complete" ]]; then
   SETUP_STATE="complete-marker-present"
@@ -62,7 +110,6 @@ fi
 aa_discover_node "$ROOT"
 RUNTIME_STATUS="$AA_NODE_STATUS"
 
-RECEIPT="$ROOT/.install-state/receipt.json"
 if [[ -f "$RECEIPT" && ! -L "$RECEIPT" ]]; then
   service_label="$(/usr/bin/sed -n 's/.*"service_label":"\([^"]*\)".*/\1/p' "$RECEIPT" | /usr/bin/head -1)"
   if [[ -n "$service_label" ]]; then
