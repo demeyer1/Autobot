@@ -2,6 +2,10 @@
 
 **AutoBot: a self-improving agentic harness that makes frontier AI better at finishing complex knowledge work.**
 
+[![Start the 3-step Mac setup](https://img.shields.io/badge/START%20SETUP-3--STEP%20MAC%20GUIDE-0969DA?style=for-the-badge&labelColor=0969DA)](https://github.com/demeyer1/Autobot#setup-and-installation)
+
+[Prefer the ZIP? Download the latest release](https://github.com/demeyer1/Autobot/releases/latest)
+
 AutoBot achieved **18.5% higher task completion than the published OpenAI Sol Max baseline**, surpassing **Anthropic’s Claude Opus 5 Max** on OSWorld 2.0, a benchmark of long, multi-application workflows. It also reached **#1 on the official AssistantBench hidden-test leaderboard**. [Results and methodology](https://github.com/demeyer1/Autobot/tree/main/benchmarks)
 
 **Hard workflows become upgrades to the agent itself.** AutoBot repairs its own harness, independently validates the changes, and carries them forward. The next workflow inherits the improvement. **Compounding capability, without retraining the model.**
@@ -12,7 +16,8 @@ AutoBot achieved **18.5% higher task completion than the published OpenAI Sol Ma
 
 **Local compute makes persistent intelligence economical.** Your CPU handles orchestration, state and integrity checks. Compiled context and reusable proofs reduce repeated inference, directing the model’s budget toward the difficult judgments that move work forward.
 
-Open source. Native ChatGPT on your Mac. Built by [Autonomous Production](https://autoprod.ai). [Get AutoBot](https://github.com/demeyer1/Autobot/releases).
+
+Open source. Native ChatGPT on your Mac. Built by [Autonomous Production](https://autoprod.ai).
 
 ## Benchmarks
 
