@@ -1,6 +1,6 @@
 # Privacy zones
 
-AutoAssist separates context by relationship and purpose so personal life does not silently enter work and work does not flatten family or friend communication.
+AutoBot separates context by relationship and purpose so personal life does not silently enter work and work does not flatten family or friend communication.
 
 | Zone | Default use | Cross-zone rule |
 | --- | --- | --- |
@@ -18,5 +18,5 @@ AutoAssist separates context by relationship and purpose so personal life does n
 
 ## Stronger isolation option
 
-The default install uses owner-only folders inside one macOS account. Users who need stronger separation should create separate macOS user accounts or separate dedicated laptops for materially different trust domains. AutoAssist does not claim that folder permissions inside one logged-in account are equivalent to hardware or operating-system account isolation.
+The default install uses owner-only folders inside one macOS account. Users who need stronger separation should create separate macOS user accounts or separate dedicated laptops for materially different trust domains. AutoBot does not claim that folder permissions inside one logged-in account are equivalent to hardware or operating-system account isolation.
 
