@@ -17,6 +17,12 @@ const equal=(a,b,m)=>{assert.deepEqual(a,b,m);checks++;};
 const rejects=(fn,code)=>{assert.throws(fn,e=>e.code===code);checks++;};
 function fixtureFrom(name,runtimeSource){const root=path.join(base,name);fs.mkdirSync(path.join(root,'runtime'),{recursive:true});fs.cpSync(path.join(runtimeSource,'runtime/core'),path.join(root,'runtime/core'),{recursive:true});fs.mkdirSync(path.join(root,'03_OUTPUTS'));return root;}
 function fixture(name){return fixtureFrom(name,source);}
+function legacyObjective(root,id,state){
+ const objective=path.join(root,'state/objectives',id);fs.mkdirSync(path.join(objective,'stages'),{recursive:true});fs.mkdirSync(path.join(objective,'evidence'),{recursive:true});
+ for(const [name,value] of Object.entries({title:'Exact legacy objective',state,created_at:'2026-01-01T00:00:00Z',updated_at:'2026-01-01T00:00:00Z',last_progress_epoch:'1767225600'}))fs.writeFileSync(path.join(objective,name),value+'\n');
+ for(const stage of STAGES){const stageDir=path.join(objective,'stages',stage);fs.mkdirSync(stageDir);fs.writeFileSync(path.join(stageDir,'state'),'pending\n');}
+ return objective;
+}
 function call(root,action,a={}){return execute(root,action,a);}
 function start(root,id='task-one',dest={kind:'local',destination:'03_OUTPUTS/result.txt'}){
  const content='Synthetic final artifact';if(dest.kind==='local')fs.writeFileSync(path.resolve(root,dest.destination),content);
@@ -32,7 +38,7 @@ function report(root,ctx,stage,extra={}){
 }
 function review(root,ctx,stage,extra={}){const d=current(root,ctx.root_id);return call(root,'review',{root_id:ctx.root_id,stage,validator:'reviewer',attempt_id:d.attempt_id,content_sha256:d.expected_content_sha256,target:d.target,result:'validated',reason:'Inspected exact synthetic output and target.',...extra});}
 try{
- const root=fixture('account home/Autobot Workspace');equal(call(root,'read').roots,[]);ok(!fs.existsSync(path.join(root,'state')),'read does not initialize state');
+ const root=fixture('account home/AutoBot Workspace');equal(call(root,'read').roots,[]);ok(!fs.existsSync(path.join(root,'state')),'read does not initialize state');
  const capabilities=call(root,'capabilities');equal(capabilities.heartbeat,'bounded-quiescence');equal(capabilities.uncertain_handoff,'explicit-no-retry-until-independent-readback');
  rejects(()=>call(root,'root-create',{root_id:'not-authorized',title:'No provenance'}),'direct_user_source_required');
  const ctx=start(root);equal(call(root,'read').roots.length,1);rejects(()=>call(root,'claim',{root_id:ctx.root_id,actor:'other'}),'already_owned');
@@ -73,6 +79,9 @@ try{
  const outside=path.join(base,'outside');fs.writeFileSync(outside,'outside');rejects(()=>call(root,'context',{file:outside,phase:'producer'}),'path_outside_installation');fs.symlinkSync(outside,path.join(root,'03_OUTPUTS/link'));rejects(()=>call(root,'context',{file:path.join(root,'03_OUTPUTS/link'),phase:'producer'}),'symlink_rejected');
  fs.mkdirSync(path.join(root,'.install-state'),{recursive:true});fs.mkdirSync(path.join(root,'.install-state/migration.lock'));rejects(()=>call(root,'tick'),'installation_migrating');fs.rmdirSync(path.join(root,'.install-state/migration.lock'));
  call(root,'tick');equal(call(root,'orphans').status,'current');
+ // A v0.1-style objective may have been superseded before migration. Import it
+ // as immutable history without reviving it as active work or calling it done.
+ const sr=fixture('legacy-superseded'),legacyDir=legacyObjective(sr,'superseded-one','superseded');equal(call(sr,'legacy-import').imported,['superseded-one']);const superseded=call(sr,'read',{root_id:'superseded-one'});equal(superseded.root.legacy_state,'superseded');ok(superseded.root.legacy_compatibility);ok(!superseded.root.historical_complete);ok(!superseded.readiness.complete);ok(superseded.readiness.historical_inactive);equal(call(sr,'heartbeat',{root_id:'superseded-one'}).decision,'pause_inactive');equal(call(sr,'orphans').items,[]);rejects(()=>call(sr,'claim',{root_id:'superseded-one',actor:'producer'}),'legacy_objective_inactive');const supersededTick=call(sr,'tick');equal(supersededTick.decisions[0].decision,'pause_inactive');equal(supersededTick.orphans.items,[]);equal(call(sr,'read',{root_id:'superseded-one'}).root.recovery,null);equal(fs.readFileSync(path.join(legacyDir,'state'),'utf8'),'superseded\n');
  // External stages need fresh exact account, recipient, content and persisted unique readback.
  const er=fixture('external'),ec=start(er,'external-one',qTarget);for(const stage of STAGES.slice(0,2)){report(er,ec,stage);review(er,ec,stage);}
  rejects(()=>report(er,ec,'destination_updated'),'external_observation_required');const ed=current(er,ec.root_id);const observation={kind:'destination_updated',persisted:true,unique:true,failure:false,attribution:false,target:qTarget,content_sha256:ed.expected_content_sha256,observed_at:new Date().toISOString()};rejects(()=>report(er,ec,'destination_updated',{observation:{...observation,target:{...qTarget,account:'wrong'}}}),'wrong_target');rejects(()=>report(er,ec,'destination_updated',{observation:{...observation,observed_at:'2000-01-01T00:00:00Z'}}),'stale_observation');report(er,ec,'destination_updated',{observation});review(er,ec,'destination_updated',{observation});

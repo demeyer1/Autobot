@@ -6,7 +6,7 @@ import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { hash, crc32, LIMITS, readBounded, inspectJpeg, luhnValid, scanText, scanEntries, scanTree, parseAllowlist } from '../scripts/publication-scan.mjs';
-import { makeZip, readZip, canonicalArchiveMode, manifestFor, buildRelease, verifyRelease, extractRelease } from '../scripts/package.mjs';
+import { ARTIFACT, LEGACY_ARTIFACT, ROOT, artifactNames, legacyArtifactAllowed, licenseShaAllowed, makeZip, readZip, canonicalArchiveMode, manifestFor, buildRelease, verifyRelease, extractRelease } from '../scripts/package.mjs';
 const email = ['scanner-fixture', 'example.invalid'].join('@');
 const b64 = text => Buffer.from(text).toString('base64');
 const tree = () => fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'autobot-publication-test-')));
@@ -160,7 +160,56 @@ test('ZIP is reproducible, no extras, exact bytes/modes and strict headers',()=>
   assert.throws(()=>makeZip([{path:'../escape',mode:0o644,bytes:Buffer.from('bad')}]));assert.throws(()=>makeZip([...entries,entries[0]]));
 });
 test('actual package build, reread, extract, checksum failure and output nonoverwrite',()=>{
-  const temp=tree();try{const root=path.join(temp,'candidate with spaces');fs.mkdirSync(root);seed(root);const one=path.join(temp,'one');const two=path.join(temp,'two');const a=buildRelease(root,one);const b=buildRelease(root,two);assert.equal(a.sha256,b.sha256);const archive=path.join(one,a.archive),manifest=path.join(one,'AutoAssist-v0.2.0.manifest.sha256'),checksum=archive+'.sha256';const verified=verifyRelease(archive,manifest,checksum);const dest=path.join(temp,'extracted');extractRelease(verified.entries,dest);assert.equal(scanTree(path.join(dest,'AutoAssist')).ok,true);assert.equal(fs.statSync(path.join(dest,'AutoAssist/run.sh')).mode&0o777,0o755);assert.throws(()=>buildRelease(root,one),/output_exists/);assert.throws(()=>extractRelease(verified.entries,dest),/output_exists/);fs.appendFileSync(checksum,'extra\n');assert.throws(()=>verifyRelease(archive,manifest,checksum),/release_integrity/);}finally{fs.rmSync(temp,{recursive:true,force:true});}
+  const temp=tree();try{const root=path.join(temp,'candidate with spaces');fs.mkdirSync(root);seed(root);const one=path.join(temp,'one');const two=path.join(temp,'two');const a=buildRelease(root,one);const b=buildRelease(root,two);assert.equal(a.sha256,b.sha256);assert.equal(a.archive,'AutoBot-v0.2.0.zip');const archive=path.join(one,a.archive),manifest=path.join(one,'AutoBot-v0.2.0.manifest.sha256'),checksum=archive+'.sha256';const verified=verifyRelease(archive,manifest,checksum);const dest=path.join(temp,'extracted');extractRelease(verified.entries,dest);assert.equal(scanTree(path.join(dest,'AutoAssist')).ok,true);assert.equal(fs.statSync(path.join(dest,'AutoAssist/run.sh')).mode&0o777,0o755);assert.throws(()=>buildRelease(root,one),/output_exists/);assert.throws(()=>extractRelease(verified.entries,dest),/output_exists/);fs.appendFileSync(checksum,'extra\n');assert.throws(()=>verifyRelease(archive,manifest,checksum),/release_integrity/);}finally{fs.rmSync(temp,{recursive:true,force:true});}
+});
+
+test('artifact identity changes to AutoBot while legacy names stop after 0.5.0',()=>{
+  assert.equal(ARTIFACT,'AutoBot');assert.equal(LEGACY_ARTIFACT,'AutoAssist');assert.equal(ROOT,'AutoAssist/');
+  assert.deepEqual(artifactNames('12.34.56'),{archive:'AutoBot-v12.34.56.zip',manifest:'AutoBot-v12.34.56.manifest.sha256',checksum:'AutoBot-v12.34.56.zip.sha256'});
+  for(const version of ['0.0.0','0.4.999','0.5.0'])assert.equal(legacyArtifactAllowed(version),true);
+  for(const version of ['0.5.1','0.10.0','1.0.0','10.0.0'])assert.equal(legacyArtifactAllowed(version),false);
+  assert.equal(licenseShaAllowed('0.5.0','a8323253d2ae9e1eb82372f057ecb64f7f9892bcb2e53db758e7097e2da1270b'),true);
+  assert.equal(licenseShaAllowed('0.5.1','a8323253d2ae9e1eb82372f057ecb64f7f9892bcb2e53db758e7097e2da1270b'),false);
+  assert.throws(()=>artifactNames('0.5.1',{legacy:true}),/legacy_artifact_version/);
+  for(const version of ['01.2.3','1.2','1.2.3-beta','1.2.3.4'])assert.throws(()=>artifactNames(version),/version_invalid/);
+});
+
+test('public-owned inventory uses exact shipped paths and repository metadata stays repo-only',()=>{
+  const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+  const publicOwnedFile=path.join(root,'config/public-owned.txt');
+  if(!fs.existsSync(publicOwnedFile))return;
+  const publicOwned=parseAllowlist(fs.readFileSync(publicOwnedFile));
+  const releaseAllowlist=parseAllowlist(fs.readFileSync(path.join(root,'config/release-allowlist.txt')));
+  const repoOnly=new Set(['.github/repo-metadata.json','docs/autobot-vs-openai-dots.md']);
+  assert.ok(publicOwned.includes('README.md'));assert.ok(publicOwned.includes('docs/COMPARISON.md'));
+  for(const relative of publicOwned){
+    assert.equal(releaseAllowlist.includes(relative),!repoOnly.has(relative));
+    if(!repoOnly.has(relative)||fs.existsSync(path.join(root,'.github'))){const stat=fs.lstatSync(path.join(root,relative));assert.equal(stat.isFile()&&!stat.isSymbolicLink(),true);}
+  }
+  assert.equal(releaseAllowlist.includes('.github/repo-metadata.json'),false);
+  const metadataFile=path.join(root,'.github/repo-metadata.json');
+  if(fs.existsSync(metadataFile)){
+    const metadata=JSON.parse(fs.readFileSync(metadataFile,'utf8'));
+    assert.equal(metadata.description,'Self-improving agent harness for ChatGPT and Codex on Mac. #1 on AssistantBench. On-disk memory, privacy zones, verified completion.');
+    assert.equal(metadata.homepageUrl,'https://demeyer1.github.io/Autobot/');
+    assert.equal(metadata.repositoryTopics.length,20);assert.deepEqual(metadata.repositoryTopics,[...metadata.repositoryTopics].sort());
+  }
+});
+
+test('legacy release filenames verify only through version 0.5.0',()=>{
+  const temp=tree();
+  try {
+    for(const [version,accepted] of [['0.5.0',true],['0.5.1',false]]) {
+      const root=path.join(temp,`source-${version}`);fs.mkdirSync(root);seed(root);fs.writeFileSync(path.join(root,'VERSION'),version+'\n');
+      const out=path.join(temp,`out-${version}`);const built=buildRelease(root,out);const currentArchive=path.join(out,built.archive);
+      const legacy={archive:`AutoAssist-v${version}.zip`,manifest:`AutoAssist-v${version}.manifest.sha256`,checksum:`AutoAssist-v${version}.zip.sha256`};
+      const legacyArchive=path.join(out,legacy.archive);const legacyManifest=path.join(out,legacy.manifest);const legacyChecksum=path.join(out,legacy.checksum);
+      fs.renameSync(currentArchive,legacyArchive);fs.renameSync(path.join(out,`AutoBot-v${version}.manifest.sha256`),legacyManifest);fs.renameSync(currentArchive+'.sha256',legacyChecksum);
+      const bytes=fs.readFileSync(legacyArchive);fs.writeFileSync(legacyChecksum,`${hash(bytes)}  ${legacy.archive}\n`);
+      if(accepted)assert.equal(verifyRelease(legacyArchive,legacyManifest,legacyChecksum).version,version);
+      else assert.throws(()=>verifyRelease(legacyArchive,legacyManifest,legacyChecksum),/release_integrity/);
+    }
+  } finally { fs.rmSync(temp,{recursive:true,force:true}); }
 });
 
 test('bounded reads reject growth without consuming unbounded bytes',()=>{
@@ -172,7 +221,7 @@ test('aggregate stat budget rejects before retaining file payloads',()=>{
   try {const names=[];for(let i=0;i<33;i++){const name='f'+String(i).padStart(2,'0')+'.txt';names.push(name);const f=put(root,name,'');fs.truncateSync(f,LIMITS.file);}names.push('config/release-allowlist.txt');put(root,'config/release-allowlist.txt',names.sort().join('\n')+'\n');fs.readSync=function(...args){const count=original(...args);readBytes+=count;return count;};assert.throws(()=>scanTree(root),/input_limit/);assert.ok(readBytes<2048);}finally{fs.readSync=original;fs.rmSync(root,{recursive:true,force:true});}
 });
 test('canonical archive modes are independent of web source modes',()=>{
-  const names=['Install.command','install.sh','runtime/bin/autoassist','runtime/core/main.mjs','README.md','benchmarks/reference.py'];const entries=names.map(p=>({path:p,mode:0o644,bytes:Buffer.from('synthetic fixture')}));const decoded=readZip(makeZip(entries));for(const e of decoded)assert.equal(e.mode,canonicalArchiveMode(e.path));assert.equal(decoded.find(e=>e.path==='install.sh').mode,0o755);assert.equal(decoded.find(e=>e.path==='benchmarks/reference.py').mode,0o644);assert.deepEqual(makeZip(entries),makeZip(entries.map(e=>({...e,mode:e.path.startsWith('benchmarks/')?0o644:0o755}))));assert.throws(()=>makeZip([{path:'benchmarks/reference.py',mode:0o755,bytes:Buffer.from('safe')}]),/source_mode/);
+  const names=['Install.command','install.sh','runtime/bin/autoassist','runtime/bin/autobot','runtime/core/main.mjs','README.md','benchmarks/reference.py'];const entries=names.map(p=>({path:p,mode:0o644,bytes:Buffer.from('synthetic fixture')}));const decoded=readZip(makeZip(entries));for(const e of decoded)assert.equal(e.mode,canonicalArchiveMode(e.path));assert.equal(decoded.find(e=>e.path==='install.sh').mode,0o755);assert.equal(decoded.find(e=>e.path==='runtime/bin/autobot').mode,0o755);assert.equal(decoded.find(e=>e.path==='benchmarks/reference.py').mode,0o644);assert.deepEqual(makeZip(entries),makeZip(entries.map(e=>({...e,mode:e.path.startsWith('benchmarks/')?0o644:0o755}))));assert.throws(()=>makeZip([{path:'benchmarks/reference.py',mode:0o755,bytes:Buffer.from('safe')}]),/source_mode/);
   const zip=makeZip([{path:'install.sh',mode:0o644,bytes:Buffer.from('safe')}]);const end=zip.length-22;const central=zip.readUInt32LE(end+16);zip.writeUInt32LE((0o100644*65536)>>>0,central+38);assert.throws(()=>readZip(zip),/zip_mode_policy/);
 });
 function jpegSegment(marker,body){const b=Buffer.alloc(body.length+4);b[0]=255;b[1]=marker;b.writeUInt16BE(body.length+2,2);body.copy(b,4);return b;}
@@ -188,7 +237,7 @@ test('passive CSV Python and checksum names remain scanned text',()=>{
   const wrong=(digest[0]==='0'?'1':'0')+digest.slice(1);const bad=[...fixture('SHA256SUMS',wrong+'  safe.csv\n'),...fixture('safe.csv',target)];assert.equal(scanEntries(bad,['SHA256SUMS','safe.csv']).findings[0].rule,'checksum_mismatch');
   assert.equal(scanEntries(fixture('SHA256SUMS','a'.repeat(64)+'  ../private\n'),['SHA256SUMS']).ok,false);
 });
-test('legacy public checksum exception is exact-byte bound',()=>{
+test('OSWorld public checksum baseline is current and enforced strictly',()=>{
   const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..','benchmarks','osworld-2.0');
   const names=['README.md','SHA256SUMS','leaderboard-comparison.jpg','results.csv','score-evidence.json','summary.json','verify.py'];
   const entries=names.map(name=>({path:`benchmarks/osworld-2.0/${name}`,mode:0o644,bytes:fs.readFileSync(path.join(root,name))})).sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
@@ -197,7 +246,9 @@ test('legacy public checksum exception is exact-byte bound',()=>{
   const inspected=inspectJpeg(jpeg.bytes);
   const mediaReviews=[{path:jpeg.path,sha256:hash(jpeg.bytes),kind:'jpeg',reviewed:true,reviewer:'synthetic-baseline-review',metadataReviewed:true,metadataReviewer:'synthetic-baseline-metadata-review',metadataSegments:inspected.metadataSegments}];
   assert.equal(scanEntries(entries,allowlist,{mediaReviews}).ok,true);
-  const alteredReadme=entries.map(entry=>entry.path.endsWith('/README.md')?{...entry,bytes:Buffer.from(entry.bytes.map((value,index)=>index===0?value^1:value))}:entry);
+  const checksum=entries.find(entry=>entry.path.endsWith('/SHA256SUMS')).bytes.toString('utf8');
+  assert.match(checksum,/^94752857af9b9e9f0e36c5f2186024976a9800c446ab331d377177db575c59be  README\.md$/m);
+  const alteredReadme=entries.map(entry=>entry.path.endsWith('/README.md')?{...entry,bytes:Buffer.concat([entry.bytes,Buffer.from('\n')])}:entry);
   assert.equal(scanEntries(alteredReadme,allowlist,{mediaReviews}).findings.some(finding=>finding.rule==='checksum_mismatch'),true);
   const alteredChecksum=entries.map(entry=>{
     if(!entry.path.endsWith('/SHA256SUMS')) return entry;
@@ -216,7 +267,7 @@ test('standard context containers extract within the exclusive output root',()=>
     fs.writeFileSync(list,['00_CONTEXT/MEMORY.md',...fs.readFileSync(list,'utf8').trim().split('\n')].sort().join('\n')+'\n');
     const out=path.join(temp,'package'),built=buildRelease(root,out);
     const archive=path.join(out,built.archive);
-    const verified=verifyRelease(archive,path.join(out,'AutoAssist-v0.2.0.manifest.sha256'),archive+'.sha256');
+    const verified=verifyRelease(archive,path.join(out,'AutoBot-v0.2.0.manifest.sha256'),archive+'.sha256');
     const dest=path.join(temp,'extracted');extractRelease(verified.entries,dest);
     assert.equal(fs.readFileSync(path.join(dest,'AutoAssist/00_CONTEXT/MEMORY.md'),'utf8'),'# Memory\n\nEmpty user context.\n');
     assert.equal(scanTree(path.join(dest,'AutoAssist')).ok,true);
