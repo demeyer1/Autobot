@@ -1,9 +1,9 @@
 ---
 name: first-time
-description: Actively install, configure, resume, or repair AutoAssist on macOS and verify its first useful local task. Invoke automatically before substantive AutoAssist work when first-use validation is incomplete, and when the user asks for setup or reconfiguration. Skip setup questions when the current installation and completion marker already validate.
+description: Actively install, configure, resume, or repair AutoBot on macOS and verify its first useful local task. Invoke automatically before substantive AutoBot work when first-use validation is incomplete, and when the user asks for setup or reconfiguration. Skip setup questions when the current installation and completion marker already validate.
 ---
 
-# AutoAssist First Time
+# AutoBot First Time
 
 Act as the setup operator. Execute every safe supported action, inspect its result, checkpoint it, and continue. Hand control to the user only for a freshly observed credential, security, permission, target-app approval, or manual primary-Project step. Base installation, privacy initialization, doctor, repair and uninstall require no optional account or Node. Advanced objectives and the local smoke require Node 22 or newer.
 
@@ -18,7 +18,7 @@ On a new Mac, the user first completes the minimal bootstrap in the install guid
 
 ## Non-negotiable boundaries
 
-- Setup may create or update owner-only files inside the exact AutoAssist root. It may not write to an external service, global skill or another installation.
+- Setup may create or update owner-only files inside the exact AutoBot root. It may not write to an external service, global skill or another installation.
 - Never request, read, transcribe, store, or enter a password, passkey, recovery key, authentication code, browser cookie, token, private key, or other credential.
 - Never click or approve a macOS privacy, Accessibility, Screen Recording, microphone, Automation, Keychain, plug-in, target-app, or security-consent prompt. Stop before the control and let the user act in the first-party UI.
 - Never probe Desktop, Documents, Downloads, Photos, iCloud, external volumes, another user's home, or another protected location to test access.
@@ -26,7 +26,7 @@ On a new Mac, the user first completes the minimal bootstrap in the install guid
 - Do not use connectors, apps, APIs, MCP tools, or browser integrations for external writes. The setup smoke objective is local and records `external_mutation=false`.
 - Never ingest raw messages during first-time setup. Tone learning is opt-in, isolated per channel and audience, and stores only user-approved aggregate patterns.
 - Treat `SHARED` as explicit opt-in. Never copy material into it automatically.
-- AutoAssist can prevent its own attribution and block known forced-label routes; it must not claim to remove a platform disclosure outside editable content.
+- AutoBot can prevent its own attribution and block known forced-label routes; it must not claim to remove a platform disclosure outside editable content.
 
 ## Defaults and decisions
 
