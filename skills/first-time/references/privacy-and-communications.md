@@ -2,7 +2,7 @@
 
 ## Zone controls
 
-AutoAssist uses four owner-only folders:
+AutoBot uses four owner-only folders:
 
 - `PRIVATE`: sensitive facts and preferences that never cross zones automatically.
 - `FAMILY_FRIENDS`: personal relationships, logistics, and opted-in personal communication patterns.
