@@ -5,16 +5,48 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ScanError, reject, LIMITS, hash, crc32, safeRelative, safeAbsolute, readBounded, parseAllowlist, scanEntries, scanTree, readMediaReviews } from './publication-scan.mjs';
 const ZIP_LIMIT = 72 * 1024 * 1024;
+const LICENSE_SHA256 = '79333846b0c5970c3d128fb99bb1bd9b577b1ac4e2bad53a612b64e0aa055635';
+const LEGACY_LICENSE_SHA256 = 'a8323253d2ae9e1eb82372f057ecb64f7f9892bcb2e53db758e7097e2da1270b';
 const SOURCE_MODES = new Set([0o600, 0o644, 0o700, 0o755]);
 const comparePath = (a,b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
-const ROOT = 'AutoAssist/';
+export const ARTIFACT = 'AutoBot';
+export const LEGACY_ARTIFACT = 'AutoAssist';
+export const ROOT = 'AutoAssist/';
+const LEGACY_ARTIFACT_LAST_VERSION = Object.freeze([0n, 5n, 0n]);
+
+export function numericSemver(version) {
+  if (typeof version !== 'string' || !/^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/.test(version)) reject('version_invalid');
+  return version.split('.').map(value => BigInt(value));
+}
+
+export function legacyArtifactAllowed(version) {
+  const parsed = numericSemver(version);
+  for (let index = 0; index < 3; index++) {
+    if (parsed[index] < LEGACY_ARTIFACT_LAST_VERSION[index]) return true;
+    if (parsed[index] > LEGACY_ARTIFACT_LAST_VERSION[index]) return false;
+  }
+  return true;
+}
+
+export function artifactNames(version, { legacy = false } = {}) {
+  numericSemver(version);
+  if (legacy && !legacyArtifactAllowed(version)) reject('legacy_artifact_version');
+  const base = legacy ? LEGACY_ARTIFACT : ARTIFACT;
+  const archive = `${base}-v${version}.zip`;
+  return { archive, manifest: `${base}-v${version}.manifest.sha256`, checksum: `${archive}.sha256` };
+}
+
+export function licenseShaAllowed(version, sha256) {
+  numericSemver(version);
+  return sha256 === LICENSE_SHA256 || (sha256 === LEGACY_LICENSE_SHA256 && legacyArtifactAllowed(version));
+}
 // Private release staging is owner-only; GitHub web commits may record source
 // files as nonexecutable. The ZIP has its own deterministic, name-based mode
 // policy; passive benchmark files stay 644 in the distributable archive.
 export function canonicalArchiveMode(relative) {
   if (!safeRelative(relative)) reject('zip_path');
   if (relative.startsWith('benchmarks/')) return 0o644;
-  return /\.(?:sh|command)$/i.test(relative) || relative === 'runtime/bin/autoassist' ? 0o755 : 0o644;
+  return /\.(?:sh|command)$/i.test(relative) || ['runtime/bin/autoassist','runtime/bin/autobot'].includes(relative) ? 0o755 : 0o644;
 }
 export function makeZip(input) {
   if (!Array.isArray(input) || input.some(e => !SOURCE_MODES.has(e.mode) || (e.path.startsWith('benchmarks/') && ![0o600,0o644].includes(e.mode)))) reject('source_mode');
@@ -70,8 +102,9 @@ export function verifyEntries(entries,{mediaReviews=[]}={}) {
   if(!result.ok)reject('payload_scan_failed');
   const version=entries.find(e=>e.path==='VERSION')?.bytes.toString('utf8');
   if(!version || !/^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\n$/.test(version))reject('version_invalid');
-  if(!entries.some(e=>e.path==='LICENSE' && hash(e.bytes)==='a8323253d2ae9e1eb82372f057ecb64f7f9892bcb2e53db758e7097e2da1270b'))reject('license_mismatch');
-  return {version:version.trim(),files:entries.length};
+  const parsedVersion=version.trim();
+  if(!entries.some(e=>e.path==='LICENSE' && licenseShaAllowed(parsedVersion,hash(e.bytes))))reject('license_mismatch');
+  return {version:parsedVersion,files:entries.length};
 }
 function newOutputDirectory(value) {
   if(typeof value!=='string' || !path.isAbsolute(value))reject('output_path');
@@ -89,13 +122,15 @@ export function buildRelease(root,out,{mediaReviews=[]}={}) {
   if(manifestFor(reopened)!==manifestFor(source.entries) || reopened.some(e=>e.mode!==canonicalArchiveMode(e.path)))reject('roundtrip_mismatch');
   // Recheck before materializing output; package immutable in-memory bytes from this exact read.
   const current=scanTree(root,{mediaReviews});if(!current.ok || manifestFor(current.entries)!==manifestFor(source.entries) || current.entries.some((e,i)=>e.mode!==source.entries[i].mode))reject('source_changed');
-  const dest=newOutputDirectory(out);const name=`AutoAssist-v${meta.version}.zip`;const manifestName=`AutoAssist-v${meta.version}.manifest.sha256`;const checksum=`${hash(zip)}  ${name}\n`;const manifest=manifestFor(reopened);
+  const dest=newOutputDirectory(out);const names=artifactNames(meta.version);const name=names.archive;const manifestName=names.manifest;const checksum=`${hash(zip)}  ${name}\n`;const manifest=manifestFor(reopened);
   exclusiveFile(path.join(dest,name),zip);exclusiveFile(path.join(dest,manifestName),manifest);exclusiveFile(path.join(dest,`${name}.sha256`),checksum);
   return {ok:true,version:meta.version,files:meta.files,archive:name,sha256:hash(zip),manifest_sha256:hash(Buffer.from(manifest)),limitation:'Packaging and deterministic checks only; independent review and installed tests are separate.'};
 }
 export function verifyRelease(archive,manifest,checksum,{mediaReviews=[]}={}) {
-  const bytes=readBounded(archive,ZIP_LIMIT);const entries=readZip(bytes);const meta=verifyEntries(entries,{mediaReviews});const name=`AutoAssist-v${meta.version}.zip`;
-  if(path.basename(archive)!==name || readBounded(checksum).toString('utf8')!==`${hash(bytes)}  ${name}\n` || readBounded(manifest).toString('utf8')!==manifestFor(entries))reject('release_integrity');
+  const bytes=readBounded(archive,ZIP_LIMIT);const entries=readZip(bytes);const meta=verifyEntries(entries,{mediaReviews});
+  const current=artifactNames(meta.version);const legacy=legacyArtifactAllowed(meta.version)?artifactNames(meta.version,{legacy:true}):null;
+  const archiveBase=path.basename(archive);const names=archiveBase===current.archive?current:legacy&&archiveBase===legacy.archive?legacy:null;
+  if(!names || path.basename(manifest)!==names.manifest || path.basename(checksum)!==names.checksum || readBounded(checksum).toString('utf8')!==`${hash(bytes)}  ${names.archive}\n` || readBounded(manifest).toString('utf8')!==manifestFor(entries))reject('release_integrity');
   return {ok:true,...meta,sha256:hash(bytes),entries};
 }
 export function extractRelease(entries,destination) {

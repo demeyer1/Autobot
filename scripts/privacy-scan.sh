@@ -19,12 +19,12 @@ MAX_BASE64_CANDIDATES_PER_FILE=8192
 MAX_PRINTED_FINDINGS=200
 
 if [[ -L "$ROOT_INPUT" || ! -d "$ROOT_INPUT" ]]; then
-  /bin/echo "AutoAssist privacy scan could not inspect the requested root." >&2
+  /bin/echo "AutoBot privacy scan could not inspect the requested root." >&2
   exit 2
 fi
 
 ROOT="$(cd -P -- "$ROOT_INPUT" 2>/dev/null && /bin/pwd -P)" || {
-  /bin/echo "AutoAssist privacy scan could not resolve the requested root." >&2
+  /bin/echo "AutoBot privacy scan could not resolve the requested root." >&2
   exit 2
 }
 
@@ -33,12 +33,12 @@ if [[ -n "${HOME:-}" && -d "$HOME" ]]; then
   HOME_CANON="$(cd -P -- "$HOME" 2>/dev/null && /bin/pwd -P)" || HOME_CANON=""
 fi
 if [[ "$ROOT" == "/" || ( -n "$HOME_CANON" && "$ROOT" == "$HOME_CANON" ) ]]; then
-  /bin/echo "AutoAssist privacy scan refuses a broad filesystem root." >&2
+  /bin/echo "AutoBot privacy scan refuses a broad filesystem root." >&2
   exit 2
 fi
 
 SCAN_TEMP="$(/usr/bin/mktemp -d "${TMPDIR:-/tmp}/autoassist-privacy.XXXXXX")" || {
-  /bin/echo "AutoAssist privacy scan could not create isolated scratch space." >&2
+  /bin/echo "AutoBot privacy scan could not create isolated scratch space." >&2
   exit 2
 }
 MANIFEST="$SCAN_TEMP/manifest.bin"
@@ -712,8 +712,8 @@ if (( findings > printed_findings )); then
 fi
 
 if (( findings > 0 )); then
-  /usr/bin/printf 'AutoAssist privacy scan failed; findings=%d.\n' "$findings" >&2
+  /usr/bin/printf 'AutoBot privacy scan failed; findings=%d.\n' "$findings" >&2
   exit 1
 fi
 
-/bin/echo "AutoAssist privacy scan passed; findings=0."
+/bin/echo "AutoBot privacy scan passed; findings=0."
