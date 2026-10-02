@@ -1,9 +1,9 @@
 ---
 name: autobot-health-check
-description: Check an installed Autobot workspace with its read-only doctor and focused runtime diagnostics. Use for installation health, capability readiness or a requested health report; a check alone does not authorize repairs.
+description: Check an installed AutoBot workspace with its read-only doctor and focused runtime diagnostics. Use for installation health, capability readiness or a requested health report; a check alone does not authorize repairs.
 ---
 
-# Autobot health check
+# AutoBot health check
 
 Resolve the intended installed project and receipt before running commands. Do not select a different installation or treat a release-source checkout as an installed workspace. Read `docs/CLI-REFERENCE.md` and `docs/TROUBLESHOOTING.md` from that installation when needed for interpretation.
 
