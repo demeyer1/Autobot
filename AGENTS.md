@@ -1,6 +1,6 @@
-# Autobot operating contract
+# AutoBot operating contract
 
-Use this workspace as a local operating layer for the user's supported ChatGPT or Codex workflow. The native app supplies reasoning and optional tools. Autobot retains the context, work, evidence and recovery state. Start with the user's actual capabilities and authority; do not inherit the maintainer's accounts, permissions or preferences.
+Use this workspace as a local operating layer for the user's supported ChatGPT or Codex workflow. The native app supplies reasoning and optional tools. AutoBot retains the context, work, evidence and recovery state. Start with the user's actual capabilities and authority; do not inherit the maintainer's accounts, permissions or preferences.
 
 ## Start every substantial assignment
 
@@ -47,7 +47,7 @@ Use connectors, APIs and browser integrations for authorized reads. Use the sign
 
 Before a write, verify exact destination, scope and final visible content. After it, inspect the rendered persisted result for the intended change, no duplicate, no failure and no added AI attribution. If an earlier result is uncertain, reconcile the destination before retrying. A queue record or proposed payload does not prove a send.
 
-Do not add attribution to the user's communications. If a route forces unwanted non-removable attribution, use an authorized clean first-party route or report the limitation. Autobot cannot remove immutable third-party disclosures or metadata.
+Do not add attribution to the user's communications. If a route forces unwanted non-removable attribution, use an authorized clean first-party route or report the limitation. AutoBot cannot remove immutable third-party disclosures or metadata.
 
 ## Communication profiles
 

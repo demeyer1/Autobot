@@ -14,7 +14,7 @@ usage() {
   /bin/cat <<'EOF'
 Usage: ./uninstall.sh [--home-root PATH] [--destination PATH] [--target-quiescent]
 
-Moves one receipt-bound AutoAssist installation into the selected account
+Moves one receipt-bound AutoBot installation into the selected account
 home's Trash. No user state is deleted, and HOME/CODEX_HOME are never changed.
 EOF
 }
@@ -88,5 +88,5 @@ aa_require_owned_directory "$TRASH_DIR" "$ACCOUNT_HOME"
 TRASH_TARGET="$TRASH_DIR/AutoAssist-uninstalled-$(/bin/date +%Y%m%d-%H%M%S)-$instance_id"
 [[ ! -e "$TRASH_TARGET" ]] || aa_die "Trash destination already exists"
 /bin/mv "$DESTINATION" "$TRASH_TARGET"
-/bin/echo "Moved the receipt-bound AutoAssist installation to $TRASH_TARGET."
+/bin/echo "Moved the receipt-bound AutoBot installation to $TRASH_TARGET."
 /bin/echo "Restore by moving it back to $DESTINATION while no writers are running."

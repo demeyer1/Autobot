@@ -518,7 +518,7 @@ OLD_MANIFEST=""
 if [[ -e "$DESTINATION" ]]; then
   [[ -d "$DESTINATION" && ! -L "$DESTINATION" ]] || aa_die "existing destination is unsafe"
   [[ "$TARGET_QUIESCENT" -eq 1 ]] || aa_die "existing target requires --target-quiescent"
-  [[ -f "$DESTINATION/.install-state/managed-by-autoassist" && ! -L "$DESTINATION/.install-state/managed-by-autoassist" ]] || aa_die "destination is not a managed AutoAssist installation"
+  [[ -f "$DESTINATION/.install-state/managed-by-autoassist" && ! -L "$DESTINATION/.install-state/managed-by-autoassist" ]] || aa_die "destination is not a managed AutoBot installation"
   /usr/bin/grep -F -x -q 'managed-by=AutoAssist' "$DESTINATION/.install-state/managed-by-autoassist" || aa_die "ownership marker is invalid"
   [[ "$(/usr/bin/stat -f '%u' "$DESTINATION")" == "$(/usr/bin/id -u)" ]] || aa_die "target owner mismatch"
   aa_tree_has_unsafe_nodes "$DESTINATION" && aa_die "target contains a symlink or special file"
@@ -755,7 +755,7 @@ if [[ "$INSTALL_MODE" == update ]]; then
   done
 fi
 if [[ -s "$CONFLICTS" ]]; then
-  /bin/echo "AutoAssist update stopped before mutation. Resolve these three-way conflicts:" >&2
+  /bin/echo "AutoBot update stopped before mutation. Resolve these three-way conflicts:" >&2
   /bin/cat "$CONFLICTS" >&2
   aa_die "no target files were changed"
 fi
@@ -914,7 +914,7 @@ PROMOTED=0
 /bin/rm -rf -- "$TRANSACTION"
 TRANSACTION=""
 
-/bin/echo "AutoAssist $VERSION installed at $DESTINATION."
+/bin/echo "AutoBot $VERSION installed at $DESTINATION."
 if [[ "$AA_NODE_STATUS" == available ]]; then
   /bin/echo "Advanced runtime: available ($AA_NODE_VERSION)."
 else
