@@ -14,7 +14,7 @@ usage() {
   /bin/cat <<'EOF'
 Usage: write-status.sh --state pending|complete [--root PATH] [--account-home PATH]
 
-Writes only AutoAssist's generated first-time status file and its one command-
+Writes only AutoBot's generated first-time status file and its one command-
 center entry. The complete state is accepted only after the current completion
 marker passes first-time setup validation.
 EOF
@@ -54,7 +54,7 @@ if [[ "$STATE" != "pending" && "$STATE" != "complete" ]]; then
   exit 2
 fi
 if [[ ! -d "$AUTOASSIST_ROOT" || -L "$AUTOASSIST_ROOT" ]]; then
-  /bin/echo "AutoAssist root must be a real directory: $AUTOASSIST_ROOT" >&2
+  /bin/echo "AutoBot root must be a real directory: $AUTOASSIST_ROOT" >&2
   exit 1
 fi
 if [[ -z "$ACCOUNT_HOME" || ! -d "$ACCOUNT_HOME" || -L "$ACCOUNT_HOME" ]]; then
@@ -65,7 +65,7 @@ fi
 AUTOASSIST_ROOT="${AUTOASSIST_ROOT:A}"
 ACCOUNT_HOME="${ACCOUNT_HOME:A}"
 if [[ "$AUTOASSIST_ROOT" == "/" || "$AUTOASSIST_ROOT" == "$ACCOUNT_HOME" ]]; then
-  /bin/echo "Refusing a broad AutoAssist root: $AUTOASSIST_ROOT" >&2
+  /bin/echo "Refusing a broad AutoBot root: $AUTOASSIST_ROOT" >&2
   exit 1
 fi
 
@@ -223,7 +223,7 @@ if [[ "$STATE" == "pending" ]]; then
 
 ## Objective
 
-Configure and independently validate this AutoAssist installation without external mutation.
+Configure and independently validate this AutoBot installation without external mutation.
 
 ## Current status
 
@@ -253,7 +253,7 @@ else
 
 ## Objective
 
-Configure and independently validate this AutoAssist installation without external mutation.
+Configure and independently validate this AutoBot installation without external mutation.
 
 ## Current status
 
@@ -261,7 +261,7 @@ Setup validation passed. The owner-only `.install-state/first-time-complete` mar
 
 ## Next actions
 
-None. AutoAssist may proceed with ordinary work under the configured privacy and permission boundaries.
+None. AutoBot may proceed with ordinary work under the configured privacy and permission boundaries.
 
 ## Blockers
 
@@ -317,4 +317,4 @@ else
   fi
 fi
 
-/bin/echo "AutoAssist first-time status written: $STATE"
+/bin/echo "AutoBot first-time status written: $STATE"
