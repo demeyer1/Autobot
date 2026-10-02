@@ -1,11 +1,11 @@
 ---
 name: remember-and-improve
-description: Retrieve and update scoped Autobot memory and apply user corrections with provenance. Use when the user asks to remember a durable fact, correct a saved preference or carry a lesson into later work.
+description: Retrieve and update scoped AutoBot memory and apply user corrections with provenance. Use when the user asks to remember a durable fact, correct a saved preference or carry a lesson into later work.
 ---
 
 # Remember and improve
 
-Resolve the current Autobot installation and read `00_CONTEXT/MEMORY.md`, `00_CONTEXT/PRIVACY-ZONES.md` and the relevant initiative status. Use the installed `docs/CLI-REFERENCE.md` for exact command schemas. Advanced core commands require Node 22 or newer.
+Resolve the current AutoBot installation and read `00_CONTEXT/MEMORY.md`, `00_CONTEXT/PRIVACY-ZONES.md` and the relevant initiative status. Use the installed `docs/CLI-REFERENCE.md` for exact command schemas. Advanced core commands require Node 22 or newer.
 
 ## Retrieve only what the task needs
 
