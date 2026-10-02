@@ -1,6 +1,6 @@
 # Issue tracking
 
-Autobot uses the single private `state/core.json` store for active issue records, alongside its task, memory, handoff and evidence state. Use `runtime/bin/autoassist core issue-record`, `issue-update`, `issue-list` and `issue-verify`. See [the command reference](../../docs/CLI-REFERENCE.md).
+AutoBot uses the single private `state/core.json` store for active issue records, alongside its task, memory, handoff and evidence state. Use `runtime/bin/autoassist core issue-record`, `issue-update`, `issue-list` and `issue-verify`. See [the command reference](../../docs/CLI-REFERENCE.md).
 
 Record each defect once with an ID, severity, owner, discovery time, symptoms, reproduction, likely cause, remediation, affected systems and verification criteria. The owner may advance investigation states. Only a separate reviewer who inspected repair evidence may use `issue-verify` to mark it verified. Different labels alone do not prove independent review.
 

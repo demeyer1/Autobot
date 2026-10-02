@@ -1,6 +1,6 @@
 # First-time configuration
 
-Write configuration only under the pinned AutoAssist root. Use `umask 077`, an adjacent temporary file, `chmod 600`, and an atomic rename. Never source these files as shell code; treat them as validated `KEY=VALUE` records.
+Write configuration only under the pinned AutoBot root. Use `umask 077`, an adjacent temporary file, `chmod 600`, and an atomic rename. Never source these files as shell code; treat them as validated `KEY=VALUE` records.
 
 Values are human-readable labels and enumerated statuses. They must not contain passwords, passkeys, tokens, cookies, recovery keys, private keys, authentication codes, payment data, or raw message text.
 
@@ -10,7 +10,7 @@ Required keys:
 
 ```text
 AUTOASSIST_USER_LABEL=<non-secret owner label>
-AUTOASSIST_HOME=<absolute pinned AutoAssist root>
+AUTOASSIST_HOME=<absolute pinned AutoBot root>
 CHATGPT_ACCOUNT_LABEL=<rendered non-secret account label>
 DEFAULT_BROWSER_LABEL=<browser name>
 DEFAULT_BROWSER_PROFILE_LABEL=<visible profile label>
@@ -119,7 +119,7 @@ skills/first-time/scripts/validate-setup.sh \
   --account-home <account-home>
 ```
 
-The validator passes `AUTOASSIST_ACCOUNT_HOME=<account-home>` only to the installed runtime's doctor process. It does not replace `HOME` or use the account home as the AutoAssist data root.
+The validator passes `AUTOASSIST_ACCOUNT_HOME=<account-home>` only to the installed runtime's doctor process. It does not replace `HOME` or use the account home as the AutoBot data root.
 
 ## Completion marker
 

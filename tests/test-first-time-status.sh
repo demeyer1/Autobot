@@ -89,7 +89,7 @@ unrelated_status_hash_before="$(/usr/bin/shasum -a 256 "$INSTALL_ROOT/01_PROJECT
   'CHATGPT_ACCOUNT_LABEL=Status Test ChatGPT' \
   'DEFAULT_BROWSER_LABEL=Test Browser' \
   'DEFAULT_BROWSER_PROFILE_LABEL=Test Profile' \
-  'DEFAULT_DESTINATION_LABEL=Local AutoAssist Project' \
+  'DEFAULT_DESTINATION_LABEL=Local AutoBot Project' \
   'PRIVACY_MODE=separate-zones' \
   'TERMINAL_UPDATES=chatgpt' > "$INSTALL_ROOT/config/profile.conf"
 

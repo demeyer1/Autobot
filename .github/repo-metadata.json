@@ -1,0 +1,26 @@
+{
+  "description": "Self-improving agent harness for ChatGPT and Codex on Mac. #1 on AssistantBench. On-disk memory, privacy zones, verified completion.",
+  "homepageUrl": "https://demeyer1.github.io/Autobot/",
+  "repositoryTopics": [
+    "agent-harness",
+    "agents-md",
+    "ai-agent",
+    "ai-agents",
+    "ai-assistant",
+    "ai-memory",
+    "assistantbench",
+    "chatgpt",
+    "codex",
+    "computer-use",
+    "harness-engineering",
+    "long-running-agents",
+    "macos",
+    "openai",
+    "openai-dots",
+    "openclaw-alternative",
+    "osworld",
+    "personal-ai-agent",
+    "privacy",
+    "self-improving-agent"
+  ]
+}

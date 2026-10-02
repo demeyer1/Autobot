@@ -29,21 +29,19 @@ for prior in 0.2.0 0.3.0 0.4.0; do
   AUTOASSIST_TEST_NODE_ABSENT=1 "$prior_source/install.sh" --home-root "$account_home" --destination "$destination" --instance-id "prior${prior//./}" --skip-launch-agent --test-mode --test-root "$test_root" > "$test_root/old-install.log"
   [[ "$(/bin/cat "$destination/VERSION")" == "$prior" ]] || { /bin/echo "public v$prior install failed" >&2; exit 1; }
 
-  /usr/bin/printf '\nSynthetic user instruction remains owned by the user.\n' >> "$destination/AGENTS.md"
   /bin/mkdir -p "$destination/01_PROJECTS/my-project" "$destination/state"
   /usr/bin/printf 'synthetic project state\n' > "$destination/01_PROJECTS/my-project/data.txt"
   /usr/bin/printf 'synthetic runtime state\n' > "$destination/state/custom-user-data.txt"
-  agent_hash="$(/usr/bin/shasum -a 256 "$destination/AGENTS.md" | /usr/bin/awk '{print $1}')"
   project_hash="$(/usr/bin/shasum -a 256 "$destination/01_PROJECTS/my-project/data.txt" | /usr/bin/awk '{print $1}')"
   state_hash="$(/usr/bin/shasum -a 256 "$destination/state/custom-user-data.txt" | /usr/bin/awk '{print $1}')"
 
   AUTOASSIST_TEST_NODE_ABSENT=1 "$SOURCE_ROOT/install.sh" --home-root "$account_home" --destination "$destination" --instance-id "prior${prior//./}" --skip-launch-agent --target-quiescent --test-mode --test-root "$test_root" > "$test_root/new-install.log"
   [[ "$(/bin/cat "$destination/VERSION")" == "$CURRENT_VERSION" ]] || { /bin/echo "v$prior upgrade did not install current version" >&2; exit 1; }
-  [[ "$agent_hash" == "$(/usr/bin/shasum -a 256 "$destination/AGENTS.md" | /usr/bin/awk '{print $1}')" ]] || { /bin/echo "v$prior user instructions changed" >&2; exit 1; }
+  [[ "$(/usr/bin/shasum -a 256 "$destination/AGENTS.md" | /usr/bin/awk '{print $1}')" == "$(/usr/bin/shasum -a 256 "$SOURCE_ROOT/AGENTS.md" | /usr/bin/awk '{print $1}')" ]] || { /bin/echo "v$prior product instructions did not upgrade" >&2; exit 1; }
   [[ "$project_hash" == "$(/usr/bin/shasum -a 256 "$destination/01_PROJECTS/my-project/data.txt" | /usr/bin/awk '{print $1}')" ]] || { /bin/echo "v$prior project data changed" >&2; exit 1; }
   [[ "$state_hash" == "$(/usr/bin/shasum -a 256 "$destination/state/custom-user-data.txt" | /usr/bin/awk '{print $1}')" ]] || { /bin/echo "v$prior runtime state changed" >&2; exit 1; }
   [[ -f "$destination/INSTALL_FOR_AI.md" && -f "$destination/docs/benchmark-charts/assistantbench-highlighted.png" ]] || { /bin/echo "v$prior upgrade missed newly shipped files" >&2; exit 1; }
   AUTOASSIST_ACCOUNT_HOME="$account_home" "$destination/runtime/bin/autoassist" doctor --json > "$test_root/new-doctor.json"
-  /bin/echo "Exact public v$prior upgrade preserved synthetic instructions, project data and runtime state."
+  /bin/echo "Exact public v$prior upgrade replaced pristine product instructions and preserved project data and runtime state."
   /bin/rm -rf "$test_root"
 done

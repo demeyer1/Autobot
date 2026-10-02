@@ -1,4 +1,4 @@
-# AutoAssist memory map
+# AutoBot memory map
 
 This file is the small always-loaded routing index. It must remain free of raw transcripts, credentials, authentication codes, payment data, unnecessary third-party details, and private chain-of-thought.
 

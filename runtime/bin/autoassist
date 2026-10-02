@@ -4,7 +4,7 @@ SCRIPT_DIR="${0:A:h}"
 AUTOASSIST_ROOT="${SCRIPT_DIR:h:h}"
 ACCOUNT_HOME="${AUTOASSIST_ACCOUNT_HOME:-${HOME}}"
 
-fail() { /bin/echo "Autobot: $1" >&2; exit 1; }
+fail() { /bin/echo "AutoBot: $1" >&2; exit 1; }
 usage() {
   /bin/cat <<'HELP'
 Usage: autoassist <command> [arguments]

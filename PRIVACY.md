@@ -1,6 +1,6 @@
 # Privacy
 
-AutoAssist separates context by relationship and purpose. Its default zones are `PRIVATE`, `FAMILY_FRIENDS`, `WORK`, and opt-in `SHARED`.
+AutoBot separates context by relationship and purpose. Its default zones are `PRIVATE`, `FAMILY_FRIENDS`, `WORK`, and opt-in `SHARED`.
 
 The goal is straightforward: family and friend context should not silently enter work, work context should not flatten personal communication, and sensitive personal material should not become general-purpose memory.
 
@@ -13,7 +13,7 @@ The goal is straightforward: family and friend context should not silently enter
 | `WORK` | Organizations, projects, teammates, customers, vendors, and professional communication patterns | Never used for personal communication unless explicitly relevant |
 | `SHARED` | The minimum facts the user deliberately makes reusable across zones | Opt-in only, with provenance |
 
-AutoAssist defaults to the narrowest zone that supports the current assignment. A zone label is not permission to read every file in that zone. If a fact legitimately spans zones, store separate scoped records or put only the minimum explicitly reusable fact in `SHARED`.
+AutoBot defaults to the narrowest zone that supports the current assignment. A zone label is not permission to read every file in that zone. If a fact legitimately spans zones, store separate scoped records or put only the minimum explicitly reusable fact in `SHARED`.
 
 ## What the installer creates
 
@@ -31,9 +31,9 @@ Folder permissions inside one logged-in macOS account are not equivalent to:
 
 Use separate macOS accounts or dedicated machines when the trust domains require stronger isolation.
 
-## What AutoAssist stores
+## What AutoBot stores
 
-AutoAssist can store:
+AutoBot can store:
 
 - a small durable memory routing map;
 - user-approved canonical facts in the narrowest privacy zone;
@@ -44,7 +44,7 @@ AutoAssist can store:
 - account, browser, and profile **labels** used to verify an execution context;
 - compact communication-style observations approved by the user.
 
-AutoAssist should not store:
+AutoBot should not store:
 
 - passwords;
 - MFA or authentication codes;
@@ -68,7 +68,7 @@ A tone profile affects wording only. It does not authorize a recipient, channel,
 
 ## Local files and ChatGPT processing
 
-The AutoAssist workspace is stored locally. That does not mean all content always remains on the Mac.
+The AutoBot workspace is stored locally. That does not mean all content always remains on the Mac.
 
 Content can be processed by OpenAI or another connected service when the user:
 
@@ -99,7 +99,7 @@ After the user adds an appshot, ChatGPT stores it locally with the session as an
 
 Required behavior lives in `AGENTS.md` and canonical project documents, not optional model memory.
 
-OpenAI documents local Codex memory as optional and off by default. It can be disabled for individual chats, and background memory generation may be delayed or skipped near usage limits. AutoAssist does not rely on it as a privacy or enforcement boundary. [Memories](https://learn.chatgpt.com/docs/customization/memories)
+OpenAI documents local Codex memory as optional and off by default. It can be disabled for individual chats, and background memory generation may be delayed or skipped near usage limits. AutoBot does not rely on it as a privacy or enforcement boundary. [Memories](https://learn.chatgpt.com/docs/customization/memories)
 
 ## External actions
 
@@ -109,21 +109,21 @@ Connected tools may retrieve and analyze authorized information. Recipient-visib
 
 This policy reduces known wrong-destination, duplicate, and attribution risks. It cannot remove immutable metadata controlled by a third-party platform. See [Security](SECURITY.md).
 
-## AutoAssist telemetry
+## AutoBot telemetry
 
-The bundled local runtime and installer do not contain an AutoAssist telemetry uploader. They write local state, evidence, receipts, heartbeat files, and logs.
+The bundled local runtime and installer do not contain an AutoBot telemetry uploader. They write local state, evidence, receipts, heartbeat files, and logs.
 
 This statement does not describe or override telemetry, logging, retention, or data processing by ChatGPT, OpenAI, macOS, connected apps, model providers, or external services. Review each service's current policy separately.
 
 ## Retention and deletion
 
-AutoAssist does not currently apply a universal automatic retention period to user context or objective evidence.
+AutoBot does not currently apply a universal automatic retention period to user context or objective evidence.
 
 - Delete or archive canonical records when they are no longer needed.
 - Preserve corrections and required audit evidence when an active objective depends on them.
 - Remove attached sources and connected apps through the relevant ChatGPT settings.
 - Revoke macOS permissions in System Settings.
-- Use `uninstall.sh` to move a managed AutoAssist installation to Trash.
+- Use `uninstall.sh` to move a managed AutoBot installation to Trash.
 
 Moving the folder to Trash is recoverable deletion, not secure erasure. Emptying Trash does not revoke separate ChatGPT, app, or macOS permissions.
 
@@ -141,7 +141,7 @@ The scanner checks the entire exact allowlisted tree, without silently skipping 
 
 ## Known limits
 
-AutoAssist does not claim:
+AutoBot does not claim:
 
 - that private data never leaves the Mac;
 - cryptographic or kernel isolation between zones;

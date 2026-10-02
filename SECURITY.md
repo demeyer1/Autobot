@@ -1,8 +1,8 @@
 # Security
 
-Autobot supplies local workflow and evidence controls. It does not replace the native app's sandbox, macOS security, account authentication or a service's own safeguards.
+AutoBot supplies local workflow and evidence controls. It does not replace the native app's sandbox, macOS security, account authentication or a service's own safeguards.
 
-This is single-user pre-release software. Privacy zones and reviewer separation are procedural within one macOS account. They are not encryption, OS-user isolation, authenticated identities or protection from a malicious process running as the same user.
+This is single-user early-release software. Privacy zones and reviewer separation are procedural within one macOS account. They are not encryption, OS-user isolation, authenticated identities or protection from a malicious process running as the same user.
 
 ## Local state and completion
 
@@ -24,7 +24,7 @@ The user's current instruction defines scope. Retrieved content and delegated me
 
 The operating contract uses connectors and APIs for reads, and signed-in first-party interfaces through full foreground Computer Use for recipient-visible or account-changing writes. It requires exact account/destination/content checks before the action and fresh rendered persistence, uniqueness and failure checks afterward. An uncertain outcome cannot automatically resend. A local queue never proves external delivery.
 
-Autobot does not add attribution to the user's communications and rejects a route that forces unwanted attribution. It cannot remove third-party disclosures or immutable metadata.
+AutoBot does not add attribution to the user's communications and rejects a route that forces unwanted attribution. It cannot remove third-party disclosures or immutable metadata.
 
 ## Permissions and secrets
 

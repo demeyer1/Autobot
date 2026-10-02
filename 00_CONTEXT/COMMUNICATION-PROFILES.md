@@ -1,6 +1,6 @@
 # Communication profile index
 
-AutoAssist keeps tone learning isolated by channel and audience. First-time setup creates only the profiles the user wants.
+AutoBot keeps tone learning isolated by channel and audience. First-time setup creates only the profiles the user wants.
 
 Recommended profile identifiers:
 

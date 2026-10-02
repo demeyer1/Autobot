@@ -1,0 +1,13 @@
+.github/repo-metadata.json
+INSTALL_FOR_AI.md
+README.md
+benchmarks/assistantbench/README.md
+benchmarks/osworld-2.0/README.md
+docs/ARCHITECTURE.md
+docs/CAPABILITIES.md
+docs/CLI-REFERENCE.md
+docs/COMPARISON.md
+docs/INSTALL.md
+docs/PERMISSIONS.md
+docs/TROUBLESHOOTING.md
+docs/autobot-vs-openai-dots.md

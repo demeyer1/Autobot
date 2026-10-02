@@ -6,7 +6,7 @@ Use this guide when the user gives you the repository URL and asks to install Au
 
 ## Prompt to start installation
 
-“Install AutoBot from https://github.com/demeyer1/Autobot, following INSTALL_FOR_AI.md. Verify the v0.5.0 release ZIP and its manifest, install it, and guide me through selecting the installed folder as my local Project's primary folder. Include support software needed for first-time setup from official sources. Bring me in for any Mac or account step I need to do.”
+“Install AutoBot from https://github.com/demeyer1/Autobot, following INSTALL_FOR_AI.md. Verify the latest stable release ZIP and its manifest, install it, and guide me through selecting the installed folder as my local Project's primary folder. Include support software needed for first-time setup from official sources. Bring me in for any Mac or account step I need to do.”
 
 ## 1 Use the right environment
 
@@ -22,29 +22,51 @@ For an update or repair, use a separate accessible setup folder outside the inst
 
 ## 2 Download and verify the release
 
-Run this block with the local shell tool using /bin/zsh, from the separate setup folder selected above. It downloads the packaged v0.5.0 release, checks its checksum, extracts it and prints the source folder to use next.
+Run this block with the local shell tool using /bin/zsh, from the separate setup folder selected above. It resolves the latest stable release and its attached ZIP, checks the matching checksum and manifest, extracts it and prints the source folder to use next.
 
 ```zsh
 set -euo pipefail
 umask 077
 AUTOBOT_STAGE="$(mktemp -d "$PWD/.autobot-install.XXXXXX")"
 cd "$AUTOBOT_STAGE"
-AUTOBOT_RELEASE="https://github.com/demeyer1/Autobot/releases/download/v0.5.0"
+AUTOBOT_RELEASE_JSON="$(
+  curl --fail --location --silent \
+    https://api.github.com/repos/demeyer1/Autobot/releases/latest 2>/dev/null \
+  || curl --fail --location --show-error --silent \
+    'https://api.github.com/repos/demeyer1/Autobot/releases?per_page=1'
+)"
+AUTOBOT_TAG="$(printf '%s' "$AUTOBOT_RELEASE_JSON" \
+  | /usr/bin/grep -oE '"tag_name":[[:space:]]*"[^\"]+"' \
+  | /usr/bin/sed -E 's/^.*"([^\"]+)"$/\1/' \
+  | /usr/bin/awk '!found { value=$0; found=1 } END { if (!found) exit 1; print value }')"
+[[ "$AUTOBOT_TAG" == v[0-9]*.[0-9]*.[0-9]* ]] || {
+  printf 'Unexpected stable release tag: %s\n' "$AUTOBOT_TAG" >&2
+  exit 1
+}
+AUTOBOT_ASSETS_HTML="$(curl --fail --location --show-error --silent \
+  "https://github.com/demeyer1/Autobot/releases/expanded_assets/$AUTOBOT_TAG")"
+AUTOBOT_ZIP_PATH="$(printf '%s' "$AUTOBOT_ASSETS_HTML" \
+  | /usr/bin/grep -oE '/demeyer1/Autobot/releases/download/[^\"]+\.zip' \
+  | /usr/bin/awk -v prefix="/demeyer1/Autobot/releases/download/$AUTOBOT_TAG/" \
+      'index($0,prefix)==1 && !found { print; found=1 } END { if (!found) exit 1 }')"
+AUTOBOT_ZIP="${AUTOBOT_ZIP_PATH##*/}"
+AUTOBOT_MANIFEST="${AUTOBOT_ZIP%.zip}.manifest.sha256"
 curl --fail --location --show-error \
-  "$AUTOBOT_RELEASE/AutoAssist-v0.5.0.zip" \
-  --output AutoAssist-v0.5.0.zip
+  "https://github.com$AUTOBOT_ZIP_PATH" \
+  --output "$AUTOBOT_ZIP"
 curl --fail --location --show-error \
-  "$AUTOBOT_RELEASE/AutoAssist-v0.5.0.zip.sha256" \
-  --output AutoAssist-v0.5.0.zip.sha256
+  "https://github.com$AUTOBOT_ZIP_PATH.sha256" \
+  --output "$AUTOBOT_ZIP.sha256"
 curl --fail --location --show-error \
-  "$AUTOBOT_RELEASE/AutoAssist-v0.5.0.manifest.sha256" \
-  --output AutoAssist-v0.5.0.manifest.sha256
-shasum -a 256 -c AutoAssist-v0.5.0.zip.sha256
-ditto -x -k AutoAssist-v0.5.0.zip .
+  "https://github.com${AUTOBOT_ZIP_PATH%.zip}.manifest.sha256" \
+  --output "$AUTOBOT_MANIFEST"
+shasum -a 256 -c "$AUTOBOT_ZIP.sha256"
+ditto -x -k "$AUTOBOT_ZIP" .
 cd AutoAssist
-shasum -a 256 -c ../AutoAssist-v0.5.0.manifest.sha256
+shasum -a 256 -c "../$AUTOBOT_MANIFEST"
 cd ..
-printf 'Release source: %s/AutoAssist\n' "$AUTOBOT_STAGE"
+printf 'Release: %s\nRelease source: %s/AutoAssist\n' \
+  "$AUTOBOT_TAG" "$AUTOBOT_STAGE"
 ```
 
 Continue after the ZIP checksum and every extracted manifest entry report OK; if either fails, retrieve fresh matching release assets before running the installer. Use the release asset, not GitHub's automatic source-code ZIP; keep the verified download for a restart or retry.
@@ -67,6 +89,8 @@ fi
 "$AUTOBOT_DEST/runtime/bin/autoassist" version
 ```
 
+Use `runtime/bin/autobot` when that alias exists. An earlier package may expose only the compatible `runtime/bin/autoassist` command.
+
 Read the receipt at .install-state/receipt.json in the installed folder and confirm its root, account_home and version match this installation. A healthy base install and an available advanced runtime are separate results; Node.js 22 or newer is needed for advanced commands and the setup smoke test.
 
 The optional local LaunchAgent is off on a fresh installation. Leave it off during the basic path unless the user requests local background liveness. See [Local liveness](docs/INSTALL.md#local-liveness).
@@ -85,7 +109,11 @@ In that fresh task, confirm the working folder, read its AGENTS.md and .agents/s
 cd "$HOME/AutoAssist"
 ./skills/first-time/scripts/walkthrough-progress.sh \
   --root "$PWD" --account-home "$HOME" show
-./runtime/bin/autoassist doctor --json
+if [[ -x ./runtime/bin/autobot ]]; then
+  ./runtime/bin/autobot doctor --json
+else
+  ./runtime/bin/autoassist doctor --json
+fi
 ```
 
 Use the actual installed root and receipt-bound account home in every command when the user chose a different destination. Preserve existing choices and resume the earliest unfinished step instead of repeating completed work.
@@ -114,7 +142,7 @@ When the user chooses phone-first use, guide them to open ChatGPT on the Mac usi
 
 ## Existing installation or interrupted setup
 
-If the destination is already managed, read its receipt and run doctor before deciding whether it needs setup, repair or an update. Resume a healthy installation; use instructions matching an installed version newer than v0.5.0, and preserve an unrelated existing folder while resolving a different destination with the user.
+If the destination is already managed, read its receipt and run doctor before deciding whether it needs setup, repair or an update. Resume a healthy installation; use instructions matching the installed version, and preserve an unrelated existing folder while resolving a different destination with the user.
 
 For an intended update, first finish or stop writers in that AutoBot installation, then run the command below from the newly verified release source outside the installed root. The flag asserts that the target is idle; it does not stop running work for you.
 
@@ -126,4 +154,4 @@ Use `--repair` with the same verified release for a repair, or the documented `-
 
 ## Source references
 
-[AutoBot v0.5.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.5.0), [current installation guide](docs/INSTALL.md), [v0.5.0 first-time skill](https://github.com/demeyer1/Autobot/blob/v0.5.0/skills/first-time/SKILL.md), [local Projects](https://learn.chatgpt.com/docs/projects), and [official Node.js download](https://nodejs.org/en/download).
+[Latest stable AutoBot release](https://github.com/demeyer1/Autobot/releases/latest), [current installation guide](docs/INSTALL.md), [current first-time skill](https://github.com/demeyer1/Autobot/blob/main/skills/first-time/SKILL.md), [local Projects](https://learn.chatgpt.com/docs/projects), and [official Node.js download](https://nodejs.org/en/download).

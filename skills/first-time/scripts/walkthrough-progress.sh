@@ -60,7 +60,7 @@ done
 [[ -n "$ROOT" && -n "$ACCOUNT_HOME" && -n "$ACTION" ]] || { usage >&2; exit 2; }
 [[ "$ROOT" == /* && "$ACCOUNT_HOME" == /* && "$ROOT" == "$ACCOUNT_HOME"/* ]] || { /bin/echo "Walkthrough paths must be absolute and installation-scoped." >&2; exit 1; }
 walkthrough_die() {
-  /bin/echo "AutoAssist: $*" >&2
+  /bin/echo "AutoBot: $*" >&2
   exit 1
 }
 safe_absolute_path() {

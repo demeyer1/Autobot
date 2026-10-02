@@ -1,4 +1,4 @@
-# AutoAssist command center
+# AutoBot command center
 
 Read this file first for substantial work. Keep it concise and link each active initiative to its own status file.
 

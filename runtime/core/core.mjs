@@ -18,6 +18,7 @@ const hashValue=v=>sha(canonical(v));
 const actor=v=>text(v,'actor',128);
 const identity=v=>typeof v==='string'&&v.trim()?v.trim().toLocaleLowerCase():null;
 const different=(a,b)=>{const left=identity(a),right=identity(b);return left===null||right===null?true:left!==right;};
+const legacyInactive=r=>r?.legacy_compatibility===true&&r.legacy_state==='superseded';
 const protectedText=v=>typeof v==='string'&&/\b(?:protected|private)[_. -]?context\b/i.test(v);
 const direct=a=>{if(a.source!=='direct_user')fail('direct_user_source_required');};
 const rootOf=(s,a)=>s.roots[id(a.root_id)]||fail('unknown_root');
@@ -118,7 +119,7 @@ export function readiness(root,r) {
     const completion=completionStatus(root,r,d);
     return {id:d.id,complete:completion.complete,requirements:completion.requirements,reasons:completion.reasons};
   });
-  return {complete:details.length>0&&details.every(d=>d.complete),historical_complete:r.historical_complete,deliverables:details,limitation:'Local record consistency and independent reviewer labels do not authenticate reviewers or independently prove external state.'};
+  return {complete:details.length>0&&details.every(d=>d.complete),historical_complete:r.historical_complete,historical_inactive:legacyInactive(r),deliverables:details,limitation:'Local record consistency and independent reviewer labels do not authenticate reviewers or independently prove external state.'};
 }
 
 function heartbeatFingerprint(r) {
@@ -151,6 +152,7 @@ export function evaluateHeartbeatQuiescence(r,options={}) {
   const errors=[...optionErrors];
   if(!validRoot)errors.push('root_missing');
   if(validRoot&&!fingerprint)errors.push('root_shape_invalid');
+  if(!errors.length&&legacyInactive(r))return {...base,decision:'pause_inactive',reason:'This imported legacy objective was superseded and remains historical.',scheduler_action:'pause'};
   const checkpoint=validRoot&&r.checkpoint&&typeof r.checkpoint==='object'&&!Array.isArray(r.checkpoint)?r.checkpoint:null;
   if(!checkpoint)errors.push('checkpoint_missing');
   else {
@@ -207,9 +209,9 @@ function importLegacy(root,s) {
       if(state!=='validated')chain=false;
       d.stages[stage]={status:state,attempt_id:d.attempt_id,intent_revision:r.intent_revision,content_sha256:d.expected_content_sha256,evidence:[{...e,evidence_id:uuid(),producer_id:producer}],validator_id:validator,validated_at:read(`stages/${stage}/validated_at`,true)};hashes.push(expected);
     }
-    const legacyState=read('state');if(!['active','complete'].includes(legacyState))fail('invalid_legacy_state');
+    const legacyState=read('state');if(!['active','complete','superseded'].includes(legacyState))fail('invalid_legacy_state');
     if(legacyState==='complete'&&!chain)fail('legacy_completion_invalid');
-    r.historical_complete=legacyState==='complete';r.legacy_imported_at=now();s.roots[name]=r;s.legacy_imports[name]={source_path:path.relative(root,base),evidence_digest:hashValue(hashes),imported_at:now()};imported.push(name);
+    r.legacy_state=legacyState;r.historical_complete=legacyState==='complete';r.legacy_imported_at=now();s.roots[name]=r;s.legacy_imports[name]={source_path:path.relative(root,base),source_state:legacyState,evidence_digest:hashValue(hashes),imported_at:now()};imported.push(name);
   }
   return imported;
 }
@@ -220,7 +222,7 @@ export function execute(root,action,a={}){
   if(!a||typeof a!=='object'||Array.isArray(a))fail('invalid_input');
   if(action==='recover-lock')return recoverLock(root);
   const apply=s=>{
-    let r;if(ROOT_MUTATIONS.has(action)){r=rootOf(s,a);if(action!=='claim'&&action!=='review')ownership(r,a);}
+    let r;if(ROOT_MUTATIONS.has(action)){r=rootOf(s,a);if(legacyInactive(r))fail('legacy_objective_inactive');if(action!=='claim'&&action!=='review')ownership(r,a);}
     switch(action){
       case 'capabilities':return {state_schema:2,node_minimum:22,local_core:'supported-and-verified',terminal_attestation:'supported',runtime_integrity:'core-and-cli-digest',heartbeat:'bounded-quiescence',durable_recovery:'single-store-owner-history',scoped_memory:'root-confined-source-digests',uncertain_handoff:'explicit-no-retry-until-independent-readback',native_project:'manual',goals:'manual',voice:'manual',computer_use:'manual',connectors:'manual',native_schedules:'manual',terminal_hooks:'unavailable',note:'Native capabilities require actual app-specific discovery. This CLI does not control apps, run a model, send messages, or intercept assistant responses.'};
       case 'read':case 'status':return a.root_id?{root:rootOf(s,a),readiness:readiness(root,rootOf(s,a)),store_revision:s.revision}:{schema:s.schema,revision:s.revision,roots:Object.values(s.roots).map(r=>({id:r.id,title:r.title,owner:r.owner?{actor:r.owner.actor,expires_at:r.owner.expires_at}:null,...readiness(root,r)})),memory_count:Object.keys(s.memory).length,issue_count:Object.keys(s.issues).length,last_tick:s.last_tick};
@@ -363,7 +365,7 @@ export function execute(root,action,a={}){
   };
   return READ_ACTIONS.has(action)?apply(readStore(root)):mutate(root,apply,a);
 }
-function activeOrphans(s,root){return Object.values(s.roots).filter(r=>!r.historical_complete&&!readiness(root,r).complete&&(!r.owner||r.owner.expires_at<Date.now()||r.recovery?.needed));}
+function activeOrphans(s,root){return Object.values(s.roots).filter(r=>!r.historical_complete&&!legacyInactive(r)&&!readiness(root,r).complete&&(!r.owner||r.owner.expires_at<Date.now()||r.recovery?.needed));}
 function dayKey(s){return new Intl.DateTimeFormat('en-CA',{timeZone:s.time_zone||'UTC',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
 function updateOrphanHistory(s,root){s.orphan_history||={};const day=dayKey(s),active=activeOrphans(s,root);for(const r of active){const old=s.orphan_history[r.id];if(!old||old.active===false)s.orphan_history[r.id]={first_seen:day,last_seen:day,consecutive_stuck_days:1,monitoring_gap:true,active:true};else if(old.last_seen!==day){const delta=Math.round((Date.parse(day)-Date.parse(old.last_seen))/86400000);old.consecutive_stuck_days=delta===1?old.consecutive_stuck_days+1:1;old.monitoring_gap||=delta!==1;old.last_seen=day;}}for(const [rid,h]of Object.entries(s.orphan_history)){if(!active.some(r=>r.id===rid))h.active=false;}}
 function orphanView(s,root){const at=Date.now();return {last_tick:s.last_tick,time_zone:s.time_zone||'UTC',status:!s.last_tick?'unavailable':at-Date.parse(s.last_tick)>180000?'stale':'current',items:activeOrphans(s,root).map(r=>({root_id:r.id,reason:!r.owner?'missing_owner':r.owner.expires_at<at?'expired_owner':'stalled',consecutive_stuck_days:s.orphan_history?.[r.id]?.consecutive_stuck_days??null,history_gap:s.orphan_history?.[r.id]?.monitoring_gap??true,next_action:r.checkpoint?.next_action||'Claim the existing root and inspect current state before acting.'}))};}

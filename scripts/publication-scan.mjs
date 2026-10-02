@@ -421,19 +421,9 @@ function scanJpeg(bytes, relative, reviews) {
   const inspected=inspectJpeg(bytes);
   if(review.metadataReviewed!==true || typeof review.metadataReviewer!=='string' || !review.metadataReviewer.trim() || !Array.isArray(review.metadataSegments) || JSON.stringify(review.metadataSegments)!==JSON.stringify(inspected.metadataSegments))reject('media_metadata_review_required');
 }
-// One frozen public baseline retains a stale README row in its published
-// SHA256SUMS file. This is deliberately byte- and path-bound: the exception
-// cannot be copied to another checksum file, target, digest, or README.
-const LEGACY_OSWORLD_CHECKSUM_PATH = 'benchmarks/osworld-2.0/SHA256SUMS';
-const LEGACY_OSWORLD_CHECKSUM_SHA256 = '5092cb9d6f0a38be0f2ea348d2b259d1ffb794cdb8db8071bd281bc811072078';
-const LEGACY_OSWORLD_README_PATH = 'benchmarks/osworld-2.0/README.md';
-const LEGACY_OSWORLD_README_SHA256 = '94752857af9b9e9f0e36c5f2186024976a9800c446ab331d377177db575c59be';
-const LEGACY_OSWORLD_STALE_README_SHA256 = '2db789f4f2b4822d0a0d1d0ee3355f0c210b3f509ae76f945f437d2e218deb02';
-
 function verifyChecksumEntry(entry, entriesByPath) {
   const text = new TextDecoder('utf-8', { fatal: true }).decode(entry.bytes);
   const directory = path.posix.dirname(entry.path);
-  const frozenLegacyFile = entry.path === LEGACY_OSWORLD_CHECKSUM_PATH && hash(entry.bytes) === LEGACY_OSWORLD_CHECKSUM_SHA256;
   for (const line of text.split('\n')) {
     if (!line) continue;
     const match = /^([a-f\d]{64})  (.+)$/.exec(line);
@@ -443,8 +433,7 @@ function verifyChecksumEntry(entry, entriesByPath) {
     const target = entriesByPath.get(referenced);
     if (!target) reject('checksum_reference_missing');
     const targetSha256 = hash(target.bytes);
-    const frozenLegacyStaleRow = frozenLegacyFile && referenced === LEGACY_OSWORLD_README_PATH && match[1] === LEGACY_OSWORLD_STALE_README_SHA256 && targetSha256 === LEGACY_OSWORLD_README_SHA256;
-    if (targetSha256 !== match[1] && !frozenLegacyStaleRow) reject('checksum_mismatch');
+    if (targetSha256 !== match[1]) reject('checksum_mismatch');
   }
 }
 export function scanEntries(entries, allowlist, { mediaReviews = [] } = {}) {

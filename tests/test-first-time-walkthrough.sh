@@ -104,7 +104,7 @@ fi
   'CHATGPT_ACCOUNT_LABEL=not-configured' \
   'DEFAULT_BROWSER_LABEL=Observed Local Browser' \
   'DEFAULT_BROWSER_PROFILE_LABEL=Observed Local Profile' \
-  'DEFAULT_DESTINATION_LABEL=Local AutoAssist Project' \
+  'DEFAULT_DESTINATION_LABEL=Local AutoBot Project' \
   'PRIVACY_MODE=separate-zones' \
   'TERMINAL_UPDATES=chatgpt' > "$INSTALL_ROOT/config/profile.conf"
 /usr/bin/printf '%s\n' \

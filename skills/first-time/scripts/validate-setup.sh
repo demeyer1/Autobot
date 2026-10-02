@@ -18,7 +18,7 @@ usage() {
   /bin/cat <<'EOF'
 Usage: validate-setup.sh [--root PATH] [--account-home PATH] [--smoke] [--require-marker]
 
-Validates owner-only AutoAssist first-use configuration. --smoke creates one
+Validates owner-only AutoBot first-use configuration. --smoke creates one
 local five-stage objective and performs no external mutation. --account-home
 binds the installed runtime doctor's account-scoped checks without replacing HOME.
 EOF
@@ -57,12 +57,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ! -d "$AUTOASSIST_ROOT" || -L "$AUTOASSIST_ROOT" ]]; then
-  /bin/echo "FAIL  AutoAssist root must be a real directory: $AUTOASSIST_ROOT" >&2
+  /bin/echo "FAIL  AutoBot root must be a real directory: $AUTOASSIST_ROOT" >&2
   exit 1
 fi
 AUTOASSIST_ROOT="${AUTOASSIST_ROOT:A}"
 if [[ "$AUTOASSIST_ROOT" == "/" || "$AUTOASSIST_ROOT" == "${HOME:A}" ]]; then
-  /bin/echo "FAIL  refusing a broad AutoAssist root: $AUTOASSIST_ROOT" >&2
+  /bin/echo "FAIL  refusing a broad AutoBot root: $AUTOASSIST_ROOT" >&2
   exit 1
 fi
 if [[ -z "$ACCOUNT_HOME" || ! -d "$ACCOUNT_HOME" || -L "$ACCOUNT_HOME" ]]; then
@@ -191,7 +191,7 @@ check_regular_file "$AUTOASSIST_ROOT/AGENTS.md" "operating contract present"
 check_regular_file "$AUTOASSIST_ROOT/00_CONTEXT/PRIVACY-ZONES.md" "privacy-zone policy present"
 check_regular_file "$AUTOASSIST_ROOT/00_CONTEXT/OUTBOUND-ACTION-POLICY.md" "outbound-action policy present"
 check_regular_file "$AUTOASSIST_ROOT/skills/first-time/SKILL.md" "first-time skill present"
-check_regular_file "$RUNTIME" "AutoAssist runtime present"
+check_regular_file "$RUNTIME" "AutoBot runtime present"
 check_regular_file "$PROFILE" "profile configuration present"
 check_regular_file "$SETUP" "first-time configuration present"
 
@@ -512,13 +512,13 @@ done
 DOCTOR_LOG="$TEMP_ROOT/doctor.log"
 if [[ -x "$RUNTIME" ]]; then
   if AUTOASSIST_ACCOUNT_HOME="$ACCOUNT_HOME" "$RUNTIME" doctor --quiet >"$DOCTOR_LOG" 2>&1; then
-    pass "AutoAssist doctor for explicit account home"
+    pass "AutoBot doctor for explicit account home"
   else
-    fail "AutoAssist doctor for explicit account home"
+    fail "AutoBot doctor for explicit account home"
     /bin/cat "$DOCTOR_LOG" >&2
   fi
 else
-  fail "AutoAssist runtime is executable"
+  fail "AutoBot runtime is executable"
 fi
 
 validate_smoke_objective() {
@@ -618,10 +618,10 @@ if [[ "$RUN_SMOKE" -eq 1 ]]; then run_smoke; fi
 if [[ "$REQUIRE_MARKER" -eq 1 || -f "$MARKER" ]]; then validate_marker; fi
 
 if [[ "$FAILURES" -ne 0 ]]; then
-  /bin/echo "AutoAssist first-time setup validation failed with $FAILURES check(s)." >&2
+  /bin/echo "AutoBot first-time setup validation failed with $FAILURES check(s)." >&2
   exit 1
 fi
 
-/bin/echo "AutoAssist first-time setup validation passed."
+/bin/echo "AutoBot first-time setup validation passed."
 if [[ -n "$SMOKE_OBJECTIVE_ID" ]]; then /bin/echo "SMOKE_OBJECTIVE_ID=$SMOKE_OBJECTIVE_ID"; fi
 /bin/echo "EXTERNAL_MUTATION=false"

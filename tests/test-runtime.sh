@@ -4,14 +4,16 @@ SOURCE_ROOT="${0:A:h:h}"
 TEST_ROOT="$(/usr/bin/mktemp -d -t autobot-runtime-test)"
 TEST_ROOT="${TEST_ROOT:A}"
 trap '/bin/rm -rf "$TEST_ROOT"' EXIT
-APP="$TEST_ROOT/account home/Autobot Workspace"
+APP="$TEST_ROOT/account home/AutoBot Workspace"
 /bin/mkdir -p "$APP/runtime" "$APP/03_OUTPUTS" "$APP/.install-state"
 /bin/cp -R "$SOURCE_ROOT/runtime/bin" "$SOURCE_ROOT/runtime/core" "$APP/runtime/"
 /bin/cp "$SOURCE_ROOT/VERSION" "$SOURCE_ROOT/AGENTS.md" "$APP/"
 CLI="$APP/runtime/bin/autoassist"
-/bin/chmod 755 "$CLI" # Release ZIP canonicalizes the CLI mode; git source does not.
+ALIAS="$APP/runtime/bin/autobot"
+/bin/chmod 755 "$CLI" "$ALIAS" # Release ZIP canonicalizes the CLI modes; git source does not.
 "$CLI" help >/dev/null
 "$CLI" version >/dev/null
+[[ "$("$ALIAS" version)" == "$("$CLI" version)" ]]
 [[ ! -e "$APP/state" ]]
 if "$CLI" supervisor-tick --help >"$TEST_ROOT/error" 2>&1; then exit 1; fi
 [[ ! -e "$APP/state" ]]

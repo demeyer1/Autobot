@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.5.0 (prerelease)
+## 0.5.0
 
-Six portable skills are included with every installation: Slack inbox triage, Messages inbox triage, Finish the Mission, Remember and Improve, Autobot Health Check, and Delegate and Verify. The installer places them in the local Project alongside first-time setup.
+Six portable skills are included with every installation: Slack inbox triage, Messages inbox triage, Finish the Mission, Remember and Improve, AutoBot Health Check, and Delegate and Verify. The installer places them in the local Project alongside first-time setup.
 
 Slack and Messages triage combine fast next-card presentation with a single verified action lane, short-lived previews and body-free checkpoints. The workflow skills connect task follow-through, scoped memory, read-only health checks and independently reviewed delegation to the existing local runtime.
 

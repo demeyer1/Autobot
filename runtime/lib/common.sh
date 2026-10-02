@@ -14,7 +14,7 @@ autoassist_now_epoch() {
 }
 
 autoassist_fail() {
-  /bin/echo "AutoAssist: $*" >&2
+  /bin/echo "AutoBot: $*" >&2
   return 1
 }
 
@@ -116,7 +116,7 @@ autoassist_release_held_lock() {
   AUTOASSIST_HELD_LOCK=""
   AUTOASSIST_HELD_LOCK_TOKEN=""
   if ! autoassist_release_lock "$held_lock" "$held_token"; then
-    /bin/echo "AutoAssist: failed to release owned lock: $held_lock" >&2
+    /bin/echo "AutoBot: failed to release owned lock: $held_lock" >&2
     return 1
   fi
 }

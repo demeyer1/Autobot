@@ -4,7 +4,7 @@ Use this sequence for a new installation or failed setup repair. The operator ac
 
 ## 1. Establish local state
 
-- Pin the AutoAssist root and confirm it is a child of the current macOS user's home or another user-selected accessible local folder.
+- Pin the AutoBot root and confirm it is a child of the current macOS user's home or another user-selected accessible local folder.
 - Run `AUTOASSIST_ACCOUNT_HOME=<account-home> runtime/bin/autoassist doctor --quiet`, scoping that variable to the doctor process only. Base integrity may pass while advanced runtime is unavailable. That state permits local inspection, privacy-zone initialization, repair, and uninstall, but it does not permit advanced objectives or a scheduler.
 - Inspect only the release files and configuration named by this skill. Do not enumerate protected folders.
 - Default to local-only operation. Ask the narrower readiness question only when a requested capability needs a stronger trust boundary.
@@ -22,7 +22,7 @@ Use this sequence for a new installation or failed setup repair. The operator ac
 - Keep `SHARED` disabled unless the user explicitly opts in.
 - Inspect before writing. Preserve valid existing labels and choices. Write `config/profile.conf` and `config/first-time.conf` atomically from the schema in `configuration.md`; use `not-configured` rather than asking for an unused optional identity. `REQUESTED_CAPABILITIES` may be empty. Every requested capability must bind both observed native availability and current effective access evidence as defined in `configuration.md`.
 - For each opted-in communication profile, create the exact owner-only aggregate-pattern artifact defined in `configuration.md` inside its mapped zone. Do not import or retain source messages during setup.
-- Record native Goal pairing as required for persistent work. A local AutoAssist objective and a native ChatGPT Goal should share one recognizable assignment label; setup itself does not manufacture an unrelated Goal.
+- Record native Goal pairing as required for persistent work. A local AutoBot objective and a native ChatGPT Goal should share one recognizable assignment label; setup itself does not manufacture an unrelated Goal.
 
 ## 4. Verify without external mutation
 

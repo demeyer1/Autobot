@@ -1,21 +1,21 @@
-# AutoAssist and OpenClaw
+# AutoBot vs OpenClaw and Hermes Agent
 
-AutoAssist and OpenClaw solve overlapping problems with different product boundaries.
+AutoBot and OpenClaw solve overlapping problems with different product boundaries.
 
-This comparison treats **AutoAssist plus native ChatGPT** as the product. ChatGPT supplies Projects, Voice, Goals, skills, notifications, scheduled work, and Computer Use. AutoAssist adds the local context, policy, evidence, and completion layer.
+This comparison treats **AutoBot plus native ChatGPT** as the product. ChatGPT supplies Projects, Voice, Goals, skills, notifications, scheduled work, and Computer Use. AutoBot adds the local context, policy, evidence, and completion layer.
 
 OpenClaw is a separate, feature-broad agent gateway with channels, nodes, durable tasks, audit tooling, its own macOS voice layer, and official Codex integrations. It is not accurate to say that OpenClaw cannot use Codex or native ChatGPT Computer Use.
 
-## Ranked fit for the AutoAssist product goal
+## Ranked fit for the AutoBot product goal
 
 This is a product-shape ranking, not a universal OSS leaderboard. It weights native ChatGPT Projects and Voice, relationship-purpose privacy zones, fail-closed first-party/no-attribution writes, independent authoritative destination validation, durable follow-through inside user authority, and per-channel tone isolation.
 
-| Rank | Product | Best documented fit | Why it follows AutoAssist on this target |
+| Rank | Product | Best documented fit | Why it follows AutoBot on this target |
 | --- | --- | --- | --- |
-| 1 | **AutoAssist + native ChatGPT** | Native ChatGPT user experience plus the complete local operating contract evaluated here | It is designed around all six target controls. Current limits remain pre-release, single-user, same-Mac procedural isolation, and label-based local validator separation. |
-| 2 | [OpenClaw](https://github.com/openclaw/openclaw) | Standalone gateway breadth, channels, nodes, durable tasks, audit, Voice Wake, and official Codex/Computer Use integrations | Separate Gateway/control plane. The primary docs reviewed do not require AutoAssist's exact relationship-purpose zone model or separate rendered destination validator for every external completion. |
+| 1 | **AutoBot + native ChatGPT** | Native ChatGPT user experience plus the complete local operating contract evaluated here | It is designed around all six target controls. Current limits remain early-release, single-user, same-Mac procedural isolation, and label-based local validator separation. |
+| 2 | [OpenClaw](https://github.com/openclaw/openclaw) | Standalone gateway breadth, channels, nodes, durable tasks, audit, Voice Wake, and official Codex/Computer Use integrations | Separate Gateway/control plane. The primary docs reviewed do not require AutoBot's exact relationship-purpose zone model or separate rendered destination validator for every external completion. |
 | 3 | [Row-Bot](https://github.com/siddsachar/row-bot) | Local-first desktop assistant with deep memory, Goal Mode, bounded parent-led agents, durable checkpoints, exactly-once completion controls, realtime voice, channels, and broad tools | Separate app and native surfaces of its own. ChatGPT/Codex is a provider path, not the native ChatGPT Project and Voice product surface. |
-| 4 | [Hermes Agent](https://github.com/NousResearch/hermes-agent) | Self-improving skills, durable memory, session search, subagents, cron, model choice, and messaging channels | Separate terminal/gateway experience. Its README documents voice-memo transcription rather than native ChatGPT Voice orchestration, and no exact equivalent of the AutoAssist write/validation bundle was found in the reviewed primary docs. |
+| 4 | [Hermes Agent](https://github.com/NousResearch/hermes-agent) | Self-improving skills, durable memory, session search, subagents, cron, model choice, and messaging channels | Separate terminal/gateway experience. Its README documents voice-memo transcription rather than native ChatGPT Voice orchestration, and no exact equivalent of the AutoBot write/validation bundle was found in the reviewed primary docs. |
 | 5 | [OwnPilot](https://github.com/ownpilot/ownpilot) | Self-hosted personal platform with agents, crews, persistent memory, MCP client/server, browser automation, audit, 250+ tools, and voice input/output | Separate server/web platform and broader infrastructure footprint. Its reviewed README does not specify the same first-party no-attribution route plus required independent rendered destination readback. |
 
 A ranking centered on maximum channel breadth, independent self-hosting, model portability, or always-on gateway operation could put one of the alternatives first.
@@ -30,25 +30,25 @@ The detailed comparison below focuses on OpenClaw because it is the highest-rank
 
 ## At a glance
 
-| Dimension | AutoAssist + native ChatGPT | OpenClaw |
+| Dimension | AutoBot + native ChatGPT | OpenClaw |
 | --- | --- | --- |
 | Primary experience | Native ChatGPT desktop, Projects, Voice, Work, and Codex | Separate Gateway, agents, clients, channels, nodes, and plugins |
 | Project context | Local ChatGPT Project with auto-discovered `AGENTS.md`, skills, and `config.toml` | OpenClaw workspaces, sessions, memory files, Gateway configuration, and plugins |
 | Voice | Native ChatGPT Voice can start and monitor separate long-running threads and use Remote on paired iOS | Its own macOS Voice Wake, push-to-talk, and Talk Mode |
-| Long-running work | Native Goals plus local AutoAssist objective, stage, evidence, liveness, and recovery state | Durable SQLite tasks, sweeper/reconciliation, delivery state, and cron |
-| Computer Use | Native ChatGPT Computer Use with an AutoAssist first-party-write and rendered-readback policy | Official plugin can use the same native ChatGPT/Codex Computer Use server |
-| Memory | Project context and optional Codex memory plus AutoAssist canonical records, provenance, and privacy zones | Markdown memory, daily notes, optional DREAMS, and search |
+| Long-running work | Native Goals plus local AutoBot objective, stage, evidence, liveness, and recovery state | Durable SQLite tasks, sweeper/reconciliation, delivery state, and cron |
+| Computer Use | Native ChatGPT Computer Use with an AutoBot first-party-write and rendered-readback policy | Official plugin can use the same native ChatGPT/Codex Computer Use server |
+| Memory | Project context and optional Codex memory plus AutoBot canonical records, provenance, and privacy zones | Markdown memory, daily notes, optional DREAMS, and search |
 | Privacy model | Explicit `PRIVATE`, `FAMILY_FRIENDS`, `WORK`, and opt-in `SHARED` retrieval policy | Workspace/filesystem separation and documented security controls |
 | External writes | Fail-closed first-party UI route with preflight and rendered postflight | Shared outbound boundary and metadata audit, with documented bypass coverage limits for some direct/plugin paths |
 | Completion | Distinct producer and validator labels, ordered evidence stages, and required authoritative destination readback | Durable task lifecycle, delivery state, and audit metadata |
 | Tone profiles | Separate opt-in profiles by channel and audience, using compact patterns rather than raw archives by default | Persona and workspace instructions; no equivalent channel-specific learning and exclusion policy was found in the primary docs reviewed for this release |
 | Deployment | ZIP into a native ChatGPT local Project, with a guided under-30-minute target | Installer plus runtime, model authentication, Gateway, agent, channel, and optional Codex setup |
 
-## Where AutoAssist is deliberately different
+## Where AutoBot is deliberately different
 
 ### ChatGPT stays the interface
 
-AutoAssist does not ask the user to adopt a second agent control plane. The local Project is the workspace, Voice is the conversational surface, Goal mode carries long-running work, skills package repeatable workflows, and Computer Use handles visual app interaction.
+AutoBot does not ask the user to adopt a second agent control plane. The local Project is the workspace, Voice is the conversational surface, Goal mode carries long-running work, skills package repeatable workflows, and Computer Use handles visual app interaction.
 
 OpenClaw now has official Codex supervision, Codex harness, and native Computer Use plugins. The distinction is product shape and default workflow, not basic compatibility.
 
@@ -56,37 +56,37 @@ Sources: [ChatGPT Projects](https://learn.chatgpt.com/docs/projects), [ChatGPT V
 
 ### Privacy follows relationship and purpose
 
-AutoAssist gives personal, family and friends, work, and deliberately shared context separate canonical zones. Ordinary work must read only the zone relevant to the current assignment. Cross-zone reuse is explicit and minimal.
+AutoBot gives personal, family and friends, work, and deliberately shared context separate canonical zones. Ordinary work must read only the zone relevant to the current assignment. Cross-zone reuse is explicit and minimal.
 
 This is a policy and folder-permission boundary within one macOS account. It is not stronger than a separate OS account, container, or machine. OpenClaw also documents its filesystem as a trust boundary and recommends separate OS users or hosts for strict isolation.
 
-Sources: [AutoAssist Privacy](../PRIVACY.md), [OpenClaw memory](https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md)
+Sources: [AutoBot Privacy](../PRIVACY.md), [OpenClaw memory](https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md)
 
 ### Completion needs an independent check
 
-An AutoAssist worker can report evidence but cannot certify the same stage using the same identity label. Stages advance in order. For an external artifact or action, the operating contract requires the validator to inspect the authoritative destination instead of accepting a tool call, open editor, or generic saved indicator.
+An AutoBot worker can report evidence but cannot certify the same stage using the same identity label. Stages advance in order. For an external artifact or action, the operating contract requires the validator to inspect the authoritative destination instead of accepting a tool call, open editor, or generic saved indicator.
 
 The current local runtime enforces label separation, stage order, and evidence hashes. It does not create a hardware trust boundary or prove that a label corresponds to a separate human. The quality of the result still depends on fresh, authoritative readback.
 
-OpenClaw documents durable task records, stale/lost detection, delivery state, and a metadata audit ledger. In the primary sources reviewed here, AutoAssist did not find a documented OpenClaw requirement that every external completion be certified by a distinct validator after authoritative destination readback. That is a documentation finding, not proof that a custom OpenClaw workflow cannot add it.
+OpenClaw documents durable task records, stale/lost detection, delivery state, and a metadata audit ledger. In the primary sources reviewed here, AutoBot did not find a documented OpenClaw requirement that every external completion be certified by a distinct validator after authoritative destination readback. That is a documentation finding, not proof that a custom OpenClaw workflow cannot add it.
 
-Sources: [OpenClaw tasks](https://github.com/openclaw/openclaw/blob/main/docs/automation/tasks.md), [OpenClaw audit](https://github.com/openclaw/openclaw/blob/main/docs/cli/audit.md), [AutoAssist Architecture](ARCHITECTURE.md)
+Sources: [OpenClaw tasks](https://github.com/openclaw/openclaw/blob/main/docs/automation/tasks.md), [OpenClaw audit](https://github.com/openclaw/openclaw/blob/main/docs/cli/audit.md), [AutoBot Architecture](ARCHITECTURE.md)
 
 ### External actions fail closed
 
-AutoAssist uses connectors and structured tools for authorized reads. Recipient-visible writes normally go through the signed-in first-party interface in native Computer Use. The operating contract requires the active ChatGPT workflow to check the exact account, destination, and visible content before action, then check the rendered result for the intended change, duplicates, failure state, and unwanted AI attribution.
+AutoBot uses connectors and structured tools for authorized reads. Recipient-visible writes normally go through the signed-in first-party interface in native Computer Use. The operating contract requires the active ChatGPT workflow to check the exact account, destination, and visible content before action, then check the rendered result for the intended change, duplicates, failure state, and unwanted AI attribution.
 
 If the route forces a non-removable label or the destination cannot be verified, the operating contract requires the active ChatGPT workflow to leave the task incomplete. This does not remove immutable platform metadata or bypass OpenAI and macOS approvals.
 
 OpenClaw has a meaningful outbound audit boundary. Its own audit documentation notes that plugin-local or direct-send paths may bypass that boundary and that the absence of an audit row does not prove no message was sent.
 
-Sources: [AutoAssist Security](../SECURITY.md), [OpenClaw audit](https://github.com/openclaw/openclaw/blob/main/docs/cli/audit.md), [ChatGPT Computer Use](https://learn.chatgpt.com/docs/computer-use)
+Sources: [AutoBot Security](../SECURITY.md), [OpenClaw audit](https://github.com/openclaw/openclaw/blob/main/docs/cli/audit.md), [ChatGPT Computer Use](https://learn.chatgpt.com/docs/computer-use)
 
 ### Tone remains channel-specific
 
-AutoAssist separates communication profiles by channel and audience. The package supports profiles such as work-external email, work-internal chat, and family/friends text. It learns only from samples the user authorizes, keeps compact derived patterns by default, and does not treat writing style as permission to send.
+AutoBot separates communication profiles by channel and audience. The package supports profiles such as work-external email, work-internal chat, and family/friends text. It learns only from samples the user authorizes, keeps compact derived patterns by default, and does not treat writing style as permission to send.
 
-The profile model is included in `00_CONTEXT/COMMUNICATION-PROFILES.md`. Channel-specific collection and deterministic checking depend on the corresponding installed workflow. The pre-release package does not claim automatic learning across every channel.
+The profile model is included in `00_CONTEXT/COMMUNICATION-PROFILES.md`. Channel-specific collection and deterministic checking depend on the corresponding installed workflow. The early public package does not claim automatic learning across every channel.
 
 ## Where OpenClaw documents broader coverage
 
@@ -99,7 +99,7 @@ The profile model is included in `00_CONTEXT/COMMUNICATION-PROFILES.md`. Channel
 
 ## Choosing based on product shape
 
-AutoAssist is built for a user who wants native ChatGPT Projects and Voice to remain the center of the experience, with local privacy routing and stricter completion and external-action rules.
+AutoBot is built for a user who wants native ChatGPT Projects and Voice to remain the center of the experience, with local privacy routing and stricter completion and external-action rules.
 
 OpenClaw documents a broader standalone runtime for users who need many channels, nodes, an independent Gateway, or its own always-on macOS voice layer.
 
@@ -107,7 +107,7 @@ Neither architecture eliminates model errors, prompt injection, permissions, aut
 
 ## Claim boundaries
 
-AutoAssist does not claim that it is:
+AutoBot does not claim that it is:
 
 - more secure than OpenClaw in every deployment;
 - cryptographically isolated inside one macOS account;

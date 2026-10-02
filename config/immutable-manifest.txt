@@ -39,6 +39,7 @@ docs/benchmark-charts/assistantbench-highlighted.png
 docs/benchmark-charts/osworld-2.0-highlighted.png
 install.sh
 runtime/bin/autoassist
+runtime/bin/autobot
 runtime/core/cli.mjs
 runtime/core/context.mjs
 runtime/core/core.mjs

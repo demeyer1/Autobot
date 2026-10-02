@@ -1,23 +1,29 @@
-# AutoBot
+# AutoBot: the self-improving agent harness for ChatGPT and Codex
 
-**AutoBot: a self-improving agentic harness that makes frontier AI better at finishing complex knowledge work.**
+AutoBot is an open-source (MIT) agent harness that loads into a ChatGPT or Codex local Project on your Mac. It adds on-disk memory, privacy zones and an independent completion validator, and ranks #1 on the AssistantBench leaderboard.
 
-[![Start the 3-step Mac setup](https://img.shields.io/badge/START%20SETUP-3--STEP%20MAC%20GUIDE-0969DA?style=for-the-badge&labelColor=0969DA)](https://github.com/demeyer1/Autobot#setup-and-installation)
+[![Start the 3-step Mac setup](https://img.shields.io/badge/START%20SETUP-3--STEP%20MAC%20GUIDE-0969DA?style=for-the-badge&labelColor=0969DA)](#setup-and-installation)
 
-[Prefer the ZIP? Download the latest release](https://github.com/demeyer1/Autobot/releases/latest)
+<!-- AUTOBOT:RELEASE:START -->
+**Current release:** [AutoBot v0.5.0](https://github.com/demeyer1/Autobot/releases/tag/v0.5.0). [Download and verify the release](https://github.com/demeyer1/Autobot/releases/tag/v0.5.0).
+<!-- AUTOBOT:RELEASE:END -->
 
-AutoBot achieved **18.5% higher task completion than the published OpenAI Sol Max baseline**, surpassing **Anthropic’s Claude Opus 5 Max** on OSWorld 2.0, a benchmark of long, multi-application workflows. It also reached **#1 on the official AssistantBench hidden-test leaderboard**. [Results and methodology](https://github.com/demeyer1/Autobot/tree/main/benchmarks)
+| Benchmark | AutoBot result | Comparison |
+| --- | ---: | --- |
+| [AssistantBench](https://github.com/demeyer1/Autobot/blob/main/benchmarks/assistantbench/README.md) | **50.70%**, #1 recorded official hidden-test result | 181 tasks, 100% answer rate |
+| [OSWorld 2.0](https://github.com/demeyer1/Autobot/blob/main/benchmarks/osworld-2.0/README.md) | **32.41%** binary accuracy | GPT-5.6 Sol Max 27.34%; Claude Opus 5 Max 31.43% |
 
-**Hard workflows become upgrades to the agent itself.** AutoBot repairs its own harness, independently validates the changes, and carries them forward. The next workflow inherits the improvement. **Compounding capability, without retraining the model.**
+**Paste this into Codex:**
 
-**Your knowledge outgrows the context window.** Hierarchical memory lives on disk; task-specific retrieval builds the working context. Nightly consolidation integrates new knowledge and corrections. Your agent accumulates institutional memory across projects and conversations.
+> Install AutoBot from https://github.com/demeyer1/Autobot, following INSTALL_FOR_AI.md. Verify the latest release ZIP and its manifest, install it, and guide me through selecting the installed folder as my local Project's primary folder. Include support software needed for first-time setup from official sources. Bring me in for any Mac or account step I need to do.
 
-**Your project can outlive the agent working on it.** Persistent task graphs, atomic checkpoints and independent supervision let a replacement worker resume the assignment. Completion is bound to current requirements and verified destination evidence.
+OpenAI’s Dots work from their own cloud computer. AutoBot runs inside your own ChatGPT or Codex Project on your Mac, with memory you can read and edit.
 
-**Local compute makes persistent intelligence economical.** Your CPU handles orchestration, state and integrity checks. Compiled context and reusable proofs reduce repeated inference, directing the model’s budget toward the difficult judgments that move work forward.
+AutoBot turns difficult workflows into durable upgrades. It can repair its operating harness, independently validate the change, and carry the improvement into the next task. Hierarchical memory lives on disk, task-specific retrieval builds the working context, and persistent checkpoints let a replacement worker resume an interrupted assignment.
 
+Open source. Native ChatGPT and Codex on your Mac. Built by [Autonomous Production](https://autoprod.ai).
 
-Open source. Native ChatGPT on your Mac. Built by [Autonomous Production](https://autoprod.ai).
+Formerly AutoAssist.
 
 ## Benchmarks
 
@@ -25,53 +31,54 @@ Open source. Native ChatGPT on your Mac. Built by [Autonomous Production](https:
 
 **#1 on the recorded official hidden-test leaderboard: 50.70% accuracy across 181 tasks.**
 
-[![AssistantBench leaderboard with AutoBot’s result highlighted in red](docs/benchmark-charts/assistantbench-highlighted.png)](benchmarks/assistantbench/)
+![AssistantBench leaderboard with AutoBot’s result highlighted in red](docs/benchmark-charts/assistantbench-highlighted.png)
 
-<sub>AutoAssist was the harness's previous brand name, changed to AutoBot.</sub>
-
-[Results and verification](benchmarks/assistantbench/)
+[Results and verification](https://github.com/demeyer1/Autobot/blob/main/benchmarks/assistantbench/README.md)
 
 ### OSWorld 2.0
 
 **32.41% binary accuracy and 64.28% partial accuracy across 108 tasks.** Final best-valid-per-task aggregate, compared with the published September 10, 2026 leaderboard snapshot.
 
-[![OSWorld 2.0 comparison with AutoBot’s result highlighted in red](docs/benchmark-charts/osworld-2.0-highlighted.png)](benchmarks/osworld-2.0/)
+On OSWorld 2.0 (release 2026.08.08, all 108 tasks), AutoBot with GPT-5.6 Sol Max reached 32.41% binary accuracy in a self-run evaluation: 18.5% above the official GPT-5.6 Sol Max result (27.34%) and above Claude Opus 5 Max (31.43%). Method and verifier are in the benchmark folder.
 
-[Results and methodology](benchmarks/osworld-2.0/)
+![OSWorld 2.0 comparison with AutoBot’s result highlighted in red](docs/benchmark-charts/osworld-2.0-highlighted.png)
+
+[Results and methodology](https://github.com/demeyer1/Autobot/blob/main/benchmarks/osworld-2.0/README.md)
 
 ## What it changes
 
 - **Privacy by relationship and purpose.** Personal, family and friends, work, and deliberately shared context have separate zones. Nothing moves into `SHARED` automatically.
-- **Independent completion.** The local runtime rejects validation under the producer label. The operating contract also requires a separate validator to inspect current evidence, including the real destination when the task changes something outside the workspace.
-- **Durable follow-through.** Native ChatGPT Goals keep the active work moving. Autobot keeps the objective, stages, evidence, and recovery state on disk so an interrupted chat does not silently erase the commitment.
-- **Clean external actions.** Recipient-visible writes use the signed-in first-party app through Computer Use. The operating contract requires the active ChatGPT workflow to verify the account, destination, and visible content before the action, then check the rendered result for a duplicate, failure, or unwanted AI attribution. If the clean route cannot be verified, the workflow must stop.
-- **Tone that stays in its lane.** Communication profiles are separated by channel and audience. A family text profile does not become a work email profile. Autobot stores compact, user-approved patterns rather than raw message archives by default.
+- **Independent completion.** The local runtime rejects validation under the producer label. The operating contract requires a separate validator to inspect current evidence, including the real destination when the task changes something outside the workspace.
+- **Durable follow-through.** Native ChatGPT Goals keep active work moving. AutoBot keeps the objective, stages, evidence, and recovery state on disk so an interrupted chat does not erase the commitment.
+- **Clean external actions.** Recipient-visible writes use the signed-in first-party app through Computer Use. The operating contract requires account, destination, and content checks before the action, followed by rendered result verification.
+- **Tone that stays in its lane.** Communication profiles remain separate by channel and audience. AutoBot stores compact, user-approved patterns rather than raw message archives by default.
 
-## What Autobot includes
+## What AutoBot includes
 
-Autobot is the combination of two layers:
+AutoBot combines two layers:
 
-1. **Native ChatGPT:** the desktop app, local Projects, Voice, Goals, skills and plugins, scheduled work, notifications, and Computer Use.
-2. **The Autobot workspace:** the operating contract in `AGENTS.md`, privacy zones, selective memory, project status, a local objective state machine, a one-minute liveness supervisor, external-action policy, and first-time setup.
+1. **Native ChatGPT and Codex:** the desktop app, local Projects, Voice, Goals, skills and plugins, scheduled work, notifications, and Computer Use.
+2. **The AutoBot workspace:** the operating contract in `AGENTS.md`, privacy zones, selective memory, project status, a local objective state machine, a one-minute liveness supervisor, external-action policy, and first-time setup.
 
-Autobot is not a separate model, chatbot, or agent gateway. It depends on current ChatGPT capabilities and their plan, region, usage, sandbox, and permission limits. See [Architecture](docs/ARCHITECTURE.md) and [Permissions](docs/PERMISSIONS.md).
+AutoBot is an agent harness, not a separate model, chatbot, or agent gateway. It depends on current ChatGPT and Codex capabilities and their plan, region, usage, sandbox, and permission limits. See [Architecture](docs/ARCHITECTURE.md) and [Permissions](docs/PERMISSIONS.md).
 
-## Autobot compared with OpenClaw and Hermes
+## AutoBot compared with Dots, OpenClaw and Hermes
 
-This comparison evaluates Autobot plus native ChatGPT for one person managing personal and work tasks on a Mac. "Better" means a more explicit default for the stated user need, based on the published design; it does not mean a measured advantage in accuracy, speed, or reliability. "Doesn't do" means the specific built-in requirement was not found in the primary documentation reviewed on September 10, 2026. Both alternatives can be extended.
+| Dimension | AutoBot | OpenAI Dots | OpenClaw | Hermes Agent |
+| --- | --- | --- | --- | --- |
+| Where it runs | Inside a local ChatGPT or Codex Project on your Mac | In an OpenAI cloud computer, with optional handoffs to a connected local computer | In a separately operated gateway on your own host or server | In a separately operated local or server runtime |
+| Plans and regions | Uses the ChatGPT or Codex features available to the signed-in account | Pro 100/200/500 outside the EEA, UK and Switzerland; Business Premium and administrator-enabled Enterprise worldwide, subject to rollout | Open source; model, channel and hosting availability depend on the operator | Open source; model, channel and hosting availability depend on the operator |
+| Inspectable, editable memory | Plain files in the Project, with relationship and purpose zones | Dot memory and task context managed by ChatGPT | Workspace files, memory files and optional memory services | Curated memory, user profiles and session search |
+| Completion verification | Ordered evidence stages plus a validator label separate from the producer, with destination readback for external work | The dot can create, inspect and steer delegated tasks; no equivalent AutoBot validator contract is documented | Durable task state, audit tools and extensible workflows | Tool approvals, execution controls and extensible workflows |
+| Published benchmarks | AssistantBench and OSWorld 2.0 results with evidence and verifiers | No directly comparable harness benchmark published in the cited product documentation | No directly comparable harness benchmark published in the cited primary sources | No directly comparable harness benchmark published in the cited primary sources |
 
-| | Top 3 shared capabilities: Autobot's approach and user benefits | Top 3 additional Autobot capabilities and user benefits |
-| --- | --- | --- |
-| [**OpenClaw**](https://github.com/openclaw/openclaw) | **1. Remember context with explicit boundaries.** OpenClaw persists and searches memory. Autobot adds default personal, family/friends, work, and opt-in shared zones. This makes the rules for reusing private context in a work task more explicit. [Memory](https://docs.openclaw.ai/concepts/memory) / [Autobot privacy](PRIVACY.md).<br><br>**2. Track the promised outcome.** OpenClaw records background tasks and delivery state. Autobot assigns each promised output an owner, destination, and completion gate. This gives the user a clearer record of what remains owed after an interruption. [Tasks](https://docs.openclaw.ai/automation/tasks) / [Autobot contract](AGENTS.md#projects-and-unfinished-work).<br><br>**3. Check the result of an app action.** OpenClaw supports tools and outbound audit history. Autobot requires account, destination, and content checks before a write, followed by rendered inspection. This adds an explicit check for a wrong destination, failed save, or duplicate action. [Audit](https://docs.openclaw.ai/gateway/audit) / [Autobot writes](AGENTS.md#external-reads-and-writes). | **1. Require a separate completion validator.** Autobot's five-stage process requires current evidence and a validator label different from the producer, with destination readback for external work. This gives users evidence beyond the worker's own success report. [Completion](AGENTS.md#completion-integrity).<br><br>**2. Block writes when clean delivery cannot be verified.** Autobot's default policy requires first-party Computer Use and stops a route that forces unwanted attribution. This gives users an explicit publication rule instead of relying on each connector's behavior. [Write policy](AGENTS.md#external-reads-and-writes).<br><br>**3. Keep learned tone separate by channel and audience.** Autobot requires authorized examples and compact, separate communication profiles. This helps keep a family-text style from shaping a customer email. [Profiles](00_CONTEXT/COMMUNICATION-PROFILES.md). |
-| [**Hermes**](https://github.com/NousResearch/hermes-agent) | **1. Remember context with purpose-specific retrieval.** Hermes has curated memory, user profiles, and session search. Autobot makes relationship and purpose part of its default retrieval rules. This gives users clearer control over which personal facts may inform professional work. [Memory](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory) / [Autobot privacy](PRIVACY.md).<br><br>**2. Follow work through to its deliverable.** Hermes schedules jobs and delivers their outputs. Autobot also retains the objective, ordered evidence stages, and unfinished outputs. This makes it easier to distinguish a job that ran from a requested artifact that was saved and checked. [Scheduling](https://hermes-agent.nousresearch.com/docs/user-guide/features/cron) / [Autobot completion](AGENTS.md#completion-integrity).<br><br>**3. Verify user-visible changes.** Hermes provides tool approvals and execution controls. Autobot adds a standard before-and-after inspection of the signed-in destination. This gives the user a specific check that an authorized action produced the intended visible result. [Security](https://hermes-agent.nousresearch.com/docs/user-guide/security) / [Autobot writes](AGENTS.md#external-reads-and-writes). | **1. Require independent acceptance of every completion stage.** Autobot separates the producer and validator labels and requires fresh destination evidence for external outputs. This makes an unsupported "done" report insufficient under the operating contract. [Completion](AGENTS.md#completion-integrity).<br><br>**2. Require a clean first-party write route by default.** Autobot checks the exact account and visible content, then rejects forced-attribution or unverifiable delivery routes. This gives users a consistent rule for communications across services. [Write policy](AGENTS.md#external-reads-and-writes).<br><br>**3. Require audience-specific tone-learning boundaries.** Hermes supports personality and user-style preferences; Autobot specifies separately authorized profiles for each channel and audience. This gives users more explicit control over which examples shape each kind of message. [Hermes memory](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory) / [Autobot profiles](00_CONTEXT/COMMUNICATION-PROFILES.md). |
+These are product-boundary differences, not guarantees of accuracy, speed, security, or reliability. AutoBot’s privacy zones and validator separation are procedures within one Mac account. They are not OS isolation or cryptographic identities. Read the [detailed OpenClaw and Hermes comparison](docs/COMPARISON.md) and [AutoBot vs OpenAI Dots](docs/autobot-vs-openai-dots.md).
 
-These are operating-contract differences, not guarantees of error-free execution. Autobot's privacy zones and validator separation are procedural within one Mac; they are not OS isolation or cryptographic identities. OpenClaw and Hermes offer broader standalone deployment, messaging, and model choices. The absence findings above concern the exact required workflows, not an absence of memory, privacy controls, voice, verification tools, or automation in either project.
+<!-- AUTOBOT:WHATS-NEW:START -->
+## What’s new in v0.5.0
 
-## What is new in 0.3.0
-
-The project-local first-time skill now acts as the setup operator. It checks current state, applies safe local defaults, runs supported actions, preserves the earliest unresolved user or capability gate, and returns to the user's original task only after current marker and status readback.
-
-The base folder installs without Node or sign-in. The advanced runtime needs Node 22 or newer. Native app capabilities are discovered separately; no model, account, notification recipient or external write is configured for you. See [capabilities and availability](docs/CAPABILITIES.md).
+Six portable skills now ship with each installation: Slack inbox triage, Messages inbox triage, Finish the Mission, Remember and Improve, AutoBot Health Check, and Delegate and Verify. Managed skill installation preserves user customizations and global skills, checks each project-local projection, and supports verified upgrade and rollback.
+<!-- AUTOBOT:WHATS-NEW:END -->
 
 ## Privacy zones
 
@@ -82,7 +89,7 @@ The base folder installs without Node or sign-in. The advanced runtime needs Nod
 | `WORK` | Organizations, projects, teammates, customers, vendors, and professional communication patterns | Never used for personal communication unless explicitly relevant |
 | `SHARED` | The minimum facts you deliberately make reusable across zones | Opt-in only, with provenance |
 
-These are owner-only folders and operating rules inside one macOS account. They are not separate encrypted vaults, macOS users, or hardware security boundaries. Use separate macOS accounts or separate machines when the trust domains require stronger isolation. Read [Privacy](PRIVACY.md).
+These are owner-only folders and operating rules inside one macOS account. They are not separate encrypted vaults, macOS users, or hardware security boundaries. Use separate macOS accounts or machines when the trust domains require stronger isolation. Read [Privacy](PRIVACY.md).
 
 ## Completion that requires evidence
 
@@ -94,15 +101,15 @@ Each durable objective moves through five ordered stages:
 4. `save_confirmed`
 5. `rendered_readback_verified`
 
-The local runtime enforces stage order, evidence hashes, and a validator label different from the producer label. The operating contract requires a genuinely separate validator to use fresh evidence and inspect the authoritative destination for external work.
+The local runtime enforces stage order, evidence hashes, and a validator label different from the producer label. The operating contract requires a separate validator to use fresh evidence and inspect the authoritative destination for external work.
 
-This is procedural independence on one Mac, not a separate security enclave. Autobot cannot bypass a login, MFA, macOS permission, plan limit, user decision, or the scope of the user's instruction. The supervisor records liveness and flags stalled objectives. It does not control desktop apps in the background or manufacture permission to continue.
+This is procedural independence on one Mac, not a separate security enclave. AutoBot cannot bypass a login, MFA, macOS permission, plan limit, user decision, or the scope of the user’s instruction. The supervisor records liveness and flags stalled objectives. It does not create permission to continue.
 
 ## No-attribution, fail-closed writes
 
-Autobot treats connectors, apps, MCP tools, browser integrations, and APIs as read-only unless a destination-specific adapter proves the same clean-write properties. Recipient-visible writes normally use the signed-in first-party interface through native ChatGPT Computer Use.
+AutoBot treats connectors, apps, MCP tools, browser integrations, and APIs as read-only unless a destination-specific adapter proves the same clean-write properties. Recipient-visible writes normally use the signed-in first-party interface through native ChatGPT Computer Use.
 
-Before a live write, the operating contract requires the active ChatGPT workflow to check the app, account, destination, scope, and final visible content. Afterward, the workflow must inspect the rendered result and check for the intended mutation, no duplicate, no failure, and no added AI or ChatGPT attribution. If a platform forces a non-removable label or the result is ambiguous, the workflow must not claim success.
+Before a live write, the operating contract requires the active ChatGPT workflow to check the app, account, destination, scope, and final visible content. Afterward, the workflow must inspect the rendered result and check for the intended mutation, no duplicate, no failure, and no added AI or ChatGPT attribution. If a platform forces a non-removable label or the result is ambiguous, the workflow cannot claim success.
 
 That policy cannot remove immutable metadata or disclosures controlled by a third-party platform. Details: [Security](SECURITY.md).
 
@@ -115,21 +122,46 @@ Important limits:
 - Voice availability, usage, and rollout depend on the ChatGPT plan and workspace.
 - Only one voice chat can be active across desktop at a time.
 - Tasks started from Voice also use the Codex usage budget.
-
 - Starting a Goal does not broaden sandbox access or approval authority.
 
 ## Commands
 
 ```zsh
-./runtime/bin/autoassist doctor
-./runtime/bin/autoassist version
-./runtime/bin/autoassist core status
-./runtime/bin/autoassist core help
+./runtime/bin/autobot doctor
+./runtime/bin/autobot version
+./runtime/bin/autobot core status
+./runtime/bin/autobot core help
 ```
 
-Run `./runtime/bin/autoassist help` for the complete local command list.
+The legacy `autoassist` command remains available for existing installations. Run `./runtime/bin/autobot help` for the complete local command list.
 
 `privacy-scan` is a clean release-candidate check, not a post-install scan of a populated user workspace. Run it only before user configuration or against a separate clean release tree.
+
+## FAQ
+
+### What is an AI agent harness?
+
+An agent harness supplies the operating rules, memory, tools, state and verification around a model. AutoBot adds those controls to a native ChatGPT or Codex local Project instead of replacing the host with another agent interface.
+
+### How do I add persistent memory to ChatGPT or Codex on a Mac?
+
+AutoBot stores canonical context in readable Project files and retrieves only the parts relevant to the current task. The user can inspect, edit or remove that memory with ordinary local tools.
+
+### What is the difference between AutoBot and OpenAI Dots?
+
+Dots operate from an OpenAI cloud computer and can delegate to connected computers. AutoBot runs in a local Project on the user’s Mac and keeps its operating contract, memory and completion evidence in that Project. See [AutoBot vs OpenAI Dots](docs/autobot-vs-openai-dots.md).
+
+### Is AutoBot an OpenClaw alternative?
+
+AutoBot can address some of the same long-running agent needs, but it keeps ChatGPT or Codex as the user interface. OpenClaw is a separate gateway with its own channels, runtime and deployment model.
+
+### How does AutoBot verify that an AI task is complete?
+
+It records ordered evidence stages, rejects validation under the producer label, and requires fresh destination readback for external work. The validator contract makes a worker’s unsupported “done” report insufficient.
+
+### Does AutoBot keep my data private?
+
+AutoBot keeps its workspace and memory files local by default and separates context by relationship and purpose. Content can still leave the Mac when the user sends it to ChatGPT, a connected service, or an external destination. Read [Privacy](PRIVACY.md) for the exact boundary.
 
 ## Read next
 
@@ -140,35 +172,34 @@ Run `./runtime/bin/autoassist help` for the complete local command list.
 - [Local runtime reference](docs/CLI-REFERENCE.md)
 - [Privacy](PRIVACY.md)
 - [Security](SECURITY.md)
-- [Autobot and OpenClaw](docs/COMPARISON.md)
+- [AutoBot vs OpenClaw and Hermes Agent](docs/COMPARISON.md)
+- [AutoBot vs OpenAI Dots](docs/autobot-vs-openai-dots.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ## Current status
 
-Autobot `0.5.0` is an early public release for a single user on a Mac. The package is not a multi-tenant service, an OS sandbox, a cryptographic privacy boundary, or a guarantee that every third-party action will succeed. Treat a downloadable ZIP as verified only when its checksum and manifest match the adjacent release artifacts and the packaged candidate passes the bundled release checks.
+AutoBot is an early public release for a single user on a Mac. The package is not a multi-tenant service, an OS sandbox, a cryptographic privacy boundary, or a guarantee that every third-party action will succeed. Treat a downloadable ZIP as verified only when its checksum and manifest match the adjacent release artifacts and the packaged candidate passes the bundled release checks.
 
 ## License
 
-Autobot is available under the [MIT License](LICENSE). Copyright (c) 2026 Autobot contributors.
+AutoBot is available under the [MIT License](LICENSE). Copyright (c) 2026 AutoBot contributors.
 
 ## Setup and installation
 
 Install AutoBot on the Mac that hosts your local Project, then continue from your phone with Remote and Voice.
 
 1. **Open Codex on your Mac.** [Get the desktop app](https://learn.chatgpt.com/docs/app), sign in, and start a local Project called AutoBot in an empty setup folder.
-2. **Ask Codex to install AutoBot.** Paste this prompt:
-
-   > Install AutoBot from https://github.com/demeyer1/Autobot, following INSTALL_FOR_AI.md. Verify the v0.5.0 release ZIP and its manifest, install it, and guide me through selecting the installed folder as my local Project's primary folder. Include support software needed for first-time setup from official sources. Bring me in for any Mac or account step I need to do.
-
-3. **Try it locally.** When prompted, choose **Edit project > Add folder**, select `AutoAssist` in your Mac's home folder, and choose **Make primary**. Start a fresh task there: “Run first-time setup for this installed folder. Then make and save a sample checklist, and open it for me.”
+2. **Ask Codex to install AutoBot.** Paste the install prompt near the top of this page.
+3. **Try it locally.** When prompted, choose **Edit project > Add folder**, select the installed `AutoAssist` folder, and choose **Make primary**. Start a fresh task there: “Run first-time setup for this installed folder. Then make and save a sample checklist, and open it for me.”
 
 The `AutoAssist` folder name is retained so existing local Projects keep their path. Codex handles the download and verification in the guided route. If you prefer to do that yourself, use the [manual installation guide](docs/INSTALL.md).
 
 ### Phone and always-on Mac setup
 
-On the Mac, open ChatGPT and sign in to the same account and workspace you use on your phone. Go to **Settings → Connections → Control this Mac or PC → Set up/Add**, scan the QR code in the ChatGPT phone app, and enable **Keep this Mac awake**; leave the Mac plugged in and online. On your phone, open [**Remote**](https://learn.chatgpt.com/docs/remote-connections) and start or continue the AutoBot Codex chat using [Voice](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex). Ask a read-only question about a detail in the local Project to confirm the connection.
+On the Mac, open ChatGPT and sign in to the same account and workspace you use on your phone. Go to **Settings → Connections → Control this Mac or PC → Set up/Add**, scan the QR code in the ChatGPT phone app, and enable **Keep this Mac awake**; leave the Mac plugged in and online. On your phone, open [Remote](https://learn.chatgpt.com/docs/remote-connections) and start or continue the AutoBot Codex chat using [Voice](https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex). Ask a read-only question about a detail in the local Project to confirm the connection.
 
-### Supercharge Autobot
+### Supercharge AutoBot
+
 - **Work in apps:** add [Computer Use and app permissions](docs/PERMISSIONS.md) for the apps you choose.
 - **Connect your accounts:** add email, calendar or other [available capabilities](docs/CAPABILITIES.md) one at a time.
 
@@ -176,7 +207,7 @@ Review [privacy](PRIVACY.md) and [security](SECURITY.md) before connecting sensi
 
 ## First magic moments
 
-### Make Autobot sound like me
+### Make AutoBot sound like me
 
 **Step 0: Connect your messages once.** Tell AutoBot, “Connect my work email and Messages on this Mac.” Complete any sign-in or Mac permissions, then approve a few messages you wrote as examples.
 

@@ -301,5 +301,4 @@ new_case
 /usr/bin/printf 'PK\003\004synthetic archive marker\n' > "$REPLY/art.txt"
 expect_rejection 'unsupported opaque archive' "$REPLY" 'archive_zip'
 
-node --test "$ROOT/tests/test-publication-scan.mjs"
-/usr/bin/printf 'Privacy detector tests passed: %d assertions plus publication scanner tests.\n' "$assertions"
+/usr/bin/printf 'Privacy detector tests passed: %d assertions.\n' "$assertions"

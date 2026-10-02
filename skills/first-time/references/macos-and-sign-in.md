@@ -4,11 +4,11 @@
 
 Use `DEDICATED_LAPTOP_READY=local-only` by default. Ask about stronger readiness only when the user enables a capability or trust boundary that depends on it. Do not present the whole list as a mandatory questionnaire. When stronger isolation is requested, confirm only the relevant facts:
 
-- the Mac is dedicated to the intended owner or uses a separate macOS account for AutoAssist;
+- the Mac is dedicated to the intended owner or uses a separate macOS account for AutoBot;
 - macOS and ChatGPT are current enough for the required native features;
 - a screen lock is enabled and only the intended owner can unlock the account;
 - FileVault and a recoverable local backup are considered in the user's own security plan;
-- the AutoAssist root is in an accessible local folder, not Desktop, Documents, Downloads, Photos, iCloud, or an external volume;
+- the AutoBot root is in an accessible local folder, not Desktop, Documents, Downloads, Photos, iCloud, or an external volume;
 - stronger trust-domain isolation uses separate macOS accounts or laptops, not a claim that folder permissions equal hardware isolation.
 
 Record `DEDICATED_LAPTOP_READY=yes` only after the user confirms the applicable checklist. A negative or uncertain answer blocks the stronger requested capability; it does not block local-only installation, doctor, privacy scaffolding or uninstall.
@@ -35,7 +35,7 @@ Permissions are capability-specific and optional until a requested feature needs
 | ChatGPT Voice | Microphone | Grant only to the first-party ChatGPT app if the user wants Voice. |
 | Foreground Computer Use | Accessibility and Screen Recording | Grant only to the exact app/runtime named by the first-party prompt. Background supervisors remain code-only. |
 | Controlling another desktop app | Automation, when macOS asks | Approve only the exact app-to-app relationship required for an authorized task. |
-| Local files | Files and Folders for a selected location | Keep AutoAssist in an already accessible folder. Do not request broad protected-folder access for convenience. |
+| Local files | Files and Folders for a selected location | Keep the `AutoAssist` installation folder in an already accessible location. Do not request broad protected-folder access for convenience. |
 | Notifications | Notifications | Optional; not required for correctness. |
 
 Do not request Full Disk Access as a default. Do not approve any permission yourself. Do not ask again when the current intended process and capability already have fresh verified access. Record native availability independently, then record one of these bounded labels per permission:
