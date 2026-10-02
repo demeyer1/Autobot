@@ -1,6 +1,6 @@
 # What works locally, and what needs the native app
 
-Autobot installs a workspace and local tools. It does not install or unlock ChatGPT, Codex, Voice, Computer Use, connectors or a cloud service.
+AutoBot installs a workspace and local tools. It does not install or unlock ChatGPT, Codex, Voice, Computer Use, connectors or a cloud service.
 
 | Capability | Base state | How to establish readiness |
 | --- | --- | --- |
@@ -17,10 +17,10 @@ Autobot installs a workspace and local tools. It does not install or unlock Chat
 
 Record each optional capability as supported-and-verified, available-not-configured, unavailable or manual. A local configuration flag is not proof that a native app feature is operational. The first-time skill should report what it actually observed, the app/platform context, and what remains manual.
 
-The local files can be used without a native account. Reasoning and app actions require the user's own supported native environment, plan, usage and permissions. Autobot makes no API calls and enables no paid model service during installation. Optional native work uses the user's applicable usage allowance.
+The local files can be used without a native account. Reasoning and app actions require the user's own supported native environment, plan, usage and permissions. AutoBot makes no API calls and enables no paid model service during installation. Optional native work uses the user's applicable usage allowance.
 
 Local Projects differ from uploaded web project context. In the desktop app, attach the installed folder and make it primary so project instructions are discovered. A web project does not directly expose a local folder. [Projects](https://learn.chatgpt.com/docs/projects)
 
 Desktop schedules that need local files require the computer and app to remain available. A deterministic local heartbeat is separate from a native scheduled reasoning task. [Scheduled tasks](https://learn.chatgpt.com/docs/automations)
 
-See [Skills and plugins](https://learn.chatgpt.com/docs/skills-and-plugins) for the native extension model and [Node.js downloads](https://nodejs.org/en/download) for an optional supported runtime. Install dependencies yourself through their official routes; Autobot does not change your shared toolchain.
+See [Skills and plugins](https://learn.chatgpt.com/docs/skills-and-plugins) for the native extension model and [Node.js downloads](https://nodejs.org/en/download) for an optional supported runtime. Install dependencies yourself through their official routes; AutoBot does not change your shared toolchain.

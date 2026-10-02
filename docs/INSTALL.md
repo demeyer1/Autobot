@@ -1,23 +1,23 @@
-# Install Autobot
+# Install AutoBot
 
 The easiest route is the [three-step guided setup](../README.md#setup-and-installation). This page covers manual installation, upgrades, repair and removal. The default folder is `~/AutoAssist`; that folder name preserves existing local Project paths.
 
 ## Manual install
 
-1. From the [v0.5.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.5.0), download `AutoAssist-v0.5.0.zip` and its matching `.zip.sha256` and `.manifest.sha256` files. Choose the attached release ZIP, not GitHub's automatic source-code ZIP.
-2. In the download folder, run `shasum -a 256 -c AutoAssist-v0.5.0.zip.sha256`. Extract the ZIP, open the extracted `AutoAssist` folder, then run `shasum -a 256 -c ../AutoAssist-v0.5.0.manifest.sha256`. Continue only when the ZIP and every manifest entry report `OK`.
+1. Open the [latest stable release](https://github.com/demeyer1/Autobot/releases/latest). Download its attached ZIP and the two assets with that ZIP's exact basename followed by `.sha256` and `.manifest.sha256`. Choose the attached release ZIP, not GitHub's automatic source-code ZIP.
+2. In the download folder, run `shasum -a 256 -c <zip-name>.sha256`. Extract the ZIP, open its `AutoAssist` folder, then run `shasum -a 256 -c ../<artifact-and-tag>.manifest.sha256`. Replace each placeholder with the downloaded asset's exact name. Continue only when the ZIP and every manifest entry report `OK`.
 3. Double-click `Install.command`, or run `./install.sh` from that extracted folder. Note the installed path and doctor result.
 
 If macOS blocks opening the installer, inspect its origin and use the standard Finder/System Settings opening flow. Keep Gatekeeper enabled. The installer checks available space before making changes.
 
-The base install uses macOS's local tools without Node.js, an administrator account, API key or new privacy permission. Completing first-time setup's local smoke check and using advanced runtime commands require [Node.js 22 or newer](https://nodejs.org/en/download). The installer reports runtime availability without changing your shared toolchain. The [v0.5.0 validation report](https://github.com/demeyer1/Autobot/releases/download/v0.5.0/AutoAssist-v0.5.0-validation.md) records tests on macOS 15.7.4, Apple silicon and Node.js 25.6.1. Check the [current desktop app requirements](https://learn.chatgpt.com/docs/app) for your Mac.
+The base install uses macOS's local tools without Node.js, an administrator account, API key or new privacy permission. Completing first-time setup's local smoke check and using advanced runtime commands require [Node.js 22 or newer](https://nodejs.org/en/download). The installer reports runtime availability without changing your shared toolchain. The validation report attached to the [v0.5.0 release](https://github.com/demeyer1/Autobot/releases/tag/v0.5.0) records tests on macOS 15.7.4, Apple silicon and Node.js 25.6.1. Check the [current desktop app requirements](https://learn.chatgpt.com/docs/app) for your Mac.
 
 ### Choose another folder
 
 From the extracted release folder:
 
 ```zsh
-./install.sh --destination "$HOME/Autobot Workspace"
+./install.sh --destination "$HOME/AutoBot Workspace"
 ```
 
 `--home-root` selects an account root for an explicit alternate account or isolated test. It does not change the shell's HOME or Codex configuration. The installer rejects broad or unmanaged destinations.
@@ -29,11 +29,16 @@ From the extracted release folder:
 
 The project-local first-time skill checks the installation, applies local defaults, validates setup and resumes from saved progress after an interruption. You choose accounts and permissions only for workflows you want. If native Project controls are unavailable to the agent, make the folder selection yourself; an uploaded web project does not directly expose a Mac folder. [Local Projects](https://learn.chatgpt.com/docs/projects)
 
-For a quick manual check in the installed folder:
+For a quick manual check in the installed folder, use the preferred alias when the package provides it and otherwise use the compatible command:
 
 ```zsh
-./runtime/bin/autoassist doctor
-./runtime/bin/autoassist version
+if [[ -x ./runtime/bin/autobot ]]; then
+  ./runtime/bin/autobot doctor
+  ./runtime/bin/autobot version
+else
+  ./runtime/bin/autoassist doctor
+  ./runtime/bin/autoassist version
+fi
 ```
 
 ### Phone and always-on Mac setup
@@ -42,7 +47,7 @@ On the Mac, open ChatGPT and sign in to the same account and workspace you use o
 
 ## Upgrade an existing installation
 
-Close or finish work in the target Autobot Project before upgrading. Quiesce that installation only; other Projects do not need to stop. Keep room for a staged copy and recoverable backup. The installer checks free space before changing the target.
+Close or finish work in the target AutoBot Project before upgrading. Quiesce that installation only; other Projects do not need to stop. Keep room for a staged copy and recoverable backup. The installer checks free space before changing the target.
 
 Extract the new official package and run:
 
@@ -56,7 +61,7 @@ The transaction preserves state, checks for concurrent changes and retains recov
 
 To repair product-file or permission drift from the same release, use `./install.sh --destination "$HOME/AutoAssist" --repair --target-quiescent`. To restore a retained earlier code version, use `./install.sh --destination "$HOME/AutoAssist" --rollback --target-quiescent`. Rollback preserves current user state and refuses an incompatible schema.
 
-If you installed elsewhere, replace `"$HOME/AutoAssist"` in every upgrade, repair and rollback command with your exact installed path. Supply the same `--home-root` used at installation when it was nondefault. For example, an upgrade of the alternate folder above is `./install.sh --destination "$HOME/Autobot Workspace" --home-root "$HOME" --target-quiescent`.
+If you installed elsewhere, replace `"$HOME/AutoAssist"` in every upgrade, repair and rollback command with your exact installed path. Supply the same `--home-root` used at installation when it was nondefault. For example, an upgrade of the alternate folder above is `./install.sh --destination "$HOME/AutoBot Workspace" --home-root "$HOME" --target-quiescent`.
 
 ## Local liveness
 
@@ -72,4 +77,4 @@ Finish work in the target Project, then run this from the installed folder:
 ./uninstall.sh --destination "$HOME/AutoAssist" --target-quiescent
 ```
 
-For another folder or account root, provide both exact values, for example `./uninstall.sh --destination "$HOME/Autobot Workspace" --home-root "$HOME" --target-quiescent`. The reversible path stops only the receipt-bound service, removes only owned projections and moves the folder to recoverable Trash. It preserves user data and unrelated global skills.
+For another folder or account root, provide both exact values, for example `./uninstall.sh --destination "$HOME/AutoBot Workspace" --home-root "$HOME" --target-quiescent`. The reversible path stops only the receipt-bound service, removes only owned projections and moves the folder to recoverable Trash. It preserves user data and unrelated global skills.

@@ -1,6 +1,6 @@
 # Permissions
 
-AutoAssist does not replace macOS or ChatGPT security controls. It adds a least-privilege operating policy around them.
+AutoBot does not replace macOS or ChatGPT security controls. It adds a least-privilege operating policy around them.
 
 Three independent permission layers matter:
 
@@ -13,12 +13,12 @@ Granting one layer does not grant the others.
 ## Recommended baseline
 
 - Start in **Ask for approval** mode.
-- Keep the AutoAssist Project in a deliberate user-owned folder such as `~/AutoAssist`.
+- Keep the AutoBot Project in a deliberate user-owned folder such as `~/AutoAssist`.
 - Enable only the native features you plan to use.
 - Approve apps one at a time during a real task.
 - Avoid **Always allow** until the app and action class are well understood.
 - Do not use **Full access** as the default.
-- Never give AutoAssist a password, MFA code, private key, payment credential, or recovery code to store.
+- Never give AutoBot a password, MFA code, private key, payment credential, or recovery code to store.
 
 OpenAI documents sandbox scope and reviewer behavior as separate controls. Enabling Auto-review changes the reviewer but does not expand the sandbox. Full access can edit any file and run network commands without approval, which materially increases the risk of data loss, leakage, or unexpected behavior. [Permission modes](https://learn.chatgpt.com/docs/permission-modes)
 
@@ -48,19 +48,19 @@ According to the current [Computer Use documentation](https://learn.chatgpt.com/
 5. In ChatGPT **Settings > Computer Use**, configure app access.
 6. During a task, review the prompt for the exact app and action.
 
-AutoAssist never approves a macOS privacy prompt for the user. The user must review the process name, requested access, and reason in System Settings.
+AutoBot never approves a macOS privacy prompt for the user. The user must review the process name, requested access, and reason in System Settings.
 
 Computer Use also cannot automate ChatGPT/Codex itself, Terminal, an administrator authentication flow or a macOS security/privacy approval. The first-time agent performs supported local work and supported target-app actions, then pauses only when a fresh readable surface names one of those user-only steps. A blank capture, spinner, tool failure or elapsed time is not an authentication or permission prompt. After the user acts, the agent must re-read the same project, profile/account and capability surface before continuing.
 
 Configuration records native feature availability separately from user-confirmed permission. A shell test, receipt, prior completion marker or synthetic test fixture does not prove that Computer Use is installed, that the intended app is approved, or that a macOS permission is present. An unavailable optional feature remains a precise resumable capability; local/private setup can continue.
 
-Use a structured connector or MCP tool for authorized reads and repeatable data access when it is available. Use Computer Use for visual interaction in the signed-in first-party app. AutoAssist's default external-write policy still requires a rendered preflight and postflight.
+Use a structured connector or MCP tool for authorized reads and repeatable data access when it is available. Use Computer Use for visual interaction in the signed-in first-party app. AutoBot's default external-write policy still requires a rendered preflight and postflight.
 
 ### Locked use
 
 Locked use is an optional native ChatGPT feature on macOS. Its setup installs an Apple authorization plug-in and can temporarily unlock the Mac only for an active, trusted Computer Use turn while blocking local use.
 
-It is not required by AutoAssist and is not a general unattended-unlock mechanism. Review the current [Computer Use documentation](https://learn.chatgpt.com/docs/computer-use) before enabling it.
+It is not required by AutoBot and is not a general unattended-unlock mechanism. Review the current [Computer Use documentation](https://learn.chatgpt.com/docs/computer-use) before enabling it.
 
 ## Voice permissions and limits
 
@@ -97,7 +97,7 @@ Desktop scheduled tasks that use a local Project also need the computer and app 
 
 ## Plan and workspace boundaries
 
-Native feature availability can differ by plan, workspace policy, supported region, rollout, and usage budget. AutoAssist cannot enable a ChatGPT feature that the signed-in account does not have.
+Native feature availability can differ by plan, workspace policy, supported region, rollout, and usage budget. AutoBot cannot enable a ChatGPT feature that the signed-in account does not have.
 
 OpenAI's published statement that Business, Enterprise, and Edu data is not used to train models by default applies to those plans. Do not generalize that statement to every consumer account. [ChatGPT Work cloud security](https://learn.chatgpt.com/docs/enterprise/chatgpt-work-cloud-security)
 
@@ -110,6 +110,6 @@ Revoke native permissions where they were granted:
 - ChatGPT Project settings for attached folders and connected sources;
 - ChatGPT permission mode settings for sandbox/reviewer posture.
 
-Removing the AutoAssist folder does not automatically revoke ChatGPT or macOS permissions. Revocation is a separate user action.
+Removing the AutoBot folder does not automatically revoke ChatGPT or macOS permissions. Revocation is a separate user action.
 
 **Documentation date:** 2026-08-26. Follow the linked OpenAI pages for the current UI and feature availability.

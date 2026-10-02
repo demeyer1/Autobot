@@ -1,6 +1,6 @@
 # Architecture
 
-Autobot adds durable local state to the user's native ChatGPT or Codex workflow. The native app reasons and acts. The local runtime tracks what was requested, what remains owed and which current evidence supports completion.
+AutoBot adds durable local state to the user's native ChatGPT or Codex workflow. The native app reasons and acts. The local runtime tracks what was requested, what remains owed and which current evidence supports completion.
 
 ```mermaid
 flowchart TD
@@ -52,6 +52,6 @@ Upgrades preserve user state and customized product files through original/curre
 
 ## Limits
 
-Autobot assumes one trusted user and does not defend against a malicious process with that user's filesystem access. It does not bypass authentication, platform approvals, TCC, plan limits or changed third-party interfaces. It does not guarantee continuity through power loss or native app termination. Release privacy scanning is bounded and supplemented by independent semantic and media review.
+AutoBot assumes one trusted user and does not defend against a malicious process with that user's filesystem access. It does not bypass authentication, platform approvals, TCC, plan limits or changed third-party interfaces. It does not guarantee continuity through power loss or native app termination. Release privacy scanning is bounded and supplemented by independent semantic and media review.
 
-See [Capabilities](CAPABILITIES.md), [Security](../SECURITY.md), [Privacy](../PRIVACY.md) and the release validation report for the exact implemented and tested boundary. [Local Projects](https://learn.chatgpt.com/docs/projects) provide the native folder context; Autobot does not turn a web project into local filesystem access.
+See [Capabilities](CAPABILITIES.md), [Security](../SECURITY.md), [Privacy](../PRIVACY.md) and the release validation report for the exact implemented and tested boundary. [Local Projects](https://learn.chatgpt.com/docs/projects) provide the native folder context; AutoBot does not turn a web project into local filesystem access.

@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Start with `~/AutoAssist/runtime/bin/autoassist doctor --json`. The check is read-only. Installation integrity, runtime availability, first-time setup and service configuration are separate results.
+Start with `~/AutoAssist/runtime/bin/autobot doctor --json` when that alias exists. The v0.5.0 package uses `~/AutoAssist/runtime/bin/autoassist doctor --json`. The check is read-only. Installation integrity, runtime availability, first-time setup and service configuration are separate results.
 
 ## Incomplete or altered download
 
