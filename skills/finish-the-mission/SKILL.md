@@ -1,11 +1,11 @@
 ---
 name: finish-the-mission
-description: Keep a substantial Autobot assignment recoverable with one durable objective, exact checkpoints, supported continuation and verified deliverables. Use when the user asks for persistent follow-through or to finish work across sessions.
+description: Keep a substantial AutoBot assignment recoverable with one durable objective, exact checkpoints, supported continuation and verified deliverables. Use when the user asks for persistent follow-through or to finish work across sessions.
 ---
 
 # Finish the mission
 
-Resolve the installed Autobot root from the current project and its installation receipt. Read its `docs/CLI-REFERENCE.md` for the installed runtime contract. Use paths relative to that verified root; never select another installation by recency. Advanced core commands require Node 22 or newer.
+Resolve the installed AutoBot root from the current project and its installation receipt. Read its `docs/CLI-REFERENCE.md` for the installed runtime contract. Use paths relative to that verified root; never select another installation by recency. Advanced core commands require Node 22 or newer.
 
 ## Bind the outcome once
 
