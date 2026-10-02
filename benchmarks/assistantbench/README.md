@@ -1,15 +1,15 @@
 # AssistantBench
 
-At the recorded verification, Autobot ChatGPT-HQ + GPT-5.6 Sol Ultra ranked **#1** on the official AssistantBench test leaderboard. It scored **50.70% accuracy** with a **100.0% answer rate** across all 181 hidden-test tasks.
+At the recorded verification, AutoBot ChatGPT-HQ + GPT-5.6 Sol Ultra ranked **#1** on the official AssistantBench test leaderboard. It scored **50.70% accuracy** with a **100.0% answer rate** across all 181 hidden-test tasks.
 
-[![AssistantBench leaderboard showing Autobot in the top position at 50.70% accuracy](../../docs/benchmark-charts/assistantbench-highlighted.png)](https://huggingface.co/spaces/AssistantBench/leaderboard)
+[![AssistantBench leaderboard showing AutoBot in the top position at 50.70% accuracy](../../docs/benchmark-charts/assistantbench-highlighted.png)](https://huggingface.co/spaces/AssistantBench/leaderboard)
 
 - Official score: **50.70% accuracy**
 - Official position: **#1**
 - Coverage: **181/181 hidden-test tasks**
 - Answer rate: **100.0%**
 
-The result was produced by Autobot's custom research harness and scored by the official AssistantBench hidden evaluator. [Open the live leaderboard](https://huggingface.co/spaces/AssistantBench/leaderboard). New submissions may require clicking the leaderboard's **Refresh** control before they appear.
+The result was produced by AutoBot's custom research harness and scored by the official AssistantBench hidden evaluator. [Open the live leaderboard](https://huggingface.co/spaces/AssistantBench/leaderboard). New submissions may require clicking the leaderboard's **Refresh** control before they appear.
 
 <details>
 <summary>Verification details</summary>
@@ -27,4 +27,4 @@ The first UI attempt exposed a path-safety problem in the model-name metadata. W
 
 </details>
 
-[Back to Autobot](../../README.md)
+[Back to AutoBot](../../README.md)
