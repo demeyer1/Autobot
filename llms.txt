@@ -1,0 +1,24 @@
+# AutoBot
+
+> AutoBot is an open-source MIT agent harness for a local ChatGPT or Codex Project on macOS. It adds on-disk memory, privacy zones, durable task state and independent completion verification.
+
+Canonical site: https://demeyer1.github.io/Autobot/
+Repository: https://github.com/demeyer1/Autobot
+Install: https://github.com/demeyer1/Autobot#setup-and-installation
+Architecture: https://github.com/demeyer1/Autobot/blob/main/docs/ARCHITECTURE.md
+Capabilities: https://github.com/demeyer1/Autobot/blob/main/docs/CAPABILITIES.md
+Permissions: https://github.com/demeyer1/Autobot/blob/main/docs/PERMISSIONS.md
+Privacy: https://github.com/demeyer1/Autobot/blob/main/PRIVACY.md
+Security: https://github.com/demeyer1/Autobot/blob/main/SECURITY.md
+AssistantBench: https://demeyer1.github.io/Autobot/assistantbench.html
+OSWorld 2.0: https://demeyer1.github.io/Autobot/osworld.html
+AutoBot vs OpenAI Dots: https://demeyer1.github.io/Autobot/dots.html
+AutoBot vs OpenClaw: https://demeyer1.github.io/Autobot/openclaw.html
+AutoBot vs Hermes Agent: https://demeyer1.github.io/Autobot/hermes.html
+
+Key claims:
+- Recorded #1 official AssistantBench hidden-test result: 50.70% accuracy and 100% answer rate across 181 tasks.
+- Self-run OSWorld 2.0 result: 32.41% binary accuracy and 64.28% partial accuracy across all 108 tasks.
+- AutoBot runs inside a local ChatGPT or Codex Project. It is not a separate model or agent gateway.
+- Privacy zones and validator separation are procedural controls within one macOS account, not OS isolation.
+- A Dot-to-local AutoBot compatibility canary has not yet been published.

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://demeyer1.github.io/Autobot/sitemap.xml

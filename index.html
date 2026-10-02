@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoBot | Self-improving agent harness for ChatGPT and Codex</title>
+  <meta name="description" content="AutoBot adds on-disk memory, privacy zones and independent completion verification to local ChatGPT and Codex Projects on Mac.">
+  <link rel="canonical" href="https://demeyer1.github.io/Autobot/">
+  <link rel="stylesheet" href="/Autobot/site.css">
+  <script defer src="/Autobot/analytics.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <nav aria-label="Primary">
+      <a class="brand" href="/Autobot/">AutoBot</a>
+      <div class="links">
+        <a href="/Autobot/#benchmarks">Benchmarks</a>
+        <a href="/Autobot/dots.html">Dots</a>
+        <a href="https://github.com/demeyer1/Autobot">GitHub</a>
+      </div>
+    </nav>
+  </div>
+  
+<main>
+  <header class="wrap hero">
+    <div>
+      <div class="eyebrow">Native ChatGPT + Codex on your Mac</div>
+      <h1>A harness that gets better at finishing.</h1>
+      <p class="lede">AutoBot adds on-disk memory, privacy zones and an independent completion validator to a local ChatGPT or Codex Project.</p>
+      <div class="actions">
+        <a class="button" href="https://github.com/demeyer1/Autobot#setup-and-installation">Install AutoBot</a>
+        <a class="button secondary" href="https://github.com/demeyer1/Autobot">View source</a>
+      </div>
+    </div>
+    <div>
+      <span class="kicker">#1 AssistantBench</span>
+      <div class="stat"><strong>50.70%</strong> accuracy across 181 hidden tasks</div>
+      <div class="stat"><strong>32.41%</strong> binary accuracy on all 108 OSWorld 2.0 tasks</div>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap grid">
+      <article class="card"><h3>Memory you can read</h3><p>Canonical context stays in ordinary Project files, split by relationship and purpose. You can inspect, edit or remove it.</p></article>
+      <article class="card"><h3>Work that survives a chat</h3><p>Objectives, stages, evidence and recovery state stay on disk so an interrupted task can resume without guessing what remains.</p></article>
+      <article class="card"><h3>Completion that needs proof</h3><p>A separate validator checks ordered evidence and the real destination. A worker’s unsupported “done” report is not enough.</p></article>
+    </div>
+  </section>
+
+  <section id="benchmarks">
+    <div class="wrap">
+      <div class="eyebrow">Published evidence</div>
+      <h2>Benchmarks, with the method attached.</h2>
+      <div class="grid two">
+        <article class="card">
+          <span class="kicker">AssistantBench</span>
+          <p class="score">50.70%</p>
+          <p>#1 on the recorded official hidden-test leaderboard, with a 100% answer rate across 181 tasks.</p>
+          <a href="/Autobot/assistantbench.html">Open the evidence</a>
+        </article>
+        <article class="card">
+          <span class="kicker">OSWorld 2.0</span>
+          <p class="score">32.41%</p>
+          <p>Binary accuracy across all 108 tasks. The published folder includes results, evidence, checksums and a verifier.</p>
+          <a href="/Autobot/osworld.html">Open the evidence</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap grid two">
+      <div>
+        <div class="eyebrow">A different product shape</div>
+        <h2>Keep the host you already use.</h2>
+        <p class="lede">AutoBot is an operating layer inside a native local Project. It does not ask you to adopt a separate agent gateway or another chat shell.</p>
+        <p><a href="/Autobot/dots.html">Compare AutoBot and OpenAI Dots</a><br>
+        <a href="/Autobot/openclaw.html">Compare AutoBot and OpenClaw</a><br>
+        <a href="/Autobot/hermes.html">Compare AutoBot and Hermes Agent</a></p>
+      </div>
+      <div class="prompt"><code>Install AutoBot from https://github.com/demeyer1/Autobot, following INSTALL_FOR_AI.md. Verify the latest release ZIP and its manifest, install it, and guide me through selecting the installed folder as my local Project's primary folder.</code></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap notice">
+      <strong>Current boundary:</strong> AutoBot is an early public release for a single user on a Mac. Its privacy zones and validator separation are procedures within one macOS account, not OS isolation or a guarantee that every external action will succeed.
+    </div>
+  </section>
+</main>
+
+  <footer><div class="wrap">AutoBot is open source under the MIT License. Built by <a href="https://autoprod.ai">Autonomous Production</a>.</div></footer>
+</body>
+</html>
