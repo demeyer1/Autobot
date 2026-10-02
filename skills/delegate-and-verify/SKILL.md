@@ -1,6 +1,6 @@
 ---
 name: delegate-and-verify
-description: Coordinate authorized parallel workers on bounded Autobot subtasks and verify their outputs. Use when the user requests delegation or the current environment explicitly permits it; keeps responsibility with the lead.
+description: Coordinate authorized parallel workers on bounded AutoBot subtasks and verify their outputs. Use when the user requests delegation or the current environment explicitly permits it; keeps responsibility with the lead.
 ---
 
 # Delegate and verify
@@ -25,6 +25,6 @@ After two materially identical failures without new evidence, stop that approach
 
 ## Accept the user's result
 
-Verify the integrated output against every promised deliverable, including actual saved or published destinations when applicable. Use Autobot's existing core objective and evidence contract when the assignment is already tracked; read `docs/CLI-REFERENCE.md` in the verified installation for exact schemas. Core commands require Node 22 or newer. Distinct actor strings do not authenticate independent review.
+Verify the integrated output against every promised deliverable, including actual saved or published destinations when applicable. Use AutoBot's existing core objective and evidence contract when the assignment is already tracked; read `docs/CLI-REFERENCE.md` in the verified installation for exact schemas. Core commands require Node 22 or newer. Distinct actor strings do not authenticate independent review.
 
 A worker finishing, a passed unit test or a visible draft alone does not finish the parent assignment. Recheck affected evidence after integration or user corrections. Preserve unfinished outputs and uncertain external operations across handoffs. Report completion only from verified results; otherwise leave one exact recoverable checkpoint and concise remaining blocker.
