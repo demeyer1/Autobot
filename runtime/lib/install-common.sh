@@ -3,12 +3,12 @@
 # Shared, Node-free lifecycle helpers. Callers set -eu and umask 077.
 
 aa_die() {
-  /bin/echo "AutoAssist: $*" >&2
+  /bin/echo "AutoBot: $*" >&2
   exit 1
 }
 
 aa_usage_die() {
-  /bin/echo "AutoAssist: $*" >&2
+  /bin/echo "AutoBot: $*" >&2
   exit 2
 }
 
